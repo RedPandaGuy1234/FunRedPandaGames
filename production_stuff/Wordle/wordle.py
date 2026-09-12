@@ -26,6 +26,8 @@ else:
     print("This code has failed because the list for the word bank did not show up. Please alert RedPandaGuy1234 of this. Thank you!")
     sys.exit(1)
 
+allowed_guesses = set(Valid_Words) | set(Word_bank)
+
 Word = Word_bank[random.randint(1, 2314)]
 Guess = "This is a filler!"
 guesses = 0
@@ -36,14 +38,12 @@ def guess_word(guesses):
     guesses = guesses + 1
     while not is_word_valid:
         guessed_word = input("Please enter your word, and use all lowercase.")
-        if guessed_word not in Valid_Words:
+        if guessed_word not in allowed_guesses:
             print("Sorry, but either you used an uppercase character, it is not in the Valid word bank (this is a limited word bank, and does not have every single five letter work in the world), you typed a space anywhere, it is not five letters, or this is not a word. Please try again.")
         else:
             print("Ok!")
-            char_word_list = set(guessed_word)
             is_word_valid = True
-            return char_word_list, guesses
+            return guessed_word, guesses
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses)
-
