@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.4](https://github.com/RedPandaGuy1234/Games/compare/v1.6.3...v1.6.4) (2026-09-13)
+
+
+### Bug Fixes
+
+* Fix syntax error in check_word function ([69a879f](https://github.com/RedPandaGuy1234/Games/commit/69a879fd16ced80531c42e987c1306a55f9ff199))
+
+
+### Continuations
+
+* Add character tracking and word checking function ([feb6212](https://github.com/RedPandaGuy1234/Games/commit/feb62124b63674baed43b3d6414db94eb5b9c60f))
+* Modify guess_word function to accept Word parameter ([435704c](https://github.com/RedPandaGuy1234/Games/commit/435704cb4a89408a3f903f1d23bd9d6c2fb4b75a))
+
 ## [1.6.3](https://github.com/RedPandaGuy1234/Games/compare/v1.6.2...v1.6.3) (2026-09-13)
 
 
