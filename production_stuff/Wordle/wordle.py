@@ -39,7 +39,7 @@ def guess_word(guesses):
     while not is_word_valid:
         guessed_word = input("Please enter your word, and use all lowercase.")
         if guessed_word not in allowed_guesses:
-            print("Sorry, but either you used an uppercase character, it is not in the Valid word bank (this is a limited word bank, and does not have every single five letter work in the world), you typed a space anywhere, it is not five letters, or this is not a word. Please try again.")
+            print("Sorry, but either you used an uppercase character, it is not in the Valid word bank (this is a limited word bank, and does not have every single five letter word in the world), you typed a space anywhere, it is not five letters, or this is not a word. Please try again.")
         else:
             print("Ok!")
             is_word_valid = True
