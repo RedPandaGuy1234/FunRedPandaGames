@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.6.3](https://github.com/RedPandaGuy1234/Games/compare/v1.6.2...v1.6.3) (2026-09-13)
+
+
+### Bug Fixes
+
+* Correct while loop syntax in guess_word function ([60db3c1](https://github.com/RedPandaGuy1234/Games/commit/60db3c1a24ee90be9646f2ade75f1528aaec6a99))
+* Fix indentation for while loop in check_word function ([c681684](https://github.com/RedPandaGuy1234/Games/commit/c6816842f1708630aad2dc65c6b49e78216198e0))
+* Fix typo in error message for invalid word input ([3094ba5](https://github.com/RedPandaGuy1234/Games/commit/3094ba51179106074eab07205aa4edc74c4c9f9e))
+* Fix variable name for guessed word in validation ([b741552](https://github.com/RedPandaGuy1234/Games/commit/b7415527f1f49427bfbbf512d621c34042414bd4))
+* Refactor check_word function for clarity ([37f1b45](https://github.com/RedPandaGuy1234/Games/commit/37f1b457f5b6141e410078f569de495b310d984f))
+* Refactor guess_word function for input validation ([f0a0fcb](https://github.com/RedPandaGuy1234/Games/commit/f0a0fcb676c9c1acc171232fe07d9cd05f52dde5))
+* Refactor word validation to use allowed guesses ([e19d407](https://github.com/RedPandaGuy1234/Games/commit/e19d407f44f4df609ec9b46017d50ef98ae0ad9e))
+* Update guess_word call to include guesses parameter ([3c0d838](https://github.com/RedPandaGuy1234/Games/commit/3c0d8385ba3057d14736b9bc39a8113ed1553d3b))
+
+
+### Continuations
+
+* Add confirmation message for valid word guess ([6761b9a](https://github.com/RedPandaGuy1234/Games/commit/6761b9a9c42b0f23d1b60ee99e69efc77e397530))
+* Change guessing logic to track incorrect guesses ([7ac600b](https://github.com/RedPandaGuy1234/Games/commit/7ac600b8416a1bd8396dbb38843faa3cb678981b))
+* Enhance word guessing logic in Wordle.py ([7d769f4](https://github.com/RedPandaGuy1234/Games/commit/7d769f4b6ee01c4a8316d08f236b70be34c73c8c))
+* Modify guess_word to include guesses tracking ([11faca1](https://github.com/RedPandaGuy1234/Games/commit/11faca184e2230116d06eddab332931b74e2137e))
+
+
+### Other
+
+* Rename Wordle.py to wordle.py to have case consistency with other files ([434c652](https://github.com/RedPandaGuy1234/Games/commit/434c6524de16532c124848c62d3519656af14315))
+
 ## [1.6.2](https://github.com/RedPandaGuy1234/Games/compare/v1.6.1...v1.6.2) (2026-09-12)
 
 
