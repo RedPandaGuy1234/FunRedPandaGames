@@ -55,7 +55,7 @@ def guess_word(guesses, Word):
             return guessed_word, guesses
 
 def check_word(Word, Guess):
-    if Guess[1] == Word[1]
+    if Guess[1] == Word[1]:
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses, Word)
