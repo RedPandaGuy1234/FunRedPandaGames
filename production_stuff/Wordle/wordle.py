@@ -32,6 +32,11 @@ Word = Word_bank[random.randint(1, 2314)]
 Guess = "This is a filler!"
 guesses = 0
 is_guess_incorrect = True
+character_one = 0
+character_two = 0
+character_three = 0
+character_four = 0
+character_five = 0
 
 def guess_word(guesses, Word):
     is_word_valid = False
@@ -48,6 +53,9 @@ def guess_word(guesses, Word):
             is_word_valid = True
             guessed_word = set(guessed_word)
             return guessed_word, guesses
+
+def check_word(Word, Guess):
+    if Guess[1] == Word[1]
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses, Word)
