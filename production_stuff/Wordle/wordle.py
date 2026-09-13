@@ -48,8 +48,6 @@ def guess_word(guesses, Word):
             is_word_valid = True
             guessed_word = set(guessed_word)
             return guessed_word, guesses
-
-def check_guess(guess):
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses, Word)
