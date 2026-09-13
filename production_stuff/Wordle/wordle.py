@@ -33,8 +33,11 @@ Guess = "This is a filler!"
 guesses = 0
 is_guess_incorrect = True
 
-def guess_word(guesses):
+def guess_word(guesses, Word):
     is_word_valid = False
+    if guesses == 6:
+        print(f"I'm sorry, but did not guess the word, {Word}, in 6 guesses. Goodbye!")
+        sys.exit()
     guesses = guesses + 1
     while not is_word_valid:
         guessed_word = input("Please enter your word, and use all lowercase.")
@@ -43,8 +46,10 @@ def guess_word(guesses):
         else:
             print("Ok!")
             is_word_valid = True
-            set(guessed_word)
+            guessed_word = set(guessed_word)
             return guessed_word, guesses
+
+def check_guess(guess):
     
 while is_guess_incorrect:
-    Guess, guesses = guess_word(guesses)
+    Guess, guesses = guess_word(guesses, Word)
