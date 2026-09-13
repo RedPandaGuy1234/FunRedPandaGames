@@ -43,7 +43,7 @@ def guess_word(guesses):
         else:
             print("Ok!")
             is_word_valid = True
-            set(guesses_word)
+            set(guessed_word)
             return guessed_word, guesses
     
 while is_guess_incorrect:
