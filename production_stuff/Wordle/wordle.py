@@ -56,6 +56,11 @@ def guess_word(guesses, Word):
 
 def check_word(Word, Guess):
     if Guess[1] == Word[1]:
+        character_one = "Perfect"
+    elif Guess[1] in Word:
+        character_one = "Somewhere"
+    else:
+        character_one = "Not here"
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses, Word)
