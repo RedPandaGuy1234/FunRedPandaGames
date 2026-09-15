@@ -56,6 +56,12 @@ def check_word(Word, Guess):
         print(f"The first character, {Guess[0], is in the word, but not there.")
     else:
         print(f"The first character, {Guess[0]}, is not in the word.")
+    if Guess[1] == Word[1]:
+        print(f"The second character, {Guess[1]}, is in the perfect place!")
+    elif Guess[1] in Word:
+        print(f"The second character, {Guess[1], is in the word, but not there.")
+    else:
+        print(f"The second character, {Guess[1]}, is not in the word.")
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses, Word)
