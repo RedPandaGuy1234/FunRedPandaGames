@@ -32,11 +32,6 @@ Word = Word_bank[random.randint(1, 2314)]
 Guess = "This is a filler!"
 guesses = 0
 is_guess_incorrect = True
-character_one = 0
-character_two = 0
-character_three = 0
-character_four = 0
-character_five = 0
 
 def guess_word(guesses, Word):
     is_word_valid = False
@@ -55,12 +50,12 @@ def guess_word(guesses, Word):
             return guessed_word, guesses
 
 def check_word(Word, Guess):
-    if Guess[1] == Word[1]:
-        character_one = "Perfect"
-    elif Guess[1] in Word:
-        character_one = "Somewhere"
+    if Guess[0] == Word[0]:
+        print(f"The first character, {Guess[0]}, is in the perfect place!")
+    elif Guess[0] in Word:
+        print(f"The first character, {Guess[0], is in the word, but not there.")
     else:
-        character_one = "Not here"
+        print(f"The first character, {Guess[0]}, is not in the word.")
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses, Word)
