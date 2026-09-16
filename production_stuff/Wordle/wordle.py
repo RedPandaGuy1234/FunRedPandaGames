@@ -36,7 +36,7 @@ is_perfect = False
 def guess_word(guesses, Word):
     is_word_valid = False
     if guesses == 6:
-        print(f"I'm sorry, but you did not guess the word, {Word}, in 6 guesses. Goodbye!")
+        print(f"I'm sorry, but did not guess the word, {Word}, in 6 guesses. Goodbye!")
         sys.exit()
     guesses = guesses + 1
     while not is_word_valid:
