@@ -65,3 +65,4 @@ def check_word(Word, Guess):
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses, Word)
+    check_word(Word, Guess)
