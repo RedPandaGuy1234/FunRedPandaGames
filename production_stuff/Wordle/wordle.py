@@ -94,5 +94,5 @@ def check_word(Word, Guess):
 while is_perfect:
     Guess, guesses = guess_word(guesses, Word)
     is_perfect = check_word(Word, Guess)
-    if is_perfect = True:
+    if is_perfect == True:
         print(f"Congrats! You got the word, {Word}, in {guesses} attempts.")
