@@ -46,7 +46,6 @@ def guess_word(guesses, Word):
         else:
             print("Ok!")
             is_word_valid = True
-            guessed_word = set(guessed_word)
             return guessed_word, guesses
 
 def check_word(Word, Guess):
