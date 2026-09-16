@@ -70,6 +70,20 @@ def check_word(Word, Guess):
         print(f"The third character, {Guess[2]}, is in the word, but not there.")
     else:
         print(f"The third character, {Guess[2]}, is not in the word.")
+    if Guess[3] == Word[3]:
+        print(f"The fourth character, {Guess[3]}, is in the perfect place!")
+        correct_character = correct_character + 1
+    elif Guess[3] in Word:
+        print(f"The fourth character, {Guess[3]}, is in the word, but not there.")
+    else:
+        print(f"The fourth character, {Guess[3]}, is not in the word.")
+    if Guess[4] == Word[4]:
+        print(f"The last character, {Guess[4]}, is in the perfect place!")
+        correct_character = correct_character + 1
+    elif Guess[4] in Word:
+        print(f"The last character, {Guess[4]}, is in the word, but not there.")
+    else:
+        print(f"The last character, {Guess[4]}, is not in the word.")
     
 while is_guess_incorrect:
     Guess, guesses = guess_word(guesses, Word)
