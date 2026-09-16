@@ -31,7 +31,7 @@ allowed_guesses = set(Valid_Words) | set(Word_bank)
 Word = Word_bank[random.randint(1, 2314)]
 Guess = "This is a filler!"
 guesses = 0
-is_guess_incorrect = True
+is_perfect = False
 
 def guess_word(guesses, Word):
     is_word_valid = False
@@ -84,7 +84,15 @@ def check_word(Word, Guess):
         print(f"The last character, {Guess[4]}, is in the word, but not there.")
     else:
         print(f"The last character, {Guess[4]}, is not in the word.")
+    if correct_character == 5:
+        is_perfect = True
+        return is_perfect
+    else:
+        is_perfect = False
+        return is_perfect
     
-while is_guess_incorrect:
+while is_perfect:
     Guess, guesses = guess_word(guesses, Word)
-    check_word(Word, Guess)
+    is_perfect = check_word(Word, Guess)
+    if is_perfect = True:
+        print(f"Congrats! You got the word, {Word}, in {guesses} attempts.")
