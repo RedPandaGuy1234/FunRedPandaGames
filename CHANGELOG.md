@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.7.0](https://github.com/RedPandaGuy1234/Games/compare/v1.6.4...v1.7.0) (2026-09-16)
+
+
+### Features
+
+* Add GitHub Actions workflow for PR title check ([0a66b71](https://github.com/RedPandaGuy1234/Games/commit/0a66b7179de15133ce7ec5df8c86bc88f578fff6))
+* Create SECURITY.md for security policy and reporting ([c70d18e](https://github.com/RedPandaGuy1234/Games/commit/c70d18e2e067cd221c0c937c9f66b3191bef8260))
+
+
+### Bug Fixes
+
+* Fix typo in check_word function ([be7d96f](https://github.com/RedPandaGuy1234/Games/commit/be7d96fc12edd63d27db51176e3600683688e94a))
+* Fix typo in second character feedback message ([369d3d6](https://github.com/RedPandaGuy1234/Games/commit/369d3d642543cffdacd0dbd8ba5625585355f9db))
+* Remove redundant set conversion for guessed_word ([a1ee18a](https://github.com/RedPandaGuy1234/Games/commit/a1ee18a866895f770f0ce33eb6bdaa04a1d7fd64))
+* Simplify character checking in check_word ([b1e7cae](https://github.com/RedPandaGuy1234/Games/commit/b1e7cae83cb4316b61666a25ff5a0dc2755e51c7))
+
+
+### Continuations
+
+* Call check_word function after guessing ([478d57a](https://github.com/RedPandaGuy1234/Games/commit/478d57aefdb91c2046f0ca447740566b5b3031d0))
+* Continue character checking logic in wordle.py ([e4ed13f](https://github.com/RedPandaGuy1234/Games/commit/e4ed13fa30d72f2132949fb104f5599eb75312fd))
+* Enhance check_word function for character feedback ([055b4f3](https://github.com/RedPandaGuy1234/Games/commit/055b4f33aa5ead981c5941b49a845ee16dc2347a))
+* Update check_word function to evaluate guesses ([d002aa0](https://github.com/RedPandaGuy1234/Games/commit/d002aa0d3a12c9231ac93b632d50153946e01f58))
+
 ## [1.6.4](https://github.com/RedPandaGuy1234/Games/compare/v1.6.3...v1.6.4) (2026-09-13)
 
 
