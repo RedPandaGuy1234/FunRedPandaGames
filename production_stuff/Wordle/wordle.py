@@ -63,7 +63,7 @@ def check_word(Word, Guess):
         print(f"The second character, {Guess[1]}, is in the word, but not there.")
     else:
         print(f"The second character, {Guess[1]}, is not in the word.")
-     if Guess[2] == Word[2]:
+    if Guess[2] == Word[2]:
         print(f"The third character, {Guess[2]}, is in the perfect place!")
         correct_character = correct_character + 1
     elif Guess[2] in Word:
