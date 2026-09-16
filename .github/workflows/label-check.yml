@@ -1,0 +1,24 @@
+name: Label Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-title:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check PR title prefix
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "PR title: $PR_TITLE"
+          if [[ "$PR_TITLE" == other:* || "$PR_TITLE" == cont:* || "$PR_TITLE" == feat:* || "$PR_TITLE" == feat!:* || "$PR_TITLE" == fix:* ]]; then
+            echo "✅ PR title starts with an allowed prefix."
+          else
+            echo "❌ PR title must start with one of: other:, cont:, feat:, feat!:, fix:"
+            exit 1
+          fi
