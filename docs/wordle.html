@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wordle</title>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<style>
+  :root{
+    --felt:#16302A;
+    --felt-dark:#0E211B;
+    --felt-light:#1E3E35;
+    --cream:#F3EAD7;
+    --cream-dim:#E4D8BF;
+    --gold:#D4A72C;
+    --correct:#3E8E5B;
+    --present:#D4A72C;
+    --absent:rgba(255,255,255,.12);
+    --absent-border:rgba(255,255,255,.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(1200px 800px at 50% -10%, var(--felt-light), var(--felt) 55%, var(--felt-dark) 100%);
+    color:var(--cream);
+    font-family:'Inter',Arial,sans-serif;
+    min-height:100vh;
+    padding:26px 16px 56px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .back-link{align-self:flex-start; color:var(--cream-dim); font-size:13px; text-decoration:none; margin-bottom:18px;}
+  .back-link:hover{color:var(--gold);}
+  h1{font-weight:700; font-size:clamp(26px,5vw,38px); margin:0 0 6px; letter-spacing:.02em;}
+  .sub{color:var(--cream-dim); font-size:13.5px; margin:0 0 20px; text-align:center; max-width:420px;}
+  .message{
+    font-size:14.5px; line-height:1.5; text-align:center; max-width:520px;
+    background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.08);
+    border-radius:10px; padding:10px 16px; margin-bottom:22px; min-height:20px;
+  }
+  .board{
+    display:flex; flex-direction:column; gap:6px; margin-bottom:26px;
+  }
+  .row{display:flex; gap:6px;}
+  .tile{
+    width:52px; height:52px;
+    border:2px solid rgba(255,255,255,.18);
+    border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:24px; text-transform:uppercase;
+    color:var(--cream);
+    background:rgba(0,0,0,.15);
+    transition:background .15s ease, border-color .15s ease, transform .1s ease;
+  }
+  .tile.filled{border-color:rgba(255,255,255,.4); transform:scale(1.03);}
+  .tile.correct{background:var(--correct); border-color:var(--correct); color:#fff;}
+  .tile.present{background:var(--present); border-color:var(--present); color:var(--felt-dark);}
+  .tile.absent{background:var(--absent); border-color:var(--absent-border); color:rgba(243,234,215,.5);}
+  .tile.shake{animation:shake .3s ease;}
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-4px);}
+    75%{transform:translateX(4px);}
+  }
+  .keyboard{display:flex; flex-direction:column; gap:8px; align-items:center; width:min(480px,94vw);}
+  .krow{display:flex; gap:6px; justify-content:center; width:100%;}
+  .key{
+    font-family:inherit; font-weight:700; font-size:13px;
+    color:var(--cream); background:rgba(255,255,255,.1);
+    border:none; border-radius:6px; padding:14px 0; min-width:32px; flex:1;
+    cursor:pointer; text-transform:uppercase; transition:background .15s ease, transform .1s ease;
+  }
+  .key:active{transform:translateY(1px);}
+  .key.wide{flex:1.6; font-size:11px;}
+  .key.correct{background:var(--correct); color:#fff;}
+  .key.present{background:var(--present); color:var(--felt-dark);}
+  .key.absent{background:rgba(255,255,255,.05); color:rgba(243,234,215,.35);}
+  .controls{margin-top:22px; display:flex; gap:10px;}
+  button.action{
+    font-family:inherit; font-weight:700; font-size:14px;
+    color:var(--felt-dark); background:linear-gradient(180deg,#E7C866,var(--gold));
+    border:none; padding:11px 22px; border-radius:999px; cursor:pointer;
+    box-shadow:0 3px 0 #9a7620, 0 6px 12px rgba(0,0,0,.3);
+  }
+  button.action:active{transform:translateY(2px); box-shadow:0 1px 0 #9a7620, 0 3px 6px rgba(0,0,0,.3);}
+  button.action:disabled{opacity:.45; cursor:default;}
+  @media (max-width:420px){
+    .tile{width:44px; height:44px; font-size:20px;}
+    .key{padding:12px 0; font-size:12px;}
+  }
+</style>
+</head>
+<body>
+
+  <a class="back-link" href="index.html">← Back to games</a>
+  <h1>Wordle</h1>
+  <p class="sub">Guess the 5-letter word in 6 tries. A new random word every game — no waiting for tomorrow.</p>
+
+  <div class="message" id="message">Loading the game engine…</div>
+
+  <div class="board" id="board"></div>
+
+  <div class="keyboard" id="keyboard"></div>
+
+  <div class="controls">
+    <button class="action" id="newGameBtn" style="display:none">New Word</button>
+  </div>
+
+<script>
+const PYTHON_SOURCE = `
+import random
+import json
+
+MAX_GUESSES = 6
+WORD_LEN = 5
+
+state = {
+    "word_bank": [],
+    "allowed": set(),
+    "target": None,
+    "guesses": [],
+    "feedback": [],
+    "game_over": False,
+    "won": False,
+    "message": "",
+}
+
+def parse_words(text):
+    words = []
+    for line in text.splitlines():
+        w = line.strip().lower()
+        if len(w) == WORD_LEN and w.isalpha():
+            words.append(w)
+    return words
+
+def compute_feedback(guess, target):
+    result = ["absent"] * WORD_LEN
+    remaining = list(target)
+    for i in range(WORD_LEN):
+        if guess[i] == target[i]:
+            result[i] = "correct"
+            remaining[i] = None
+    for i in range(WORD_LEN):
+        if result[i] == "correct":
+            continue
+        if guess[i] in remaining:
+            result[i] = "present"
+            remaining[remaining.index(guess[i])] = None
+    return result
+
+def new_game():
+    state["target"] = random.choice(state["word_bank"])
+    state["guesses"] = []
+    state["feedback"] = []
+    state["game_over"] = False
+    state["won"] = False
+    state["message"] = "Guess the 5-letter word!"
+    return get_status()
+
+def init_game(word_bank_text, valid_words_text):
+    word_bank = parse_words(word_bank_text)
+    valid_words = parse_words(valid_words_text)
+    state["word_bank"] = word_bank if word_bank else valid_words
+    state["allowed"] = set(word_bank) | set(valid_words)
+    return new_game()
+
+def submit_guess(raw_guess):
+    if state["game_over"]:
+        return get_status()
+
+    guess = raw_guess.strip().lower()
+
+    if len(guess) != WORD_LEN or not guess.isalpha():
+        state["message"] = "Guesses must be exactly 5 letters."
+        return get_status()
+
+    if guess not in state["allowed"]:
+        state["message"] = "Not in the word list — try again."
+        return get_status()
+
+    feedback = compute_feedback(guess, state["target"])
+    state["guesses"].append(guess)
+    state["feedback"].append(feedback)
+
+    if guess == state["target"]:
+        state["game_over"] = True
+        state["won"] = True
+        n = len(state["guesses"])
+        plural = "guess" if n == 1 else "guesses"
+        state["message"] = f"You got it in {n} {plural}!"
+    elif len(state["guesses"]) >= MAX_GUESSES:
+        state["game_over"] = True
+        state["won"] = False
+        state["message"] = f"Out of guesses! The word was {state['target'].upper()}."
+    else:
+        remaining = MAX_GUESSES - len(state["guesses"])
+        plural = "guess" if remaining == 1 else "guesses"
+        state["message"] = f"Keep going — {remaining} {plural} left."
+
+    return get_status()
+
+def letter_states():
+    order = {"absent": 0, "present": 1, "correct": 2}
+    best = {}
+    for guess, fb in zip(state["guesses"], state["feedback"]):
+        for ch, status in zip(guess, fb):
+            if ch not in best or order[status] > order[best[ch]]:
+                best[ch] = status
+    return best
+
+def get_status():
+    return json.dumps({
+        "guesses": state["guesses"],
+        "feedback": state["feedback"],
+        "max_guesses": MAX_GUESSES,
+        "word_len": WORD_LEN,
+        "game_over": state["game_over"],
+        "won": state["won"],
+        "message": state["message"],
+        "target": state["target"] if state["game_over"] else None,
+        "letter_states": letter_states(),
+    })
+`;
+
+const boardEl = document.getElementById('board');
+const keyboardEl = document.getElementById('keyboard');
+const messageEl = document.getElementById('message');
+const newGameBtn = document.getElementById('newGameBtn');
+
+const MAX_GUESSES = 6;
+const WORD_LEN = 5;
+const KEY_ROWS = [
+  "qwertyuiop".split(""),
+  "asdfghjkl".split(""),
+  ["enter", ..."zxcvbnm".split(""), "back"],
+];
+
+let pyodide;
+let currentGuess = "";
+let gameOver = false;
+let busy = true;
+
+function buildBoard(){
+  boardEl.innerHTML = '';
+  for(let r=0;r<MAX_GUESSES;r++){
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.id = `row-${r}`;
+    for(let c=0;c<WORD_LEN;c++){
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.id = `tile-${r}-${c}`;
+      row.appendChild(tile);
+    }
+    boardEl.appendChild(row);
+  }
+}
+
+function buildKeyboard(){
+  keyboardEl.innerHTML = '';
+  KEY_ROWS.forEach(rowKeys => {
+    const row = document.createElement('div');
+    row.className = 'krow';
+    rowKeys.forEach(k => {
+      const btn = document.createElement('button');
+      btn.className = 'key' + (k === 'enter' || k === 'back' ? ' wide' : '');
+      btn.textContent = k === 'back' ? '⌫' : (k === 'enter' ? 'Enter' : k);
+      btn.dataset.key = k;
+      btn.addEventListener('click', () => handleKey(k));
+      row.appendChild(btn);
+    });
+    keyboardEl.appendChild(row);
+  });
+}
+
+function renderCurrentRow(){
+  const rowIndex = boardStatus ? boardStatus.guesses.length : 0;
+  if(rowIndex >= MAX_GUESSES) return;
+  for(let c=0;c<WORD_LEN;c++){
+    const tile = document.getElementById(`tile-${rowIndex}-${c}`);
+    if(!tile) continue;
+    const ch = currentGuess[c] || '';
+    tile.textContent = ch;
+    tile.classList.toggle('filled', !!ch);
+  }
+}
+
+function shakeRow(rowIndex){
+  for(let c=0;c<WORD_LEN;c++){
+    const tile = document.getElementById(`tile-${rowIndex}-${c}`);
+    if(!tile) continue;
+    tile.classList.add('shake');
+    setTimeout(()=>tile.classList.remove('shake'), 300);
+  }
+}
+
+let boardStatus = null;
+
+function applyStatus(status){
+  boardStatus = status;
+  gameOver = status.game_over;
+  messageEl.textContent = status.message;
+
+  status.guesses.forEach((guess, r) => {
+    const fb = status.feedback[r];
+    for(let c=0;c<WORD_LEN;c++){
+      const tile = document.getElementById(`tile-${r}-${c}`);
+      if(!tile) continue;
+      tile.textContent = guess[c];
+      tile.classList.remove('filled');
+      tile.classList.add(fb[c]);
+    }
+  });
+
+  document.querySelectorAll('.key').forEach(btn => {
+    const k = btn.dataset.key;
+    if(k.length === 1 && status.letter_states[k]){
+      btn.classList.remove('correct','present','absent');
+      btn.classList.add(status.letter_states[k]);
+    }
+  });
+
+  renderCurrentRow();
+  newGameBtn.style.display = status.game_over ? 'inline-block' : 'none';
+  busy = false;
+}
+
+function handleKey(k){
+  if(busy || gameOver || !pyodide) return;
+
+  if(k === 'back'){
+    currentGuess = currentGuess.slice(0, -1);
+    renderCurrentRow();
+    return;
+  }
+
+  if(k === 'enter'){
+    if(currentGuess.length !== WORD_LEN){
+      shakeRow(boardStatus.guesses.length);
+      messageEl.textContent = 'Not enough letters.';
+      return;
+    }
+    busy = true;
+    const submitGuess = pyodide.globals.get('submit_guess');
+    const resultJson = submitGuess(currentGuess);
+    const status = JSON.parse(resultJson);
+    const guessWasAccepted = status.guesses.length > (boardStatus ? boardStatus.guesses.length : 0);
+    if(!guessWasAccepted){
+      shakeRow(boardStatus.guesses.length);
+    } else {
+      currentGuess = "";
+    }
+    applyStatus(status);
+    return;
+  }
+
+  if(/^[a-z]$/.test(k) && currentGuess.length < WORD_LEN){
+    currentGuess += k;
+    renderCurrentRow();
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if(busy || gameOver) return;
+  const key = e.key.toLowerCase();
+  if(key === 'enter'){ handleKey('enter'); return; }
+  if(key === 'backspace'){ handleKey('back'); return; }
+  if(/^[a-z]$/.test(key)){ handleKey(key); }
+});
+
+newGameBtn.addEventListener('click', () => {
+  if(!pyodide) return;
+  busy = true;
+  currentGuess = "";
+  const resultJson = pyodide.globals.get('new_game')();
+  buildBoard();
+  applyStatus(JSON.parse(resultJson));
+});
+
+async function boot(){
+  buildBoard();
+  buildKeyboard();
+
+  let wordBankText, validWordsText;
+  try{
+    [wordBankText, validWordsText] = await Promise.all([
+      fetch('Word_Bank.txt').then(r => r.text()),
+      fetch('Valid_Words.txt').then(r => r.text()),
+    ]);
+  } catch(e){
+    messageEl.textContent = "Couldn't load the word lists. Make sure Word_Bank.txt and Valid_Words.txt are in the docs/ folder alongside this page.";
+    return;
+  }
+
+  pyodide = await loadPyodide();
+  pyodide.runPython(PYTHON_SOURCE);
+  const initGame = pyodide.globals.get('init_game');
+  const resultJson = initGame(wordBankText, validWordsText);
+  applyStatus(JSON.parse(resultJson));
+}
+
+boot();
+</script>
+</body>
+</html>
