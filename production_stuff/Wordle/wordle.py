@@ -91,7 +91,7 @@ def check_word(Word, Guess):
         is_perfect = False
         return is_perfect
     
-while is_perfect:
+while not is_perfect:
     Guess, guesses = guess_word(guesses, Word)
     is_perfect = check_word(Word, Guess)
     if is_perfect == True:
