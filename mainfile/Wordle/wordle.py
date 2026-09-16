@@ -16,7 +16,7 @@ else:
     print("This code has failed because the list for valid words did not show up. Please alert RedPandaGuy1234 of this. Thank you!")
     sys.exit(1)
 
-txt_url = "https://raw.githubusercontent.com/RedPandaGuy1234/Games/refs/heads/main/production_stuff/Wordle/Word_Bank.txt"
+txt_url = "https://raw.githubusercontent.com/RedPandaGuy1234/Games/refs/heads/main/docs/Word_Bank.txt"
 response = requests.get(txt_url)
 
 if response.status_code == 200:
