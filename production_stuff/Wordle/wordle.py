@@ -49,6 +49,7 @@ def guess_word(guesses, Word):
             return guessed_word, guesses
 
 def check_word(Word, Guess):
+    correct_character = 0
     if Guess[0] == Word[0]:
         print(f"The first character, {Guess[0]}, is in the perfect place!")
         correct_character = 1
