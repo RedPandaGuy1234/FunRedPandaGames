@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/RedPandaGuy1234/Games/compare/v2.0.0...v2.0.1) (2026-09-17)
+
+
+### Bug Fixes
+
+* Fix formatting in CONTRIBUTING.md for PR naming ([1ff418a](https://github.com/RedPandaGuy1234/Games/commit/1ff418ad727d60213c9313d142f705d9c51d0ab8))
+* Update pull request naming conventions ([195f560](https://github.com/RedPandaGuy1234/Games/commit/195f5600f96ea3e2c04dadb72f48d9a8cfd4ab62))
+
 ## [2.0.0](https://github.com/RedPandaGuy1234/Games/compare/v1.7.0...v2.0.0) (2026-09-16)
 
 
