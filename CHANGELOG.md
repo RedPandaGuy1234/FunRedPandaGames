@@ -1,5 +1,41 @@
 # Changelog
 
+## [2.0.0](https://github.com/RedPandaGuy1234/Games/compare/v1.7.0...v2.0.0) (2026-09-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* Add Wordle game HTML and JavaScript
+
+### Features
+
+* Add Wordle game HTML and JavaScript ([69ef7c9](https://github.com/RedPandaGuy1234/Games/commit/69ef7c91f373aa2501800928d76afdede691ed32))
+* Modify Wordle card to reflect solo gameplay ([a1e5b50](https://github.com/RedPandaGuy1234/Games/commit/a1e5b5074d5d09a15394bcb6ff496b31f2b64566))
+
+
+### Bug Fixes
+
+* Add correct_character variable to check_word function ([c933f28](https://github.com/RedPandaGuy1234/Games/commit/c933f2891c8a1344e40c97a64a01f0b69c139f65))
+* Add Valid_Words.txt to documentation ([19370c3](https://github.com/RedPandaGuy1234/Games/commit/19370c3aaa19c1bac7cf112a2e51db2b0eefe676))
+* Fix comparison operator in wordle.py ([f8a8e42](https://github.com/RedPandaGuy1234/Games/commit/f8a8e42ae389a0c2913c16a669cdc8687f8439ef))
+* Fix HTML syntax for Wordle link ([155a8fb](https://github.com/RedPandaGuy1234/Games/commit/155a8fbe5777cc2b72bdf681a599e4f2718b42f9))
+* Fix indentation for character check in wordle.py ([ec42853](https://github.com/RedPandaGuy1234/Games/commit/ec428531cc28c698cf41fcd0b08008971e3c10cd))
+* Fix missing newline at end of wordle.html ([4da19d8](https://github.com/RedPandaGuy1234/Games/commit/4da19d87a5a77d749c93228baf9880b09251045d))
+* Fix print statement formatting in wordle.py ([f228090](https://github.com/RedPandaGuy1234/Games/commit/f22809085d2cc09e737d7b22633ca3c10622597d))
+* Fix print statements for clarity in word guessing ([2ba3e0a](https://github.com/RedPandaGuy1234/Games/commit/2ba3e0a298a68b9951ed5287d9c3da751a1c56c4))
+* Fix print statements for guessing feedback ([5c83eb7](https://github.com/RedPandaGuy1234/Games/commit/5c83eb7f871c6e610bf099e7e84c15e1c736a69c))
+* Invert condition for while loop in wordle.py ([aaca985](https://github.com/RedPandaGuy1234/Games/commit/aaca9852d5d536be36a097d2e9bbe0d96c53bb13))
+* Move Word_Bank.txt to docs directory ([3108672](https://github.com/RedPandaGuy1234/Games/commit/31086725f48820085d481c729cb477dbddb15a1a))
+* Update URL for valid words in wordle.py ([8e8a8b2](https://github.com/RedPandaGuy1234/Games/commit/8e8a8b22e9539dfb0648ec55a775d44d8ceb2383))
+* Update Word Bank URL in wordle.py ([008c416](https://github.com/RedPandaGuy1234/Games/commit/008c416fea93aaa3063828864b2d9e34355dfd3d))
+
+
+### Continuations
+
+* Add checks for fourth and fifth characters in guess ([6f83803](https://github.com/RedPandaGuy1234/Games/commit/6f8380351177dd0e86c6d37b77464a143ea69cd5))
+* finish wordle.py ([2d7b2a9](https://github.com/RedPandaGuy1234/Games/commit/2d7b2a90d0146bc0ddb78541a2c6ee2eb4116b0d))
+* Rename wordle.py to wordle.py ([c21edd4](https://github.com/RedPandaGuy1234/Games/commit/c21edd4c6f71d4ea77734b1cc189b3199b05c102))
+
 ## [1.7.0](https://github.com/RedPandaGuy1234/Games/compare/v1.6.4...v1.7.0) (2026-09-16)
 
 
