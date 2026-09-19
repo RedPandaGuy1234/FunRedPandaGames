@@ -264,7 +264,9 @@ def player_turn(bot_board, bot_ships, player_shots):
     return all_sunk(bot_ships, player_shots)
 
 
-def bot_turn(player_board, player_ships, bot_shots, hunt_queue, active_hits, hunting_ship):
+def bot_turn(
+    player_board, player_ships, bot_shots, hunt_queue, active_hits, hunting_ship
+):
     c, r = choose_bot_shot(hunt_queue, bot_shots)
     bot_shots.add((c, r))
     col_letter = COLS[c]
