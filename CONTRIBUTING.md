@@ -17,4 +17,4 @@ Please include tests where applicable, follow the existing code style for whiche
 
 **WHEN YOU CONTRIBUTE A PR**
 
-Name the pull request starting with: "other:". If this is a PR to fix something, start with "fix:", if it is the start of an addition, start with "feat:", if this is the continuation of anything, use "cont", and lastly, if it is a major change (like finalizing a new addition), start with "feat!:" Also, if I have not approved your PR, please feel free to reach out and @mention me to approve it.
+If you want to have it mentioned in the next release, name the pull request starting with: "other:". If this is a PR to fix something, start with "fix:", if it is the start of an addition, start with "feat:", if this is the continuation of anything, use "cont", and lastly, if it is a major change (like finalizing a new addition), start with "feat!:". If you don't want to have it mentioned in the next release, don't start the PR with any of the things above. Also, if I have not approved your PR, please feel free to reach out and @mention me to approve it.
