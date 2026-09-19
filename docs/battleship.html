@@ -53,6 +53,22 @@
     background:rgba(255,255,255,.08); color:var(--cream);
     box-shadow:0 3px 0 rgba(0,0,0,.3), 0 6px 12px rgba(0,0,0,.25);
   }
+  .mode-panel{
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.08);
+    border-radius:14px; padding:22px 24px; margin-bottom:20px; max-width:360px; width:100%;
+  }
+  .mode-row{display:flex; flex-direction:column; align-items:center; gap:8px;}
+  .mode-row .label{font-size:12.5px; color:var(--cream-dim); letter-spacing:.03em; text-transform:uppercase;}
+  .btn-group{display:flex; gap:8px; flex-wrap:wrap; justify-content:center;}
+  .opt-btn{
+    font-family:inherit; font-weight:600; font-size:13px;
+    color:var(--cream); background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.2); padding:9px 18px;
+    border-radius:999px; cursor:pointer; transition:all .15s ease;
+    box-shadow:none;
+  }
+  .opt-btn:hover{background:rgba(255,255,255,.14);}
   .boards{display:flex; gap:34px; flex-wrap:wrap; justify-content:center; align-items:flex-start;}
   .board-block{display:flex; flex-direction:column; align-items:center; gap:10px;}
   .board-title{font-family:inherit; font-weight:700; font-size:14.5px; color:var(--gold);}
@@ -92,15 +108,40 @@
   .ship-status-item .status{font-weight:700; font-size:10.5px; letter-spacing:.03em; text-transform:uppercase; color:var(--cream-dim);}
   .ship-status-item.sunk .name{color:rgba(255,255,255,.4); text-decoration:line-through;}
   .ship-status-item.sunk .status{color:var(--hit);}
+
+  .pass-overlay{
+    position:fixed; inset:0; background:rgba(10,18,15,.85); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .pass-overlay.show{display:flex;}
+  .pass-card{
+    width:min(400px,100%); background:var(--cream); color:var(--ink);
+    border-radius:18px; padding:28px 26px; text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+  }
+  .pass-card p{font-size:15px; line-height:1.5; margin:0 0 20px;}
+  .pass-card button{
+    color:#fff; background:var(--felt); box-shadow:none;
+  }
 </style>
 </head>
 <body>
 
   <a class="back-link" href="index.html">← Back to games</a>
   <h1>Battleship</h1>
-  <p class="sub">Place your fleet, then take turns firing on the enemy waters. Sink every enemy ship to win.</p>
+  <p class="sub">Place your fleet, then take turns firing. Play against a bot, or pass the device for two-player battles.</p>
 
   <div class="message" id="message">Loading the game engine…</div>
+
+  <div class="mode-panel" id="modePanel" style="display:none">
+    <div class="mode-row">
+      <div class="label">Game Mode</div>
+      <div class="btn-group" id="modeGroup">
+        <button class="opt-btn" data-value="bot">Vs Bot</button>
+        <button class="opt-btn" data-value="human">Two Players</button>
+      </div>
+    </div>
+  </div>
 
   <div class="placement-panel" id="placementPanel" style="display:none">
     <div class="ship-checklist" id="shipChecklist"></div>
@@ -114,16 +155,23 @@
     <button class="secondary" id="newGameBtn">New Game</button>
   </div>
 
-  <div class="boards">
+  <div class="boards" id="boardsWrap" style="display:none">
     <div class="board-block">
-      <div class="board-title">Your Fleet</div>
+      <div class="board-title" id="myTitle">Your Fleet</div>
       <div class="ship-status-list" id="playerShipStatus"></div>
       <div class="board-grid" id="playerGrid"></div>
     </div>
     <div class="board-block">
-      <div class="board-title">Enemy Waters</div>
+      <div class="board-title" id="enemyTitle">Enemy Waters</div>
       <div class="ship-status-list" id="botShipStatus"></div>
       <div class="board-grid" id="botGrid"></div>
+    </div>
+  </div>
+
+  <div class="pass-overlay" id="passOverlay">
+    <div class="pass-card">
+      <p id="passMessage">Pass the device.</p>
+      <button id="passReadyBtn">Ready</button>
     </div>
   </div>
 
@@ -147,19 +195,21 @@ def make_empty_board():
 
 def new_game_state():
     return {
-        "phase": "placing",
+        "mode": None,
+        "phase": "mode_select",
         "ship_index": 0,
         "first_click": None,
-        "player_board": make_empty_board(),
-        "player_ships": {},
-        "bot_board": make_empty_board(),
-        "bot_ships": {},
-        "player_shots": set(),
-        "bot_shots": set(),
+        "board_a": make_empty_board(),
+        "ships_a": {},
+        "board_b": make_empty_board(),
+        "ships_b": {},
+        "shots_a": set(),
+        "shots_b": set(),
+        "current": "a",
         "bot_hunt_queue": [],
         "bot_active_hits": [],
         "bot_hunting_ship": None,
-        "message": "",
+        "message": "Choose a game mode to begin.",
         "winner": None,
     }
 
@@ -227,14 +277,43 @@ def random_place_all(board, ships):
                 place_ship_cells(board, ships, ship_id, cells)
                 placed = True
 
-def place_bot_ships():
-    state["bot_board"] = make_empty_board()
-    state["bot_ships"] = {}
-    random_place_all(state["bot_board"], state["bot_ships"])
+def choose_mode(mode):
+    state["mode"] = mode
+    state["phase"] = "placing_a"
+    state["ship_index"] = 0
+    state["first_click"] = None
+    state["message"] = f"Place your {SHIPS[0][1]} ({SHIPS[0][2]} cells). Click one end, then the other."
+    return get_status()
 
-def click_player_cell(cell_str):
-    if state["phase"] != "placing":
+def active_placing_board_ships():
+    if state["phase"] == "placing_a":
+        return state["board_a"], state["ships_a"]
+    if state["phase"] == "placing_b":
+        return state["board_b"], state["ships_b"]
+    return None, None
+
+def advance_after_placement():
+    if state["phase"] == "placing_a":
+        if state["mode"] == "bot":
+            state["board_b"] = make_empty_board()
+            state["ships_b"] = {}
+            random_place_all(state["board_b"], state["ships_b"])
+            state["phase"] = "battle"
+            state["current"] = "a"
+            state["message"] = "All ships placed! Fire on the enemy waters to begin."
+        else:
+            state["phase"] = "pass_to_b"
+            state["current"] = "b"
+            state["message"] = "Player 1's fleet is set. Pass the device to Player 2."
+    elif state["phase"] == "placing_b":
+        state["phase"] = "pass_to_battle"
+        state["current"] = "a"
+        state["message"] = "Player 2's fleet is set. Pass the device back to Player 1 to begin the battle."
+
+def click_placement_cell(cell_str):
+    if state["phase"] not in ("placing_a", "placing_b"):
         return get_status()
+    board, ships = active_placing_board_ships()
     parsed = parse_cell(cell_str)
     if parsed is None:
         return get_status()
@@ -245,7 +324,7 @@ def click_player_cell(cell_str):
     ship_id, name, length = ship
 
     if state["first_click"] is None:
-        if state["player_board"][r][c] is not None:
+        if board[r][c] is not None:
             state["message"] = "That cell is already occupied. Choose another."
             return get_status()
         state["first_click"] = (c, r)
@@ -257,20 +336,18 @@ def click_player_cell(cell_str):
     if cells is None:
         state["message"] = f"That doesn't line up as a {length}-cell ship. Pick two endpoints in the same row or column, exactly {length - 1} apart."
         return get_status()
-    if not is_valid_placement(cells, state["player_board"]):
+    if not is_valid_placement(cells, board):
         state["message"] = "That placement overlaps another ship or goes off the board. Try again."
         state["first_click"] = None
         return get_status()
 
-    place_ship_cells(state["player_board"], state["player_ships"], ship_id, cells)
+    place_ship_cells(board, ships, ship_id, cells)
     state["first_click"] = None
     state["ship_index"] += 1
 
     next_ship = current_ship()
     if next_ship is None:
-        place_bot_ships()
-        state["phase"] = "battle"
-        state["message"] = "All ships placed! Fire on the enemy waters to begin."
+        advance_after_placement()
     else:
         state["message"] = f"{name} placed! Now place your {next_ship[1]} ({next_ship[2]} cells)."
     return get_status()
@@ -282,19 +359,36 @@ def cancel_first_click():
         state["message"] = f"Selection cancelled. Click a cell to start placing your {ship[1]} again."
     return get_status()
 
-def randomize_player_ships():
-    if state["phase"] != "placing":
+def randomize_placement():
+    if state["phase"] not in ("placing_a", "placing_b"):
         return get_status()
     board = make_empty_board()
     ships = {}
     random_place_all(board, ships)
-    state["player_board"] = board
-    state["player_ships"] = ships
+    if state["phase"] == "placing_a":
+        state["board_a"] = board
+        state["ships_a"] = ships
+    else:
+        state["board_b"] = board
+        state["ships_b"] = ships
     state["ship_index"] = len(SHIPS)
     state["first_click"] = None
-    place_bot_ships()
-    state["phase"] = "battle"
-    state["message"] = "Fleet randomized! Fire on the enemy waters to begin."
+    advance_after_placement()
+    return get_status()
+
+def confirm_pass():
+    if state["phase"] == "pass_to_b":
+        state["phase"] = "placing_b"
+        state["ship_index"] = 0
+        state["first_click"] = None
+        state["message"] = f"Player 2, place your {SHIPS[0][1]} ({SHIPS[0][2]} cells). Click one end, then the other."
+    elif state["phase"] == "pass_to_battle":
+        state["phase"] = "battle"
+        state["message"] = "Battle begins! Player 1, fire on the enemy waters."
+    elif state["phase"] == "pass_turn":
+        state["phase"] = "battle"
+        who = "Player 1" if state["current"] == "a" else "Player 2"
+        state["message"] = f"{who}'s turn. Fire on the enemy waters."
     return get_status()
 
 def all_sunk(ships, shots):
@@ -312,7 +406,7 @@ def ship_at(ships, c, r):
 def add_hunt_targets(c, r):
     for dc, dr in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
         nc, nr = c + dc, r + dr
-        if 0 <= nc < 10 and 0 <= nr < 10 and (nc, nr) not in state["bot_shots"] and (nc, nr) not in state["bot_hunt_queue"]:
+        if 0 <= nc < 10 and 0 <= nr < 10 and (nc, nr) not in state["shots_b"] and (nc, nr) not in state["bot_hunt_queue"]:
             state["bot_hunt_queue"].append((nc, nr))
 
 def recompute_hunt_queue():
@@ -342,39 +436,37 @@ def recompute_hunt_queue():
     state["bot_hunt_queue"] = [
         (nc, nr)
         for nc, nr in candidates
-        if 0 <= nc < 10 and 0 <= nr < 10 and (nc, nr) not in state["bot_shots"]
+        if 0 <= nc < 10 and 0 <= nr < 10 and (nc, nr) not in state["shots_b"]
     ]
 
 def choose_bot_shot():
     while state["bot_hunt_queue"]:
         c, r = state["bot_hunt_queue"].pop(0)
-        if (c, r) not in state["bot_shots"]:
+        if (c, r) not in state["shots_b"]:
             return (c, r)
     while True:
         c = random.randint(0, 9)
         r = random.randint(0, 9)
-        if (c, r) not in state["bot_shots"]:
+        if (c, r) not in state["shots_b"]:
             return (c, r)
 
 def bot_turn():
     if state["winner"] is not None:
         return
     c, r = choose_bot_shot()
-    state["bot_shots"].add((c, r))
-    hit_ship = ship_at(state["player_ships"], c, r)
+    state["shots_b"].add((c, r))
+    hit_ship = ship_at(state["ships_a"], c, r)
     col_letter = COLS[c]
     row_num = r + 1
     if hit_ship:
-        cells = state["player_ships"][hit_ship]
+        cells = state["ships_a"][hit_ship]
 
         if state["bot_hunting_ship"] != hit_ship:
-            # A different ship than the one we were tracking — start a
-            # fresh hit cluster so orientation is computed for this ship.
             state["bot_active_hits"] = []
             state["bot_hunting_ship"] = hit_ship
         state["bot_active_hits"].append((c, r))
 
-        if cells.issubset(state["bot_shots"]):
+        if cells.issubset(state["shots_b"]):
             state["message"] += f" The enemy fires at {col_letter}{row_num} — hit, and they sank your {ship_name(hit_ship)}!"
             state["bot_hunt_queue"] = [t for t in state["bot_hunt_queue"] if t not in cells]
             state["bot_active_hits"] = []
@@ -382,47 +474,64 @@ def bot_turn():
         else:
             state["message"] += f" The enemy fires at {col_letter}{row_num} — hit!"
             recompute_hunt_queue()
-        if all_sunk(state["player_ships"], state["bot_shots"]):
-            state["winner"] = "bot"
+        if all_sunk(state["ships_a"], state["shots_b"]):
+            state["winner"] = "b"
             state["message"] += " Your fleet has been destroyed. The enemy wins."
     else:
         state["message"] += f" The enemy fires at {col_letter}{row_num} — miss."
 
-def fire_at_bot(cell_str):
+def fire(cell_str):
     if state["phase"] != "battle" or state["winner"] is not None:
         return get_status()
     parsed = parse_cell(cell_str)
     if parsed is None:
         return get_status()
     c, r = parsed
-    if (c, r) in state["player_shots"]:
+
+    attacker = state["current"]
+    if attacker == "a":
+        shots = state["shots_a"]
+        target_ships = state["ships_b"]
+    else:
+        shots = state["shots_b"]
+        target_ships = state["ships_a"]
+
+    if (c, r) in shots:
         state["message"] = "You already fired there. Choose another cell."
         return get_status()
-    state["player_shots"].add((c, r))
-    hit_ship = ship_at(state["bot_ships"], c, r)
+
+    shots.add((c, r))
+    hit_ship = ship_at(target_ships, c, r)
+    attacker_label = "Player 1" if attacker == "a" else "Player 2"
+
     if hit_ship:
-        cells = state["bot_ships"][hit_ship]
-        if cells.issubset(state["player_shots"]):
-            state["message"] = f"Hit! You sank the enemy {ship_name(hit_ship)}!"
+        cells = target_ships[hit_ship]
+        if cells.issubset(shots):
+            state["message"] = f"Hit! {attacker_label} sank the {ship_name(hit_ship)}!"
         else:
             state["message"] = "Hit!"
-        if all_sunk(state["bot_ships"], state["player_shots"]):
-            state["winner"] = "player"
-            state["message"] = "You sank the entire enemy fleet! You win!"
+        if all_sunk(target_ships, shots):
+            state["winner"] = attacker
+            state["message"] = f"{attacker_label} sank the entire enemy fleet and wins!"
             return get_status()
     else:
         state["message"] = "Miss."
 
-    bot_turn()
+    if state["mode"] == "bot":
+        bot_turn()
+        return get_status()
+
+    state["current"] = "b" if attacker == "a" else "a"
+    state["phase"] = "pass_turn"
     return get_status()
 
-def get_player_board_view():
+def get_own_view(board, shots_against):
     view = []
     for r in range(10):
         row = []
         for c in range(10):
-            cell = state["player_board"][r][c]
-            shot = (c, r) in state["bot_shots"]
+            cell = board[r][c]
+            shot = (c, r) in shots_against
             if cell is not None and shot:
                 row.append("hit")
             elif cell is not None:
@@ -434,14 +543,13 @@ def get_player_board_view():
         view.append(row)
     return view
 
-def get_bot_board_view():
+def get_enemy_view(board, shots_by_me, reveal_remaining):
     view = []
-    reveal_remaining = state["winner"] == "bot"
     for r in range(10):
         row = []
         for c in range(10):
-            shot = (c, r) in state["player_shots"]
-            cell = state["bot_board"][r][c]
+            shot = (c, r) in shots_by_me
+            cell = board[r][c]
             if cell is not None and shot:
                 row.append("hit")
             elif shot:
@@ -453,8 +561,8 @@ def get_bot_board_view():
         view.append(row)
     return view
 
-def placed_ship_names():
-    return [name for sid, name, length in SHIPS if sid in state["player_ships"]]
+def placed_ship_names_for(ships):
+    return [name for sid, name, length in SHIPS if sid in ships]
 
 def get_sunk_list(ships, shots):
     sunk = []
@@ -465,41 +573,71 @@ def get_sunk_list(ships, shots):
 
 def get_status():
     ship = current_ship()
+    phase = state["phase"]
+
+    if phase == "placing_a":
+        viewer = "a"
+    elif phase == "placing_b":
+        viewer = "b"
+    else:
+        viewer = state["current"]
+
+    if viewer == "a":
+        my_board, my_ships, shots_against_me = state["board_a"], state["ships_a"], state["shots_b"]
+        enemy_board, enemy_ships, my_shots = state["board_b"], state["ships_b"], state["shots_a"]
+    else:
+        my_board, my_ships, shots_against_me = state["board_b"], state["ships_b"], state["shots_a"]
+        enemy_board, enemy_ships, my_shots = state["board_a"], state["ships_a"], state["shots_b"]
+
+    reveal_remaining = state["winner"] is not None
+    in_placement = phase in ("placing_a", "placing_b")
+    in_battle_or_over = phase in ("battle", "pass_turn") or state["winner"] is not None
+
     payload = {
-        "phase": state["phase"],
+        "mode": state["mode"],
+        "phase": phase,
         "message": state["message"],
         "winner": state["winner"],
+        "viewer": viewer,
         "current_ship_name": ship[1] if ship else None,
         "current_ship_length": ship[2] if ship else None,
         "awaiting_second_click": state["first_click"] is not None,
-        "placed_ships": placed_ship_names(),
-        "player_board": get_player_board_view(),
-        "bot_board": get_bot_board_view(),
-        "player_ships_sunk": get_sunk_list(state["player_ships"], state["bot_shots"]),
-        "bot_ships_sunk": get_sunk_list(state["bot_ships"], state["player_shots"]) if state["phase"] == "battle" else [],
+        "placed_ships": placed_ship_names_for(my_ships) if in_placement else [],
+        "my_board": get_own_view(my_board, shots_against_me),
+        "enemy_board": get_enemy_view(enemy_board, my_shots, reveal_remaining),
+        "my_ships_sunk": get_sunk_list(my_ships, shots_against_me) if in_battle_or_over else [],
+        "enemy_ships_sunk": get_sunk_list(enemy_ships, my_shots) if in_battle_or_over else [],
     }
     return json.dumps(payload)
 
 def reset_full_game():
     global state
     state = new_game_state()
-    state["message"] = f"Place your {SHIPS[0][1]} ({SHIPS[0][2]} cells). Click one end, then the other."
     return get_status()
 `;
 
 const COLS = "ABCDEFGHIJ";
 const messageEl = document.getElementById('message');
+const modePanel = document.getElementById('modePanel');
+const modeGroup = document.getElementById('modeGroup');
 const placementPanel = document.getElementById('placementPanel');
 const shipChecklist = document.getElementById('shipChecklist');
 const cancelBtn = document.getElementById('cancelBtn');
 const randomizeBtn = document.getElementById('randomizeBtn');
 const newGameBtn = document.getElementById('newGameBtn');
+const boardsWrap = document.getElementById('boardsWrap');
+const myTitleEl = document.getElementById('myTitle');
+const enemyTitleEl = document.getElementById('enemyTitle');
 const playerShipStatusEl = document.getElementById('playerShipStatus');
 const botShipStatusEl = document.getElementById('botShipStatus');
+const passOverlay = document.getElementById('passOverlay');
+const passMessage = document.getElementById('passMessage');
+const passReadyBtn = document.getElementById('passReadyBtn');
 
 const ALL_SHIP_NAMES = ["Patrol Boat", "Destroyer", "Submarine", "Battleship", "Carrier"];
 
 let pyodide;
+let boardStatus = null;
 
 function buildGrid(container, prefix, clickable){
   container.innerHTML = '';
@@ -569,10 +707,18 @@ function renderShipStatus(container, sunkNames, placeholder){
   }).join('');
 }
 
+function playerLabel(viewer){
+  return viewer === 'a' ? 'Player 1' : 'Player 2';
+}
+
 function applyStatus(status){
+  boardStatus = status;
   messageEl.textContent = status.message;
 
-  if(status.phase === 'placing'){
+  modePanel.style.display = status.phase === 'mode_select' ? 'flex' : 'none';
+  boardsWrap.style.display = status.phase === 'mode_select' ? 'none' : 'flex';
+
+  if(status.phase === 'placing_a' || status.phase === 'placing_b'){
     placementPanel.style.display = 'flex';
     randomizeBtn.disabled = false;
     cancelBtn.disabled = !status.awaiting_second_click;
@@ -581,18 +727,37 @@ function applyStatus(status){
     placementPanel.style.display = 'none';
   }
 
-  renderBoard('player', status.player_board);
-  renderBoard('bot', status.bot_board);
+  if(status.mode === 'human' && status.phase !== 'mode_select'){
+    myTitleEl.textContent = playerLabel(status.viewer) + "'s Fleet";
+  } else {
+    myTitleEl.textContent = 'Your Fleet';
+  }
+  enemyTitleEl.textContent = 'Enemy Waters';
 
-  renderShipStatus(playerShipStatusEl, status.player_ships_sunk, status.phase === 'placing' ? 'Placing fleet…' : null);
-  renderShipStatus(botShipStatusEl, status.bot_ships_sunk, status.phase === 'placing' ? 'Unknown until battle starts' : null);
+  if(status.phase !== 'mode_select'){
+    renderBoard('player', status.my_board);
+    renderBoard('bot', status.enemy_board);
+  }
+
+  const placingPlaceholder = (status.phase === 'placing_a' || status.phase === 'placing_b') ? 'Placing fleet…' : null;
+  const enemyPlaceholder = (status.phase === 'placing_a' || status.phase === 'placing_b') ? 'Unknown until battle starts' : null;
+  renderShipStatus(playerShipStatusEl, status.my_ships_sunk || [], placingPlaceholder);
+  renderShipStatus(botShipStatusEl, status.enemy_ships_sunk || [], enemyPlaceholder);
 
   playerGridEl.querySelectorAll('.cell').forEach(cell => {
-    cell.style.cursor = (status.phase === 'placing') ? 'pointer' : 'default';
+    cell.style.cursor = (status.phase === 'placing_a' || status.phase === 'placing_b') ? 'pointer' : 'default';
   });
   botGridEl.querySelectorAll('.cell').forEach(cell => {
     cell.style.cursor = (status.phase === 'battle' && !status.winner) ? 'pointer' : 'default';
   });
+
+  if(status.phase === 'pass_to_b' || status.phase === 'pass_to_battle' || status.phase === 'pass_turn'){
+    passMessage.textContent = status.message;
+    passReadyBtn.textContent = `I'm ${playerLabel(status.viewer)} — Ready`;
+    passOverlay.classList.add('show');
+  } else {
+    passOverlay.classList.remove('show');
+  }
 }
 
 function cellStr(c, r){
@@ -600,20 +765,30 @@ function cellStr(c, r){
 }
 
 function onCellClick(prefix, c, r){
-  if(!pyodide) return;
+  if(!pyodide || !boardStatus) return;
   const label = cellStr(c, r);
   let resultJson;
   if(prefix === 'player'){
-    resultJson = pyodide.globals.get('click_player_cell')(label);
+    if(boardStatus.phase !== 'placing_a' && boardStatus.phase !== 'placing_b') return;
+    resultJson = pyodide.globals.get('click_placement_cell')(label);
   } else {
-    resultJson = pyodide.globals.get('fire_at_bot')(label);
+    if(boardStatus.phase !== 'battle' || boardStatus.winner) return;
+    resultJson = pyodide.globals.get('fire')(label);
   }
   applyStatus(JSON.parse(resultJson));
 }
 
+modeGroup.querySelectorAll('.opt-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if(!pyodide) return;
+    const resultJson = pyodide.globals.get('choose_mode')(btn.dataset.value);
+    applyStatus(JSON.parse(resultJson));
+  });
+});
+
 randomizeBtn.addEventListener('click', () => {
   if(!pyodide) return;
-  const resultJson = pyodide.globals.get('randomize_player_ships')();
+  const resultJson = pyodide.globals.get('randomize_placement')();
   applyStatus(JSON.parse(resultJson));
 });
 
@@ -626,6 +801,12 @@ cancelBtn.addEventListener('click', () => {
 newGameBtn.addEventListener('click', () => {
   if(!pyodide) return;
   const resultJson = pyodide.globals.get('reset_full_game')();
+  applyStatus(JSON.parse(resultJson));
+});
+
+passReadyBtn.addEventListener('click', () => {
+  if(!pyodide) return;
+  const resultJson = pyodide.globals.get('confirm_pass')();
   applyStatus(JSON.parse(resultJson));
 });
 
