@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.1.2...v2.2.0) (2026-09-19)
+
+
+### Features
+
+* Update badge background color and fix HTML structure ([be7e3c9](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/be7e3c974cdf099a4a67df82f9407dbf8ddeda1b))
+
+
+### Bug Fixes
+
+* Update page title to 'Fun Red Panda Games' ([22eea65](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/22eea6544ea3a075ab97835bd7e0c3df3db197c1))
+
 ## [2.1.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.1.1...v2.1.2) (2026-09-19)
 
 
