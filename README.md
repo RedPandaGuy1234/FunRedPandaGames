@@ -31,7 +31,7 @@ cd docs
 open index.html
 ```
 
-This allows you to choose whatever game you want to play locally in your browser. If you do not have a browser, you can play the games (except for The Questions) in your terminal, with instructions on how to do so underneath.
+This allows you to choose whatever game you want to play locally in your browser. If you do not have a browser (which shouldn't be possible, if you're seeing this), you can play the games (except for The Questions) in your terminal, with instructions on how to do so underneath.
 
 ## Games in This Repo
 
