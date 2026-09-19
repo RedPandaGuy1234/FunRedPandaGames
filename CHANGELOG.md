@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.1.1...v2.1.2) (2026-09-19)
+
+
+### Bug Fixes
+
+* Update header to 'Fun Red Panda Games' ([830e647](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/830e647afcef649d26a7387f8a573420039d4d90))
+
+
+### Other
+
+* Change title to 'Fun Red Panda Games' ([7c8b787](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/7c8b7872a8965f3fb04fa83b6c840d155fe19548))
+
 ## [2.1.1](https://github.com/RedPandaGuy1234/Games/compare/v2.1.0...v2.1.1) (2026-09-19)
 
 
