@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.0...v2.2.1) (2026-09-19)
+
+
+### Bug Fixes
+
+* Change repository name in index.html ([4d42951](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4d429516f874135169c3cb8fcddee36725ea0994))
+
 ## [2.2.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.1.2...v2.2.0) (2026-09-19)
 
 
