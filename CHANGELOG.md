@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.1.1](https://github.com/RedPandaGuy1234/Games/compare/v2.1.0...v2.1.1) (2026-09-19)
+
+
+### Bug Fixes
+
+* Update player count for Battleship game card ([15eedb1](https://github.com/RedPandaGuy1234/Games/commit/15eedb13763c905d9e6f1037c2762eeddd3b8273))
+
+
+### Other
+
+* Update back link text in battleship.html ([2bbf7b6](https://github.com/RedPandaGuy1234/Games/commit/2bbf7b6ae94c6e6e117222abeb754aad35e11486))
+* Update back link text in chess.html ([d80ff02](https://github.com/RedPandaGuy1234/Games/commit/d80ff02c2d5e6a80d63e19f3c76f0b7a3ff13e91))
+* Update back link text in numberguesser.html ([fbae2fe](https://github.com/RedPandaGuy1234/Games/commit/fbae2fe2ef4a0331cc42d6070d2154a2c9478ed7))
+* Update back link text in reactiontest.html ([d22c19b](https://github.com/RedPandaGuy1234/Games/commit/d22c19b83d653a16be6938c68be65f072501b195))
+* Update back link text in thequestions.html ([8818a95](https://github.com/RedPandaGuy1234/Games/commit/8818a9586960e3cba60763b59e5f6373571919d4))
+* Update back link text in wordle.html ([9118861](https://github.com/RedPandaGuy1234/Games/commit/91188617918206e63c2addf7be07f77d04bcc50c))
+
 ## [2.1.0](https://github.com/RedPandaGuy1234/Games/compare/v2.0.1...v2.1.0) (2026-09-19)
 
 
