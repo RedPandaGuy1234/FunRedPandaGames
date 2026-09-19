@@ -1,4 +1,4 @@
-# Games
+# Fun Red Panda Games
 
 A small collection of games, built by me, and hopefully you too. This repo started as a single Python Battleship implementation and has grown into a home for multiple games — most of them playable both in your terminal and right in your browser.
 
