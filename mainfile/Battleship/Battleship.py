@@ -296,8 +296,26 @@ def bot_turn(player_board, player_ships, bot_shots, hunt_queue, active_hits, hun
     return all_sunk(player_ships, bot_shots)
 
 
-def play_game():
-    print("Welcome to Battleship!\n")
+def pass_device(prompt):
+    """Blank the scrollback with newlines and wait for the next player to
+    confirm they're the one now looking at the screen."""
+    print("\n" * 40)
+    input(prompt)
+    print("\n" * 40)
+
+
+def choose_game_mode():
+    choice = (
+        input("Play against the bot, or two-player pass-and-play? (b/t): ")
+        .strip()
+        .lower()
+    )
+    if choice == "t":
+        return "two_player"
+    return "bot"
+
+
+def play_bot_game():
     player_board, player_ships = place_all_player_ships()
 
     bot_board = make_empty_board()
@@ -337,6 +355,85 @@ def play_game():
     print_board(bot_board, bot_ships, player_shots, reveal=True)
     print_ship_status("Your Fleet Status", player_ships, bot_shots)
     print_ship_status("Enemy Fleet Status", bot_ships, player_shots)
+
+
+def play_two_player_game():
+    print("Two-player Battleship! Pass the device between turns.\n")
+
+    print("Player 1, place your fleet.")
+    player1_board, player1_ships = place_all_player_ships()
+
+    pass_device(
+        "\nPlayer 1's fleet is set. Pass the device to Player 2, then press Enter to continue."
+    )
+
+    print("Player 2, place your fleet.")
+    player2_board, player2_ships = place_all_player_ships()
+
+    pass_device(
+        "\nPlayer 2's fleet is set. Pass the device to Player 1, then press Enter to begin the battle."
+    )
+
+    player1_shots = set()  # shots fired by player 1 onto player 2's board
+    player2_shots = set()  # shots fired by player 2 onto player 1's board
+    current = 1
+
+    while True:
+        if current == 1:
+            print("Player 1's turn.\n")
+            print("Your Fleet:")
+            print_board(player1_board, player1_ships, player2_shots, reveal=True)
+            print("\nOpponent's Waters:")
+            print_board(player2_board, player2_ships, player1_shots, reveal=False)
+            print_ship_status("Your Fleet Status", player1_ships, player2_shots)
+            print_ship_status("Opponent's Fleet Status", player2_ships, player1_shots)
+
+            won = player_turn(player2_board, player2_ships, player1_shots)
+            if won:
+                pass_device(
+                    "\nPlayer 1 sank the entire enemy fleet and wins! Press Enter to see the final boards."
+                )
+                break
+            next_player = 2
+        else:
+            print("Player 2's turn.\n")
+            print("Your Fleet:")
+            print_board(player2_board, player2_ships, player1_shots, reveal=True)
+            print("\nOpponent's Waters:")
+            print_board(player1_board, player1_ships, player2_shots, reveal=False)
+            print_ship_status("Your Fleet Status", player2_ships, player1_shots)
+            print_ship_status("Opponent's Fleet Status", player1_ships, player2_shots)
+
+            won = player_turn(player1_board, player1_ships, player2_shots)
+            if won:
+                pass_device(
+                    "\nPlayer 2 sank the entire enemy fleet and wins! Press Enter to see the final boards."
+                )
+                break
+            next_player = 1
+
+        pass_device(
+            f"\nEnd of turn. Pass the device to Player {next_player}, then press Enter to continue."
+        )
+        current = next_player
+
+    print("\nFinal boards:")
+    print("\nPlayer 1's Fleet:")
+    print_board(player1_board, player1_ships, player2_shots, reveal=True)
+    print("\nPlayer 2's Fleet:")
+    print_board(player2_board, player2_ships, player1_shots, reveal=True)
+    print_ship_status("Player 1 Fleet Status", player1_ships, player2_shots)
+    print_ship_status("Player 2 Fleet Status", player2_ships, player1_shots)
+
+
+def play_game():
+    print("Welcome to Battleship!\n")
+    mode = choose_game_mode()
+
+    if mode == "two_player":
+        play_two_player_game()
+    else:
+        play_bot_game()
 
 
 if __name__ == "__main__":
