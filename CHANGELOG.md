@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/RedPandaGuy1234/Games/compare/v2.0.1...v2.1.0) (2026-09-19)
+
+
+### Features
+
+* Add two-player mode and game flow enhancements ([4306fca](https://github.com/RedPandaGuy1234/Games/commit/4306fcae60c36253ebcc1a8eeea35281a24f4d02))
+
+
+### Continuations
+
+* Implement game mode selection and UI updates ([3086fb5](https://github.com/RedPandaGuy1234/Games/commit/3086fb5b1be6162bd8aa909b9879d5190cf0f3ad))
+
 ## [2.0.1](https://github.com/RedPandaGuy1234/Games/compare/v2.0.0...v2.0.1) (2026-09-17)
 
 
