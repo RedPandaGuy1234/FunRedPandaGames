@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.1...v2.2.2) (2026-09-19)
+
+
+### Bug Fixes
+
+* black formatting ([cf83aa3](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/cf83aa3735170b3cb0bfaaecd03fda42ecedd3d3))
+
+
+### Other
+
+* Update PR naming guidelines in CONTRIBUTING.md ([1dd6f63](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/1dd6f6354d42954b404d5ef1dbbcd909194edca4))
+* Update README for browser game instructions ([5125447](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/512544739ac3cf5275c8013f714319f277166553))
+
 ## [2.2.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.0...v2.2.1) (2026-09-19)
 
 
