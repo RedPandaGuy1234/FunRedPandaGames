@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.3](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.2...v2.2.3) (2026-09-20)
+
+
+### Bug Fixes
+
+* Update browser link for Fun Red Panda Games ([f653335](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/f653335a41a6cd9398276ec5431d018150c0d07e))
+
 ## [2.2.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.1...v2.2.2) (2026-09-19)
 
 
