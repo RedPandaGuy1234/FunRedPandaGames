@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.4](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.3...v2.2.4) (2026-09-20)
+
+
+### Other
+
+* Add Bandit security linter workflow ([8c4e50e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/8c4e50e935b9cce90d9c6c1a0cdcaeacefa4422c))
+
 ## [2.2.3](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.2...v2.2.3) (2026-09-20)
 
 
