@@ -1,5 +1,34 @@
 # Changelog
 
+## [2.3.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.4...v2.3.0) (2026-09-21)
+
+
+### Features
+
+* Add favicon.svg for application branding ([245f681](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/245f681780f3f9bfb5ab3796147f9a9f9ce6329a))
+
+
+### Bug Fixes
+
+* Adjust logo size and alignment in README ([e30dc17](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/e30dc171a04ffe7e14fe1a3bd26e89e5f079f766))
+
+
+### Continuations
+
+* Add favicon link to chess.html ([8809103](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/880910305a32b309f03ce8d7967064a216b06be2))
+* Add favicon link to index.html ([0b6e46e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/0b6e46ea8f16de2e344fff1f34e613efd6e9e3c5))
+
+
+### Other
+
+* Add Contributor Covenant Code of Conduct ([30eac47](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/30eac47951f87feb5606d0d502ecb1e25e8f5ae2))
+* Add favicon link to battleship.html ([25e198c](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/25e198c96527455161a342c706b421dba343093a))
+* Add favicon link to numberguesser.html ([558606e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/558606e475a99aca7d0c176dcd65f2fbb8d5d24e))
+* Add favicon link to reactiontest.html ([ce8a3df](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ce8a3df35d8655973f79dd985beeb90a793026b0))
+* Add favicon links ([de90e6d](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/de90e6d3f4014a3ed6e71b74a3c7d3aab813d5de))
+* Create PR template for consistent contributions ([edd99c6](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/edd99c6951bbaece0ba75f1a3fc167d4442160e8))
+* Update README to include Code of Conduct reference and to have the logo ([aa822a5](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/aa822a5e0a05de2c88719375b73f023f7121b844))
+
 ## [2.2.4](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.3...v2.2.4) (2026-09-20)
 
 
