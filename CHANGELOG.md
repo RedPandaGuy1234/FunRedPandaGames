@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.3](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.3.2...v2.3.3) (2026-09-21)
+
+
+### Bug Fixes
+
+* Modify eye features in favicon.svg ([f72f264](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/f72f2649def061839e4d48983f09d75b0ef6e597))
+* Refactor SVG paths and remove unnecessary elements ([09b2ad6](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/09b2ad652e140ba952753783085c3934d9865a92))
+* Refactor SVG paths in favicon.svg ([933ad84](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/933ad84e34c09738cc62c1fe86875f0b377fe406))
+
 ## [2.3.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.3.1...v2.3.2) (2026-09-21)
 
 
