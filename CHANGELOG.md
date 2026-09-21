@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.3.0...v2.3.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* Add token to release-please GitHub Action ([87ebd79](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/87ebd7981d91f8f9e91b4acfc2666193a517fb64))
+* Correct title casing in thequestions.html ([88beda5](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/88beda5645dabe9ae9dcb88a126797dd2495eb83))
+* Remove token from release-please action ([64442c2](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/64442c245a6a6db45dba4bb0ef1e761a8b9b251b))
+
+
+### Other
+
+* Update title to include 'people and bots' ([af31f97](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/af31f977606cf2fc305bb5ed74c8a4ca22ce0604))
+
 ## [2.3.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.2.4...v2.3.0) (2026-09-21)
 
 
