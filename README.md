@@ -1,5 +1,7 @@
 # Fun Red Panda Games
 
+<img src="docs/favicon.svg" width="88" height="88" alt="Fun Red Panda Games logo">
+
 A small collection of games, built by me, and hopefully you too. This repo started as a single Python Battleship implementation and has grown into a home for multiple games — most of them playable both in your terminal and right in your browser.
 
 **Play in your browser:** https://redpandaguy1234.github.io/FunRedPandaGames/
@@ -220,7 +222,7 @@ open index.html
 This project is released under the GPL-3.0 License. See [LICENSE](LICENSE) for details. This license applies repo-wide unless a specific game's folder states otherwise.
 
 ## Contributing
-Please look at the [contributing](CONTRIBUTING.md) document for further details.
+Please look at the [contributing](CONTRIBUTING.md) document for further details. Please also review our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Credits
 This project is dependent on the python-chess library [python-chess](https://github.com/niklasf/python-chess), the [Stockfish](https://github.com/official-stockfish/Stockfish) chess engine, [Pyodide](https://pyodide.org) for running Python in the browser, and [black](https://github.com/psf/black) for formatting.
