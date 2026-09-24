@@ -1,4 +1,4 @@
-Games on the web:
+Docs:
   any-glob-to-any-file: 
   - "docs/**"
 
@@ -6,6 +6,6 @@ Github:
     any-glob-to-file:
     - ".github/**"
 
-Games in terminal: 
+Terminal: 
   any-glob-to-any-file:
   - "mainfile/**"
