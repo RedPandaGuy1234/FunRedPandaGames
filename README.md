@@ -196,13 +196,13 @@ open index.html
 1. Clone the repository:
 
 ```bash
-   git clone https://github.com/RedPandaGuy1234/Games
+   git clone https://github.com/RedPandaGuy1234/FunRedPandaGames
 ```
 
 2. Enter the project directory:
 
 ```bash
-   cd Games
+   cd FunRedPandaGames
 ```
 
 3. Install dependencies (needed for terminal Chess):
