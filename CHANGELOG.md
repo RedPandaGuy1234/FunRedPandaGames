@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.4.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.3.3...v2.4.0) (2026-09-24)
+
+
+### Features
+
+* Add GitHub Actions workflow for Cloudflare Pages deployment ([26c7083](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/26c7083544f47f8843372e4417b1d63b01eee7e2))
+
+
+### Bug Fixes
+
+* Fix project name casing in Cloudflare workflow ([65611f8](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/65611f8f1e52c74bec2f46244a6c4d16f1cf6679))
+* Update button shadow and overlay background styles ([4ae7b22](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4ae7b22d873bdef0572b9854a7e1b1ece66978a8))
+* Update Cloudflare Pages workflow configuration ([237e79e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/237e79efef0dd45dbb56fce8a5b24b711d434ad1))
+* Update repository name in README instructions ([dd5ea8a](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/dd5ea8a90b50a6aa7d5388183296c958c4daa9ec))
+
+
+### Other
+
+* Add note about upcoming website change ([0876719](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/08767197b1662173b1d6ca3a3cfbb2246e47b3e3))
+
 ## [2.3.3](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.3.2...v2.3.3) (2026-09-21)
 
 
