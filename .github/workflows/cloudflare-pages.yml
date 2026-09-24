@@ -20,6 +20,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: fun-red-panda-games
+          projectName: Fun-Red-Panda-Games
           directory: docs
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
