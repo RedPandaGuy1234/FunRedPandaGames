@@ -17,6 +17,7 @@ This will be changed to an actual .com website soon, sorry for the annoying link
   - [Number Guesser](#number-guesser)
   - [Chess](#chess)
   - [Reaction Test](#reaction-test)
+  - [Bamboo Bonk (Coming Soon)](#bamboo-bonk-coming-soon)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Contributing](#contributing)
@@ -173,6 +174,9 @@ A quick game that measures how fast your reflexes are, in your terminal or your 
 cd mainfile/Reactiontest
 python3 Reaction_test
 ```
+
+### Bamboo Bonk (Coming Soon)
+A solo browser game that is still in the works and isn't playable yet. Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can before time runs out, then try to beat your best score.
 
 ## Requirements
 - **Browser versions (Battleship, The Questions, Number Guesser, Chess, Reaction Test):** any modern web browser. No installs required. First load fetches the Pyodide runtime (and, for Chess, the `python-chess` package), so an internet connection is needed at least once. The Questions has no Pyodide dependency and needs nothing beyond the browser itself.
