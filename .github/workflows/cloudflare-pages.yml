@@ -3,12 +3,18 @@ name: Deploy to Cloudflare Pages
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+
+    env:
+      PROJECT_NAME: Fun-Red-Panda-Games
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
     steps:
       - name: Checkout
@@ -19,19 +25,45 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install Wrangler
-        run: npm install -g wrangler@latest
+      - name: Verify Cloudflare auth
+        run: npx wrangler whoami
 
-      - name: Create Cloudflare Pages project if needed
+      - name: Check that docs folder exists
         run: |
-          npx wrangler pages project create Fun-Red-Panda-Games --production-branch=main || true
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          if [ ! -d docs ]; then
+            echo "docs/ directory not found"
+            exit 1
+          fi
+
+      - name: Ensure Cloudflare Pages project exists
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+
+          project = os.environ["PROJECT_NAME"]
+          try:
+              out = subprocess.check_output(
+                  ["npx", "wrangler", "pages", "project", "list", "--json"],
+                  text=True,
+                  stderr=subprocess.STDOUT
+              )
+              projects = json.loads(out)
+          except subprocess.CalledProcessError as e:
+              print(e.output)
+              raise
+
+          names = [p.get("name") for p in projects if isinstance(p, dict)]
+          if project not in names:
+              subprocess.run(
+                  ["npx", "wrangler", "pages", "project", "create", project, "--production-branch=main"],
+                  check=True
+              )
+          else:
+              print(f"Project {project} already exists")
+          PY
 
       - name: Deploy to Cloudflare Pages
         run: |
-          npx wrangler pages deploy docs --project-name=Fun-Red-Panda-Games --branch=main
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          npx wrangler pages deploy docs --project-name="$PROJECT_NAME" --branch=main
