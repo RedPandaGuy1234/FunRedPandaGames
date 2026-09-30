@@ -6,7 +6,7 @@
 
 A small collection of games, built by me, and hopefully you too. This repo started as a single Python Battleship implementation to play and has grown into a home for multiple games — most of them playable both in your terminal and right in your browser.
 
-**Play in your browser:** <a href="https: funredpandagames.com">funredpandagames.com</a>
+**Play in your browser:** <a href="https:funredpandagames.com">funredpandagames.com</a>
 
 ## Table of Contents
 - [Playing in Your Browser](#playing-in-your-browser)
