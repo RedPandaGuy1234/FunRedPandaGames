@@ -1,0 +1,3 @@
+name = "Fun-Red-Panda-Games"
+pages_build_output_dir = "docs"
+account_id = "${{ env.CLOUDFLARE_ACCOUNT_ID }}"
