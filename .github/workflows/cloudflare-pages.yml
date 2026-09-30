@@ -2,12 +2,14 @@ name: Deploy to Cloudflare Pages
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
 
@@ -25,8 +27,9 @@ jobs:
         with:
           node-version: 22
 
-      - name: Verify Cloudflare auth
-        run: npx wrangler whoami
+      - name: Verify Cloudflare authentication
+        run: |
+          npx wrangler whoami
 
       - name: Check that docs folder exists
         run: |
@@ -43,22 +46,48 @@ jobs:
           import subprocess
 
           project = os.environ["PROJECT_NAME"]
+          account_id = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+
           try:
               out = subprocess.check_output(
-                  ["npx", "wrangler", "pages", "project", "list", "--json"],
+                  [
+                      "npx",
+                      "wrangler",
+                      "pages",
+                      "project",
+                      "list",
+                      "--account-id",
+                      account_id,
+                      "--json",
+                  ],
                   text=True,
-                  stderr=subprocess.STDOUT
+                  stderr=subprocess.STDOUT,
               )
               projects = json.loads(out)
-          except subprocess.CalledProcessError as e:
-              print(e.output)
+          except subprocess.CalledProcessError as error:
+              print(error.output)
               raise
 
-          names = [p.get("name") for p in projects if isinstance(p, dict)]
+          names = [
+              item.get("name")
+              for item in projects
+              if isinstance(item, dict)
+          ]
+
           if project not in names:
               subprocess.run(
-                  ["npx", "wrangler", "pages", "project", "create", project, "--production-branch=main"],
-                  check=True
+                  [
+                      "npx",
+                      "wrangler",
+                      "pages",
+                      "project",
+                      "create",
+                      project,
+                      "--production-branch=main",
+                      "--account-id",
+                      account_id,
+                  ],
+                  check=True,
               )
           else:
               print(f"Project {project} already exists")
@@ -66,4 +95,7 @@ jobs:
 
       - name: Deploy to Cloudflare Pages
         run: |
-          npx wrangler pages deploy docs --project-name="$PROJECT_NAME" --branch=main
+          npx wrangler pages deploy docs \
+            --project-name="$PROJECT_NAME" \
+            --branch=main \
+            --account-id="$CLOUDFLARE_ACCOUNT_ID"
