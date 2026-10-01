@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.4.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.3.3...v2.4.0) (2026-10-01)
+
+
+### Features
+
+* Add GitHub Actions workflow for Cloudflare Pages deployment ([26c7083](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/26c7083544f47f8843372e4417b1d63b01eee7e2))
+
+
+### Bug Fixes
+
+* Add Cloudflare Pages project creation step ([7dad233](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/7dad233725b287ee877ba4e15f09545e30bf4897))
+* Change browser link to funredpandagames.com ([1e6dd3f](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/1e6dd3f4c483fbadf187535e26428733420a14cd))
+* Change project name to lowercase ([4f1fbbb](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4f1fbbb8fbedfefb3cf6913f9a4ac3ea1ab6bfcb))
+* Change PROJECT_NAME to lowercase format ([60d4b51](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/60d4b51a8d24abb6dd47455bcd2aeccc04b7c4f7))
+* Fix link formatting in README.md ([707edc7](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/707edc7049306f43d4d0f581456e436730c4e63b))
+* Fix project name casing in Cloudflare workflow ([65611f8](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/65611f8f1e52c74bec2f46244a6c4d16f1cf6679))
+* Refactor Cloudflare Pages deployment workflow ([5063cf6](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/5063cf6fb77eafeb223c895e5c5191f04312e166))
+* Refactor Cloudflare Pages workflow with Wrangler ([82ca672](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/82ca6727780dc1ae0089f1b611c30f2f041007e9))
+* Update browser link to be clickable in README ([c96f634](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/c96f634b47355fd7f4293b081776f327a6ae73df))
+* Update button shadow and overlay background styles ([4ae7b22](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4ae7b22d873bdef0572b9854a7e1b1ece66978a8))
+* Update Cloudflare Pages workflow configuration ([237e79e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/237e79efef0dd45dbb56fce8a5b24b711d434ad1))
+* Update Cloudflare Pages workflow for deployment ([ef419f0](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ef419f013b334cb223ccd7d721b4f1473bbf1bec))
+* Update Node.js version in Cloudflare workflow ([297f9a1](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/297f9a1c03b29398135b37b7daefb27b6df47c44))
+* Update repository name in README instructions ([dd5ea8a](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/dd5ea8a90b50a6aa7d5388183296c958c4daa9ec))
+
+
+### Other
+
+* Add 'Bamboo Bonk' game section to README ([5183410](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/51834103d7d31ef55ec8263504d0ec27ec7bc0b2))
+* Add note about upcoming website change ([0876719](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/08767197b1662173b1d6ca3a3cfbb2246e47b3e3))
+* Clarify repo description in README ([9050064](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/9050064ff1b63cd3b99dece3475a155609c4b637))
+
 ## [2.3.3](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.3.2...v2.3.3) (2026-09-21)
 
 
