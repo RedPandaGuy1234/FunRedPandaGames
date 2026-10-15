@@ -4,9 +4,9 @@
   <img src="docs/favicon.svg" width="160" height="160" alt="Fun Red Panda Games logo">
 </p>
 
-A small collection of games, built by me, and hopefully you too. This repo started as a single Python Battleship implementation to play and has grown into a home for multiple games — most of them playable both in your terminal and right in your browser.
+A small collection of games, built by me, and hopefully you too. This repo started as a single Python Battleship implementation to play and has grown into a home for multiple games — most of them[...]
 
-**Play in your browser:** <a href="https:funredpandagames.com">funredpandagames.com</a>
+**Play in your browser:** <a href="https://funredpandagames.com">funredpandagames.com</a>
 
 ## Table of Contents
 - [Playing in Your Browser](#playing-in-your-browser)
@@ -25,9 +25,9 @@ A small collection of games, built by me, and hopefully you too. This repo start
 
 ## Playing in Your Browser
 
-Battleship, Number Guesser, Chess, and Reaction Test all have browser versions in the `docs/` folder, alongside the original terminal versions in `mainfile/`. The Questions has only ever lived in the browser, and its files live in `docs/` too.
+Battleship, Number Guesser, Chess, and Reaction Test all have browser versions in the `docs/` folder, alongside the original terminal versions in `mainfile/`. The Questions has only ever lived in [...]
 
-The browser versions run entirely client-side using [Pyodide](https://pyodide.org) (Python compiled to WebAssembly) — your actual game logic runs as real Python inside the page, not a JavaScript rewrite. No installation, no Python setup, no server of your own required. (The Questions is the one exception — it's plain HTML/JS with no Pyodide dependency.)
+The browser versions run entirely client-side using [Pyodide](https://pyodide.org) (Python compiled to WebAssembly) — your actual game logic runs as real Python inside the page, not a JavaScript[...]
 
 **To test the browser versions locally**, run:
 
@@ -36,7 +36,7 @@ cd docs
 open index.html
 ```
 
-This allows you to choose whatever game you want to play locally in your browser. If you do not have a browser (which shouldn't be possible, if you're seeing this), you can play the games (except for The Questions) in your terminal, with instructions on how to do so underneath.
+This allows you to choose whatever game you want to play locally in your browser. If you do not have a browser (which shouldn't be possible, if you're seeing this), you can play the games (except [...]
 
 ## Games in This Repo
 
@@ -63,7 +63,7 @@ python3 Set_Up_Ships.py
 - Win by sinking every ship in the opposing fleet.
 
 ### The Questions
-A browser-based trivia game for 1–5 players (or solo against computer opponents), inspired by classic wedge-collecting trivia board games. Runs entirely in a single HTML file — no install required.
+A browser-based trivia game for 1–5 players (or solo against computer opponents), inspired by classic wedge-collecting trivia board games. Runs entirely in a single HTML file — no install requ[...]
 
 **Features**
 - A 36-space board with six trivia categories: Geography, History, Science, Entertainment, Sports, and Arts & Words
@@ -98,17 +98,17 @@ python3 Creator.py
 ```
 
 ### Chess
-A chess game built on [python-chess](https://github.com/niklasf/python-chess) (a huge thanks to them), handling move legality, board state, and game rules. Includes an optional computer opponent at three difficulty levels.
+A chess game built on [python-chess](https://github.com/niklasf/python-chess) (a huge thanks to them), handling move legality, board state, and game rules. Includes an optional computer opponent [...]
 
 **Features**
 - Full standard chess rules via `python-chess` (legal move generation, check/checkmate detection, castling, en passant, promotion)
-- Play moves by typing (terminal) or clicking (browser) the square a piece is on, then the square it's moving to (e.g. e2e4). Castling is entered the same way — move your king two squares toward the rook.
+- Play moves by typing (terminal) or clicking (browser) the square a piece is on, then the square it's moving to (e.g. e2e4). Castling is entered the same way — move your king two squares towar[...]
 - Resign at any time, or offer a draw
 - Optional bot opponent, choice of color (White, Black, or Random), and difficulty level
 
 **A note on difficulty — the terminal and browser versions work differently:**
-- **Terminal version:** Easy is a lightweight built-in minimax bot (~600 elo, no external dependencies). Normal (~1400 elo) and Hard (~2000 elo) hand off to the [Stockfish](https://stockfishchess.org/) engine as a separate process.
-- **Browser version:** since a browser can't launch an external engine process, all three difficulties (Easy, Normal, Hard) are the same homemade minimax bot at increasing search depth and decreasing blunder chance, with no Stockfish involved. It's a different bot than the terminal's Normal/Hard modes — meaningfully weaker at the top end than real Stockfish play, but fully self-contained and requires no install.
+- **Terminal version:** Easy is a lightweight built-in minimax bot (~600 elo, no external dependencies). Normal (~1400 elo) and Hard (~2000 elo) hand off to the [Stockfish](https://stockfishchess[...]
+- **Browser version:** since a browser can't launch an external engine process, all three difficulties (Easy, Normal, Hard) are the same homemade minimax bot at increasing search depth and decrea[...]
 - The browser version currently always promotes pawns to a queen; underpromotion isn't supported.
 
 **Run it in your terminal**
@@ -118,7 +118,7 @@ cd mainfile/Chess
 python3 board.py
 ```
 
-When you start the terminal game, you'll be asked whether you want to play against the bot, which color it should play (or Random), and which difficulty level (Easy, Normal, or Hard). **Only the terminal version needs Stockfish installed** — the browser version needs nothing extra. See [Installing Stockfish](#installing-stockfish) below if you want to play the terminal version's Normal or Hard mode.
+When you start the terminal game, you'll be asked whether you want to play against the bot, which color it should play (or Random), and which difficulty level (Easy, Normal, or Hard). **Only the [...]
 
 #### Installing Stockfish
 *(terminal Chess only — the browser version doesn't need this)*
@@ -135,7 +135,7 @@ brew install stockfish
 winget install Stockfish.Stockfish
 ```
 
-Or download the executable from [stockfishchess.org/download](https://stockfishchess.org/download/) and either add it to your PATH or point `STOCKFISH_PATH` in `mainfile/Chess/board.py` at the full path to the `.exe`.
+Or download the executable from [stockfishchess.org/download](https://stockfishchess.org/download/) and either add it to your PATH or point `STOCKFISH_PATH` in `mainfile/Chess/board.py` at the fu[...]
 
 **Linux (Debian/Ubuntu)**
 
@@ -157,7 +157,7 @@ sudo pacman -S stockfish
 
 **Any OS, manual install**
 
-Download a prebuilt binary from [stockfishchess.org/download](https://stockfishchess.org/download/), unzip it, and either add it to your PATH or set `STOCKFISH_PATH` in `mainfile/Chess/board.py` to the full path of the binary.
+Download a prebuilt binary from [stockfishchess.org/download](https://stockfishchess.org/download/), unzip it, and either add it to your PATH or set `STOCKFISH_PATH` in `mainfile/Chess/board.py` to th[...]
 
 ### Reaction Test
 A quick game that measures how fast your reflexes are, in your terminal or your browser. It waits a random amount of time, tells you to go, then reports how long it took you to react.
@@ -175,13 +175,13 @@ python3 Reaction_test
 ```
 
 ### Bamboo Bonk (Coming Soon)
-A solo browser game that is still in the works and isn't playable yet. Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can before time runs out, then try to beat your best score.
+A solo browser game that is still in the works and isn't playable yet. Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can before time runs out, then try to beat[...]
 
 ## Requirements
-- **Browser versions (Battleship, The Questions, Number Guesser, Chess, Reaction Test):** any modern web browser. No installs required. First load fetches the Pyodide runtime (and, for Chess, the `python-chess` package), so an internet connection is needed at least once. The Questions has no Pyodide dependency and needs nothing beyond the browser itself.
+- **Browser versions (Battleship, The Questions, Number Guesser, Chess, Reaction Test):** any modern web browser. No installs required. First load fetches the Pyodide runtime (and, for Chess, the[...]
 - **Terminal Battleship:** Python 3 or newer, and a terminal
 - **Terminal Number Guesser:** Python 3 or newer, and a terminal
-- **Terminal Chess:** Python 3 or newer, and the `chess` package (see [Installation](#installation)). The [Stockfish](https://stockfishchess.org/download/) engine is only needed for Normal/Hard bot difficulty (see [Installing Stockfish](#installing-stockfish)); Easy mode needs nothing extra.
+- **Terminal Chess:** Python 3 or newer, and the `chess` package (see [Installation](#installation)). The [Stockfish](https://stockfishchess.org/download/) engine is only needed for Normal/Hard b[...]
 - **Terminal Reaction Test:** Python 3 or newer, and a terminal
 
 ## Installation
@@ -214,7 +214,7 @@ open index.html
    pip install -r requirements.txt
 ```
 
-4. If you want to play terminal Chess against the bot on Normal or Hard difficulty, also install the Stockfish engine — see [Installing Stockfish](#installing-stockfish). Easy mode works without it.
+4. If you want to play terminal Chess against the bot on Normal or Hard difficulty, also install the Stockfish engine — see [Installing Stockfish](#installing-stockfish). Easy mode works withou[...]
 
 5. Regularly update it:
 
@@ -228,10 +228,10 @@ open index.html
 This project is released under the GPL-3.0 License. See [LICENSE](LICENSE) for details. This license applies repo-wide unless a specific game's folder states otherwise.
 
 ## Contributing
-Please look at the [contributing](CONTRIBUTING.md) document for further details. Please also review our [Code of Conduct](CODE_OF_CONDUCT.md).
+Please look at the [contributing](CONTRIBUTING.md) document for further details. Please also review our [Code_OF_Conduct.md](CODE_OF_CONDUCT.md).
 
 ## Credits
-This project is dependent on the python-chess library [python-chess](https://github.com/niklasf/python-chess), the [Stockfish](https://github.com/official-stockfish/Stockfish) chess engine, [Pyodide](https://pyodide.org) for running Python in the browser, and [black](https://github.com/psf/black) for formatting.
+This project is dependent on the python-chess library [python-chess](https://github.com/niklasf/python-chess), the [Stockfish](https://github.com/official-stockfish/Stockfish) chess engine, [Pyod[...]
 
 ## Contact
 Maintainer: RedPandaGuy1234
