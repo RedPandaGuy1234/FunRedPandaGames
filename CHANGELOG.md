@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.6.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.5.0...v2.6.0) (2026-10-16)
+
+
+### Features
+
+* Add rooms table and index for updated_at ([6369d0a](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/6369d0a988e105466e430857b862e86b447f352f))
+
+
+### Continuations
+
+* add multiplayer ([3692317](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/36923174612547382c21d439df2b3f0372900a9d))
+* Add onRequestPost function for room state ([3e65968](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/3e659688aca1857ad750b5873b6c4dffa8a1751b))
+* Implement room creation API endpoint ([c41d76f](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/c41d76fe0671e16f40047a4332b35e29169139cb))
+* Implement room joining functionality ([6694961](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/669496104dca00502734ca3d449831f85699a176))
+
 ## [2.5.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.4.0...v2.5.0) (2026-10-16)
 
 
