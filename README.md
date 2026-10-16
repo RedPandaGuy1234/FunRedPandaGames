@@ -4,7 +4,7 @@
   <img src="docs/favicon.svg" width="160" height="160" alt="Fun Red Panda Games logo">
 </p>
 
-A small collection of games, built by me, and hopefully you too. This repo started as a single Python Battleship implementation to play and has grown into a home for multiple games — most of them[...]
+A small collection of games, built by me, and hopefully you too. This repo started as a single Python Battleship implementation to play and has grown into a home for multiple games.
 
 **Play in your browser:** <a href="https:funredpandagames.com">funredpandagames.com</a>
 
