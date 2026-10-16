@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.5.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.4.0...v2.5.0) (2026-10-16)
+
+
+### Features
+
+* Create users and sessions tables with indexing ([2ac45dd](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/2ac45ddb89ffec384e93adf9177a13cb2406fe04))
+
+
+### Continuations
+
+* Add account management HTML structure ([f4e37cc](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/f4e37cce1a47058ceb02fe54a45ac60a53df1604))
+* Add API endpoint to get user information ([00aea6f](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/00aea6fd3937a322e03bbcdc1d0c914697e8597b))
+* Add initial wrangler.toml configuration ([cf12914](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/cf1291457fd3cab398a6591a27cb3804ef6eeed5))
+* Add topbar and account button to index.html ([9d9b44e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/9d9b44e8e847b1c12662bc4bfeb7a1029840742b))
+* Implement authentication utility functions ([c41c7d6](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/c41c7d6d8bb4b231c130d3c0bedf1addcc8eee90))
+* Implement logout functionality in API ([33150c5](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/33150c58b4e9b85e89f8b049a88c27f2f5be0d1f))
+* Implement user login API endpoint ([5c8ef92](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/5c8ef92f3114ec4c300b48a1a8f707e9a7efcbc2))
+
 ## [2.4.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.3.3...v2.4.0) (2026-10-08)
 
 
