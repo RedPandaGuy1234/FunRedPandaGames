@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root{
+    --felt:#16302A;
+    --felt-dark:#0E211B;
+    --felt-light:#1E3E35;
+    --cream:#F3EAD7;
+    --cream-dim:#E4D8BF;
+    --gold:#D4A72C;
+    --error:#F2789A;
+    --success:#7FD6A0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(1200px 800px at 50% -10%, var(--felt-light), var(--felt) 55%, var(--felt-dark) 100%);
+    color:var(--cream);
+    font-family:'Inter',Arial,sans-serif;
+    min-height:100vh;
+    padding:26px 16px 56px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .back-link{align-self:flex-start; color:var(--cream-dim); font-size:13px; text-decoration:none; margin-bottom:18px;}
+  .back-link:hover{color:var(--gold);}
+  h1{font-weight:700; font-size:clamp(26px,5vw,38px); margin:0 0 6px;}
+  .sub{color:var(--cream-dim); font-size:13.5px; margin:0 0 26px; text-align:center; max-width:420px;}
+  .panel{
+    width:min(420px,92vw);
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:24px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .tabs{display:flex; gap:8px; justify-content:center;}
+  .tab-btn{
+    font-family:inherit; font-weight:600; font-size:13px;
+    color:var(--cream); background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.2); padding:8px 16px;
+    border-radius:999px; cursor:pointer; transition:all .15s ease;
+  }
+  .tab-btn.active{background:var(--gold); color:var(--felt-dark); border-color:var(--gold);}
+  label{font-size:12.5px; color:var(--cream-dim); letter-spacing:.03em; text-transform:uppercase;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  input[type=text], input[type=password]{
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.24);
+    color:var(--cream);
+    font-size:16px;
+    padding:11px 13px;
+    border-radius:9px;
+    width:100%;
+  }
+  input:focus{outline:none; border-color:var(--gold);}
+  .hint{font-size:11.5px; color:var(--cream-dim); opacity:.8;}
+  button.action{
+    font-family:inherit;
+    font-weight:700;
+    font-size:15px;
+    color:var(--felt-dark);
+    background:linear-gradient(180deg,#E7C866,var(--gold));
+    border:none;
+    padding:12px 18px;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow:0 4px 0 #9a7620, 0 8px 16px rgba(0,0,0,.35);
+  }
+  button.action:active{transform:translateY(2px); box-shadow:0 1px 0 #9a7620, 0 4px 8px rgba(0,0,0,.3);}
+  button.action:disabled{opacity:.5; cursor:default;}
+  button.secondary{
+    font-family:inherit; font-weight:700; font-size:14px;
+    color:var(--cream); background:rgba(255,255,255,.08);
+    border:none; padding:11px 18px; border-radius:999px; cursor:pointer;
+    box-shadow:0 3px 0 rgba(0,0,0,.3), 0 6px 12px rgba(0,0,0,.25);
+  }
+  button.secondary:disabled{opacity:.5; cursor:default;}
+  .status{font-size:14px; line-height:1.5; min-height:20px; text-align:center;}
+  .status.error{color:var(--error);}
+  .status.ok{color:var(--success);}
+  .welcome{font-size:16px; text-align:center; line-height:1.5;}
+  .welcome b{color:var(--gold);}
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+  <a class="back-link" href="index.html">← Back to game menu</a>
+  <h1>Account</h1>
+  <p class="sub">Create an account or log in to keep your username across visits.</p>
+
+  <div class="panel" id="loadingPanel">
+    <div class="status" id="loadingText">Loading…</div>
+  </div>
+
+  <div class="panel hidden" id="authPanel">
+    <div class="tabs">
+      <button class="tab-btn active" id="loginTab" type="button">Log In</button>
+      <button class="tab-btn" id="signupTab" type="button">Create Account</button>
+    </div>
+
+    <form id="loginForm" class="panel" style="padding:0; background:none; border:none;">
+      <div class="field">
+        <label for="loginUsername">Username</label>
+        <input type="text" id="loginUsername" autocomplete="username" maxlength="20">
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" autocomplete="current-password" maxlength="128">
+      </div>
+      <button class="action" id="loginSubmit" type="submit">Log In</button>
+    </form>
+
+    <form id="signupForm" class="panel hidden" style="padding:0; background:none; border:none;">
+      <div class="field">
+        <label for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" autocomplete="username" maxlength="20">
+        <span class="hint">3-20 characters: letters, numbers, and underscores.</span>
+      </div>
+      <div class="field">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" autocomplete="new-password" maxlength="128">
+        <span class="hint">At least 8 characters.</span>
+      </div>
+      <div class="field">
+        <label for="signupConfirm">Confirm Password</label>
+        <input type="password" id="signupConfirm" autocomplete="new-password" maxlength="128">
+      </div>
+      <button class="action" id="signupSubmit" type="submit">Create Account</button>
+    </form>
+
+    <div class="status" id="authStatus"></div>
+  </div>
+
+  <div class="panel hidden" id="accountPanel">
+    <div class="welcome">Logged in as <b id="accountName"></b></div>
+    <button class="secondary" id="logoutBtn" type="button">Log Out</button>
+    <div class="status" id="accountStatus"></div>
+  </div>
+
+<script>
+const loadingPanel = document.getElementById('loadingPanel');
+const loadingText = document.getElementById('loadingText');
+const authPanel = document.getElementById('authPanel');
+const accountPanel = document.getElementById('accountPanel');
+const accountName = document.getElementById('accountName');
+const accountStatus = document.getElementById('accountStatus');
+const authStatus = document.getElementById('authStatus');
+const loginTab = document.getElementById('loginTab');
+const signupTab = document.getElementById('signupTab');
+const loginForm = document.getElementById('loginForm');
+const signupForm = document.getElementById('signupForm');
+const loginSubmit = document.getElementById('loginSubmit');
+const signupSubmit = document.getElementById('signupSubmit');
+const logoutBtn = document.getElementById('logoutBtn');
+
+function setStatus(el, text, kind){
+  el.textContent = text;
+  el.className = 'status' + (kind ? ' ' + kind : '');
+}
+
+function showLoggedIn(username){
+  loadingPanel.classList.add('hidden');
+  authPanel.classList.add('hidden');
+  accountPanel.classList.remove('hidden');
+  accountName.textContent = username;
+  setStatus(accountStatus, '', '');
+}
+
+function showLoggedOut(){
+  loadingPanel.classList.add('hidden');
+  accountPanel.classList.add('hidden');
+  authPanel.classList.remove('hidden');
+}
+
+function showTab(which){
+  const isLogin = which === 'login';
+  loginTab.classList.toggle('active', isLogin);
+  signupTab.classList.toggle('active', !isLogin);
+  loginForm.classList.toggle('hidden', !isLogin);
+  signupForm.classList.toggle('hidden', isLogin);
+  setStatus(authStatus, '', '');
+}
+
+async function api(path, options){
+  const response = await fetch(path, options);
+  let data = {};
+  try { data = await response.json(); } catch (e) { data = {}; }
+  return { ok: response.ok, data };
+}
+
+async function post(path, payload){
+  return api(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify(payload || {})
+  });
+}
+
+loginTab.addEventListener('click', () => showTab('login'));
+signupTab.addEventListener('click', () => showTab('signup'));
+
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if(!username || !password){
+    setStatus(authStatus, 'Enter your username and password.', 'error');
+    return;
+  }
+  loginSubmit.disabled = true;
+  setStatus(authStatus, 'Logging in…', '');
+  try {
+    const { ok, data } = await post('/api/login', { username, password });
+    if(ok){
+      document.getElementById('loginPassword').value = '';
+      showLoggedIn(data.username);
+    } else {
+      setStatus(authStatus, data.error || 'Could not log in.', 'error');
+    }
+  } catch (err) {
+    setStatus(authStatus, 'Could not reach the server. Accounts only work on the live site.', 'error');
+  }
+  loginSubmit.disabled = false;
+});
+
+signupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('signupUsername').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const confirm = document.getElementById('signupConfirm').value;
+  if(!username || !password){
+    setStatus(authStatus, 'Choose a username and password.', 'error');
+    return;
+  }
+  if(password !== confirm){
+    setStatus(authStatus, 'Passwords do not match.', 'error');
+    return;
+  }
+  signupSubmit.disabled = true;
+  setStatus(authStatus, 'Creating account…', '');
+  try {
+    const { ok, data } = await post('/api/register', { username, password });
+    if(ok){
+      document.getElementById('signupPassword').value = '';
+      document.getElementById('signupConfirm').value = '';
+      showLoggedIn(data.username);
+    } else {
+      setStatus(authStatus, data.error || 'Could not create account.', 'error');
+    }
+  } catch (err) {
+    setStatus(authStatus, 'Could not reach the server. Accounts only work on the live site.', 'error');
+  }
+  signupSubmit.disabled = false;
+});
+
+logoutBtn.addEventListener('click', async () => {
+  logoutBtn.disabled = true;
+  try {
+    await post('/api/logout', {});
+    showLoggedOut();
+    showTab('login');
+  } catch (err) {
+    setStatus(accountStatus, 'Could not log out. Please try again.', 'error');
+  }
+  logoutBtn.disabled = false;
+});
+
+async function boot(){
+  try {
+    const { ok, data } = await api('/api/me', { credentials: 'same-origin' });
+    if(ok && data.username){
+      showLoggedIn(data.username);
+    } else {
+      showLoggedOut();
+    }
+  } catch (err) {
+    showLoggedOut();
+    setStatus(authStatus, 'Accounts only work on the live site, not when opening the file locally.', 'error');
+  }
+}
+
+boot();
+</script>
+</body>
+</html>
