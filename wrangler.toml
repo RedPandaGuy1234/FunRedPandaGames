@@ -1,8 +1,0 @@
-name = "funredpandagames"
-compatibility_date = "2025-01-01"
-pages_build_output_dir = "docs"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "funredpandagames-db"
-database_id = "PASTE_YOUR_DATABASE_ID_HERE"
