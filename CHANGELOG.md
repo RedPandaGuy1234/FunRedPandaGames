@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.1...v2.6.2) (2026-10-17)
+
+
+### Bug Fixes
+
+* Implement user registration API endpoint ([ebf3a90](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ebf3a903d67bec444b3025ac4c258851bbc86327))
+
+
+### Other
+
+* Make the online rooms only have multiple choice and true/false questions ([1171af1](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/1171af141a0b933db7c52e2400c0c15761a469a1))
+
 ## [2.6.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.0...v2.6.1) (2026-10-17)
 
 
