@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.0...v2.6.1) (2026-10-17)
+
+
+### Bug Fixes
+
+* Add room management functions and constants ([ad755b8](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ad755b8470483ce59a8c59d50e8bf5e95355e8ee))
+
 ## [2.6.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.5.0...v2.6.0) (2026-10-16)
 
 
