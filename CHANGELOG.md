@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.4](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.3...v2.6.4) (2026-10-18)
+
+
+### Bug Fixes
+
+* Revise CONTRIBUTING.md for improved guidance ([91b7c24](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/91b7c248fdc560c48261cbf9f2462e2ef15918b0))
+
+
+### Other
+
+* Enhance README with new game features and account info ([9abcbba](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/9abcbba8234062489de12e35f1d78f336ebe493c))
+
 ## [2.6.3](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.2...v2.6.3) (2026-10-18)
 
 
