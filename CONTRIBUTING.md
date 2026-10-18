@@ -134,6 +134,7 @@ Before you open a pull request, please check that:
 - Browser games load and play through in a browser. For the Pyodide games, open the page's console and make sure there are no errors.
 - If you changed the menu or navigation, every link on `docs/index.html` still works.
 - If you changed `functions/` or `schema.sql`, you tested it against a D1 database, or you've said in the pull request that you couldn't.
+- In the opened pull request, Cloudflare will have written a comment with a link to test out your changes, so you have used this link and made sure that the changes are successful.
 
 ## Automated Checks
 
