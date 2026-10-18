@@ -9,8 +9,7 @@ def set_bound(bound_call):
       bound_being_set = int(input(f"Hello! Tell me the {bound_call} number that I can guess!")
       if bound_being_set ≤ 0:
         print("This is not a number that is greater than zero. Please try again.")
-        continue
-                            
+        continue                     
       break
     except ValueError:
       print("You didn't put in a number or the number is not an integer. Please try again.")
