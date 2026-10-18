@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.5](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.4...v2.6.5) (2026-10-18)
+
+
+### Other
+
+* Add testing requirement for pull requests ([1c3affa](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/1c3affaa3da13485b720b17eba7a3e216eb769cd))
+
 ## [2.6.4](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.3...v2.6.4) (2026-10-18)
 
 
