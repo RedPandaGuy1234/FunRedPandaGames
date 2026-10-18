@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.6.3](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.2...v2.6.3) (2026-10-18)
+
+
+### Bug Fixes
+
+* Add API for managing game room actions ([6c6ddfd](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/6c6ddfd0ce0fa9b4798bd720bc9eed7328dfca7f))
+* Fix input prompt and formatting in Guesser.py ([3849ba7](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/3849ba7089fbb0c87d71338168688d2d7b513a90))
+* Refactor set_bound function for better input handling ([77063fa](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/77063fae5b29d1ddd69de2be93fc21671fe5db93))
+
+
+### Continuations
+
+* Implement input validation for bounds in Guesser.py ([6b386be](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/6b386beca24a6b51817ab3194fb86f10e1c71eb5))
+
+
+### Other
+
+* Create reaction table and associated indexes ([b68241d](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/b68241dfabef72bc30b615f632a5f795b2de2f2b))
+
 ## [2.6.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.1...v2.6.2) (2026-10-17)
 
 
