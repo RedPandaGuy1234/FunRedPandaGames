@@ -2,7 +2,7 @@ import random
 import time
 import sys
 
-how_long = random.randint(1, 30)
+how_long = random.randint(1, 15)
 input(
     "Hello! This will test your reaction time! Press enter to start, and then enter once I say 'NOW!'"
 )
