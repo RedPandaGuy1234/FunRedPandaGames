@@ -1,6 +1,6 @@
 const ITERATIONS = 100000;
 const SESSION_SECONDS = 60 * 60 * 24 * 30;
-const USERNAME_PATTERN = /^[A-Za-z0-9_]{3,20}$/;
+const USERNAME_PATTERN = /^[^\s\p{C}]{3,20}$/u;
 const encoder = new TextEncoder();
 
 export const DUMMY_SALT = "00000000000000000000000000000000";
@@ -59,7 +59,7 @@ export async function sha256Hex(text) {
 
 export function validateUsername(username) {
   if (!USERNAME_PATTERN.test(username)) {
-    return "Username must be 3-20 characters: letters, numbers, and underscores only.";
+    return "Username must be 3-20 characters, with no spaces. Letters, numbers, and special characters are allowed.";
   }
   return null;
 }
