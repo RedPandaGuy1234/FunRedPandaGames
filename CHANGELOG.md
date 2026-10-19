@@ -1,17 +1,5 @@
 # Changelog
 
-## [2.6.7](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.6...v2.6.7) (2026-10-19)
-
-
-### Bug Fixes
-
-* Change random delay range from 1-30 to 1-15 seconds ([9e47b63](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/9e47b63a9e3c7c76650d33df0336d8c4703b469d))
-
-
-### Continuations
-
-* Reduce random wait time from 30 to 15 seconds ([a65192a](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/a65192afe755b4772d01797fb6f0348bee29456e))
-
 ## [2.6.6](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.5...v2.6.6) (2026-10-19)
 
 
