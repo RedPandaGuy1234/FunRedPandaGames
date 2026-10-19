@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.6](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.5...v2.6.6) (2026-10-19)
+
+
+### Other
+
+* Integrate Turnstile captcha in account forms ([a93f76d](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/a93f76da1e4116b019cddea6b543627b50385034))
+
 ## [2.6.5](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.4...v2.6.5) (2026-10-18)
 
 
