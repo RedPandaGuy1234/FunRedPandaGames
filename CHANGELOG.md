@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.8](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.7...v2.6.8) (2026-10-19)
+
+
+### Bug Fixes
+
+* add more grammar ([9855818](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/9855818975a71f9ed0fafa2a8df7535b16fe92fb))
+
 ## [2.6.7](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.6...v2.6.7) (2026-10-19)
 
 
