@@ -230,7 +230,7 @@ A solo browser game that is still in the works and isn't playable yet. Critters 
 │   ├── _lib/             Shared auth and room helpers
 │   └── api/              Account endpoints and room endpoints
 ├── schema.sql            D1 database schema
-├── requirements.txt      Python dependencies (terminal Chess, Black)
+├── requirements.txt      Python dependencies (terminal Ch)ck)
 └── .github/              Workflows, issue and PR templates, Dependabot
 ```
 
