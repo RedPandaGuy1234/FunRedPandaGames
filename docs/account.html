@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Account</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <style>
   :root{
     --felt:#16302A;
@@ -63,6 +64,7 @@
   }
   input:focus{outline:none; border-color:var(--gold);}
   .hint{font-size:11.5px; color:var(--cream-dim); opacity:.8;}
+  .captcha{display:flex; justify-content:center; min-height:65px;}
   button.action{
     font-family:inherit;
     font-weight:700;
@@ -117,6 +119,7 @@
         <label for="loginPassword">Password</label>
         <input type="password" id="loginPassword" autocomplete="current-password" maxlength="128">
       </div>
+      <div class="captcha" id="loginCaptcha"></div>
       <button class="action" id="loginSubmit" type="submit">Log In</button>
     </form>
 
@@ -135,6 +138,7 @@
         <label for="signupConfirm">Confirm Password</label>
         <input type="password" id="signupConfirm" autocomplete="new-password" maxlength="128">
       </div>
+      <div class="captcha" id="signupCaptcha"></div>
       <button class="action" id="signupSubmit" type="submit">Create Account</button>
     </form>
 
@@ -148,6 +152,8 @@
   </div>
 
 <script>
+const TURNSTILE_SITE_KEY = '0x4AAAAAAFbkOrDkvnwUU1iK';
+
 const loadingPanel = document.getElementById('loadingPanel');
 const loadingText = document.getElementById('loadingText');
 const authPanel = document.getElementById('authPanel');
@@ -163,12 +169,40 @@ const loginSubmit = document.getElementById('loginSubmit');
 const signupSubmit = document.getElementById('signupSubmit');
 const logoutBtn = document.getElementById('logoutBtn');
 
+let turnstileLoaded = false;
+let currentTab = 'login';
+let authVisible = false;
+const widgetIds = { login: null, signup: null };
+const captchaTokens = { login: '', signup: '' };
+
+function ensureCaptcha(which){
+  if(!turnstileLoaded || !authVisible || widgetIds[which] !== null) return;
+  widgetIds[which] = turnstile.render('#' + which + 'Captcha', {
+    sitekey: TURNSTILE_SITE_KEY,
+    theme: 'dark',
+    callback: (token) => { captchaTokens[which] = token; },
+    'expired-callback': () => { captchaTokens[which] = ''; },
+    'error-callback': () => { captchaTokens[which] = ''; }
+  });
+}
+
+function resetCaptcha(which){
+  captchaTokens[which] = '';
+  if(widgetIds[which] !== null) turnstile.reset(widgetIds[which]);
+}
+
+window.onTurnstileLoad = () => {
+  turnstileLoaded = true;
+  ensureCaptcha(currentTab);
+};
+
 function setStatus(el, text, kind){
   el.textContent = text;
   el.className = 'status' + (kind ? ' ' + kind : '');
 }
 
 function showLoggedIn(username){
+  authVisible = false;
   loadingPanel.classList.add('hidden');
   authPanel.classList.add('hidden');
   accountPanel.classList.remove('hidden');
@@ -180,15 +214,19 @@ function showLoggedOut(){
   loadingPanel.classList.add('hidden');
   accountPanel.classList.add('hidden');
   authPanel.classList.remove('hidden');
+  authVisible = true;
+  ensureCaptcha(currentTab);
 }
 
 function showTab(which){
+  currentTab = which;
   const isLogin = which === 'login';
   loginTab.classList.toggle('active', isLogin);
   signupTab.classList.toggle('active', !isLogin);
   loginForm.classList.toggle('hidden', !isLogin);
   signupForm.classList.toggle('hidden', isLogin);
   setStatus(authStatus, '', '');
+  ensureCaptcha(which);
 }
 
 async function api(path, options){
@@ -218,10 +256,14 @@ loginForm.addEventListener('submit', async (e) => {
     setStatus(authStatus, 'Enter your username and password.', 'error');
     return;
   }
+  if(!captchaTokens.login){
+    setStatus(authStatus, 'Please complete the captcha.', 'error');
+    return;
+  }
   loginSubmit.disabled = true;
   setStatus(authStatus, 'Logging in…', '');
   try {
-    const { ok, data } = await post('/api/login', { username, password });
+    const { ok, data } = await post('/api/login', { username, password, captchaToken: captchaTokens.login });
     if(ok){
       document.getElementById('loginPassword').value = '';
       showLoggedIn(data.username);
@@ -231,6 +273,7 @@ loginForm.addEventListener('submit', async (e) => {
   } catch (err) {
     setStatus(authStatus, 'Could not reach the server. Accounts only work on the live site.', 'error');
   }
+  resetCaptcha('login');
   loginSubmit.disabled = false;
 });
 
@@ -247,10 +290,14 @@ signupForm.addEventListener('submit', async (e) => {
     setStatus(authStatus, 'Passwords do not match.', 'error');
     return;
   }
+  if(!captchaTokens.signup){
+    setStatus(authStatus, 'Please complete the captcha.', 'error');
+    return;
+  }
   signupSubmit.disabled = true;
   setStatus(authStatus, 'Creating account…', '');
   try {
-    const { ok, data } = await post('/api/register', { username, password });
+    const { ok, data } = await post('/api/register', { username, password, captchaToken: captchaTokens.signup });
     if(ok){
       document.getElementById('signupPassword').value = '';
       document.getElementById('signupConfirm').value = '';
@@ -261,6 +308,7 @@ signupForm.addEventListener('submit', async (e) => {
   } catch (err) {
     setStatus(authStatus, 'Could not reach the server. Accounts only work on the live site.', 'error');
   }
+  resetCaptcha('signup');
   signupSubmit.disabled = false;
 });
 
