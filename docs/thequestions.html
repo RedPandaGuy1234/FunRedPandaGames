@@ -18,12 +18,12 @@
     --wood-dark:#6B3E27;
     --gold:#D4A72C;
     --ink:#1B2420;
-    --geo:#2F7A78;
-    --hist:#B4552A;
-    --sci:#5B4B8A;
-    --ent:#B9436B;
-    --sport:#D9A521;
-    --art:#4C7A4C;
+    --geo:#06d4f9;
+    --hist:#f97306;
+    --sci:#80f906;
+    --ent:#f9dc06;
+    --sport:#f90606;
+    --art:#f906b4;
     --ring0:#D4A72C;
     --ring1:#F3EAD7;
     --ring2:#4FD1C5;
@@ -164,8 +164,8 @@
     border-radius:7px;
     display:flex; align-items:center; justify-content:center;
     font-size:7.5px; font-weight:700; letter-spacing:.01em;
-    color:rgba(255,255,255,.92);
-    text-shadow:0 1px 2px rgba(0,0,0,.35);
+    color:#111;
+    text-shadow:none;
     box-shadow:0 2px 5px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.15);
   }
   .board-center{
@@ -286,7 +286,7 @@
   .final-cats{display:flex; flex-wrap:wrap; gap:7px; justify-content:center;}
   .final-cat-btn{
     border:none; border-radius:999px; padding:8px 14px;
-    font-family:'Fraunces',serif; font-weight:600; font-size:12px; color:#fff;
+    font-family:'Fraunces',serif; font-weight:600; font-size:12px; color:#111;
     cursor:pointer; box-shadow:0 3px 6px rgba(0,0,0,.35); transition:transform .12s ease;
   }
   .final-cat-btn:active{transform:translateY(2px);}
@@ -352,7 +352,7 @@
   @keyframes cardIn{ from{transform:translateY(16px) scale(.96); opacity:0;} to{transform:none; opacity:1;} }
   .card-cat{
     display:inline-block; font-family:'Fraunces',serif; font-weight:600; font-size:12.5px;
-    letter-spacing:.06em; text-transform:uppercase; color:#fff; padding:5px 14px;
+    letter-spacing:.06em; text-transform:uppercase; color:#111; padding:5px 14px;
     border-radius:999px; margin-bottom:16px;
   }
   .card-q{font-family:'Fraunces',serif; font-weight:500; font-size:21px; line-height:1.4; margin:0 0 18px;}
@@ -587,12 +587,12 @@
 <script>
 (function(){
   const CATS = [
-    {id:'geo',   name:'Geography',      hex:'#2F7A78', abbr:'GEO'},
-    {id:'hist',  name:'History',        hex:'#B4552A', abbr:'HIS'},
-    {id:'sci',   name:'Science',        hex:'#5B4B8A', abbr:'SCI'},
-    {id:'ent',   name:'Entertainment',  hex:'#B9436B', abbr:'ENT'},
-    {id:'sport', name:'Sports',         hex:'#D9A521', abbr:'SPT'},
-    {id:'art',   name:'Arts & Words',   hex:'#4C7A4C', abbr:'ART'},
+    {id:'geo',   name:'Geography',      hex:'#06d4f9', abbr:'GEO'},
+    {id:'hist',  name:'History',        hex:'#f97306', abbr:'HIS'},
+    {id:'sci',   name:'Science',        hex:'#80f906', abbr:'SCI'},
+    {id:'ent',   name:'Entertainment',  hex:'#f9dc06', abbr:'ENT'},
+    {id:'sport', name:'Sports',         hex:'#f90606', abbr:'SPT'},
+    {id:'art',   name:'Arts & Words',   hex:'#f906b4', abbr:'ART'},
   ];
   const CAT_BY_ID = {};
   CATS.forEach(c=>{ CAT_BY_ID[c.id] = c; });
