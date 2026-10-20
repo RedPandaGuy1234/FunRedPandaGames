@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS reaction (
 );
 
 CREATE INDEX IF NOT EXISTS idx_reaction_user ON reaction(user_id);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_reaction_user_unique ON reaction(user_id);
 CREATE INDEX IF NOT EXISTS idx_reaction_time ON reaction(reaction_ms);
 CREATE INDEX IF NOT EXISTS idx_reaction_created ON reaction(created_at);
 
@@ -38,3 +37,12 @@ CREATE TABLE IF NOT EXISTS rooms (
 );
 
 CREATE INDEX IF NOT EXISTS idx_rooms_updated ON rooms(updated_at);
+
+CREATE TABLE IF NOT EXISTS battleship_rooms (
+  code TEXT PRIMARY KEY,
+  version INTEGER NOT NULL,
+  state TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_battleship_rooms_updated ON battleship_rooms(updated_at);
