@@ -19,6 +19,7 @@
     --hit:#B4552A;
     --miss:rgba(255,255,255,.35);
     --remaining:#9B5DE5;
+    --error:#F2789A;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -110,6 +111,31 @@
   .ship-status-item.sunk .name{color:rgba(255,255,255,.4); text-decoration:line-through;}
   .ship-status-item.sunk .status{color:var(--hit);}
 
+  .online-panel{display:flex; flex-direction:column; align-items:center; width:100%; margin-bottom:20px;}
+  .ol-card{
+    width:min(420px,92vw); background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.08);
+    border-radius:14px; padding:18px 20px; display:flex; flex-direction:column;
+    align-items:center; gap:12px;
+  }
+  .ol-input{
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.24);
+    color:var(--cream); font-family:inherit; font-size:15px;
+    padding:10px 12px; border-radius:9px; width:100%; text-align:center;
+  }
+  .ol-input:focus{outline:none; border-color:var(--gold);}
+  .ol-input.code{text-transform:uppercase; letter-spacing:.2em; font-weight:600;}
+  .ol-row{display:flex; gap:8px; width:100%;}
+  .ol-or{font-size:12px; color:var(--cream-dim); opacity:.8;}
+  .ol-label{font-size:12.5px; color:var(--cream-dim);}
+  .ol-code{font-weight:700; font-size:34px; letter-spacing:.22em; color:var(--gold); padding-left:.22em;}
+  .ol-bar{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center;
+    margin-bottom:18px; font-size:13px; color:var(--cream-dim);
+  }
+  .ol-bar b{color:var(--gold); letter-spacing:.15em;}
+  .ol-status{font-size:12.5px; color:var(--cream-dim); min-height:16px; text-align:center; margin:-8px 0 12px;}
+  .ol-status.error{color:var(--error);}
+
   .pass-overlay{
     position:fixed; inset:0; background:#0a120f;
     display:none; align-items:center; justify-content:center; z-index:50; padding:20px;
@@ -130,9 +156,10 @@
 
   <a class="back-link" href="index.html">← Back to game menu</a>
   <h1>Battleship</h1>
-  <p class="sub">Place your fleet, then take turns firing. Play against a bot, or pass the device for two-player battles.</p>
+  <p class="sub">Place your fleet, then take turns firing. Play against a bot, pass the device for two-player battles, or play a friend online.</p>
 
   <div class="message" id="message">Loading the game engine…</div>
+  <div class="ol-status" id="olStatus"></div>
 
   <div class="mode-panel" id="modePanel" style="display:none">
     <div class="mode-row">
@@ -140,8 +167,33 @@
       <div class="btn-group" id="modeGroup">
         <button class="opt-btn" data-value="bot">Vs Bot</button>
         <button class="opt-btn" data-value="human">Two Players</button>
+        <button class="opt-btn" data-value="online">Online</button>
       </div>
     </div>
+  </div>
+
+  <div class="online-panel" id="onlinePanel" style="display:none">
+    <div class="ol-card" id="olConnect">
+      <div class="ol-label">Your name</div>
+      <input class="ol-input" id="olName" maxlength="16" placeholder="Player">
+      <button id="olCreate">Create Room</button>
+      <div class="ol-or">or join a friend's room</div>
+      <div class="ol-row">
+        <input class="ol-input code" id="olCode" maxlength="5" placeholder="CODE">
+        <button id="olJoin">Join</button>
+      </div>
+    </div>
+    <div class="ol-card" id="olLobby" style="display:none">
+      <div class="ol-label">Room code — share it with your opponent</div>
+      <div class="ol-code" id="olCodeLobby"></div>
+      <button class="secondary" id="olLeaveLobby">Leave Room</button>
+    </div>
+  </div>
+
+  <div class="ol-bar" id="olBar" style="display:none">
+    <span>Room <b id="olCodeBar"></b></span>
+    <button class="secondary" id="rematchBtn" style="display:none">Rematch</button>
+    <button class="secondary" id="olLeaveBar">Leave Room</button>
   </div>
 
   <div class="placement-panel" id="placementPanel" style="display:none">
@@ -618,9 +670,33 @@ def reset_full_game():
 `;
 
 const COLS = "ABCDEFGHIJ";
+const SHIP_DEFS = [
+  ["patrol", "Patrol Boat", 2],
+  ["destroyer", "Destroyer", 3],
+  ["submarine", "Submarine", 3],
+  ["battleship", "Battleship", 4],
+  ["carrier", "Carrier", 5],
+];
+const ALL_SHIP_NAMES = SHIP_DEFS.map(d => d[1]);
+const POLL_MS = 1200;
+
 const messageEl = document.getElementById('message');
+const olStatusEl = document.getElementById('olStatus');
 const modePanel = document.getElementById('modePanel');
 const modeGroup = document.getElementById('modeGroup');
+const onlinePanel = document.getElementById('onlinePanel');
+const olConnect = document.getElementById('olConnect');
+const olLobby = document.getElementById('olLobby');
+const olName = document.getElementById('olName');
+const olCode = document.getElementById('olCode');
+const olCreate = document.getElementById('olCreate');
+const olJoin = document.getElementById('olJoin');
+const olCodeLobby = document.getElementById('olCodeLobby');
+const olLeaveLobby = document.getElementById('olLeaveLobby');
+const olBar = document.getElementById('olBar');
+const olCodeBar = document.getElementById('olCodeBar');
+const olLeaveBar = document.getElementById('olLeaveBar');
+const rematchBtn = document.getElementById('rematchBtn');
 const placementPanel = document.getElementById('placementPanel');
 const shipChecklist = document.getElementById('shipChecklist');
 const cancelBtn = document.getElementById('cancelBtn');
@@ -635,10 +711,30 @@ const passOverlay = document.getElementById('passOverlay');
 const passMessage = document.getElementById('passMessage');
 const passReadyBtn = document.getElementById('passReadyBtn');
 
-const ALL_SHIP_NAMES = ["Patrol Boat", "Destroyer", "Submarine", "Battleship", "Carrier"];
-
 let pyodide;
 let boardStatus = null;
+
+let onlineMode = false;
+let roomCode = null;
+let olView = null;
+let olVersion = 0;
+let olRound = -1;
+let olFleet = {};
+let olShipIndex = 0;
+let olFirst = null;
+let olLocalMsg = '';
+let olSubmitting = false;
+let olBusy = false;
+let pollTimer = null;
+let pollGen = 0;
+let clientId = null;
+
+function readStore(key){
+  try { return localStorage.getItem(key); } catch(e) { return null; }
+}
+function writeStore(key, value){
+  try { localStorage.setItem(key, value); } catch(e) {}
+}
 
 function buildGrid(container, prefix, clickable){
   container.innerHTML = '';
@@ -766,6 +862,10 @@ function cellStr(c, r){
 }
 
 function onCellClick(prefix, c, r){
+  if(onlineMode){
+    onOnlineCellClick(prefix, c, r);
+    return;
+  }
   if(!pyodide || !boardStatus) return;
   const label = cellStr(c, r);
   let resultJson;
@@ -779,8 +879,419 @@ function onCellClick(prefix, c, r){
   applyStatus(JSON.parse(resultJson));
 }
 
+function setOlStatus(text, isError){
+  olStatusEl.textContent = text || '';
+  olStatusEl.className = 'ol-status' + (isError ? ' error' : '');
+}
+
+async function post(path, payload){
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify(payload || {})
+  });
+  let data = {};
+  try { data = await response.json(); } catch(e) { data = {}; }
+  return { ok: response.ok, status: response.status, data: data };
+}
+
+function olResetPlacement(){
+  olFleet = {};
+  olShipIndex = 0;
+  olFirst = null;
+  olLocalMsg = '';
+}
+
+function olOccupied(){
+  const set = new Set();
+  Object.values(olFleet).forEach(cells => cells.forEach(([c, r]) => set.add(c * 10 + r)));
+  return set;
+}
+
+function olLine(c1, r1, c2, r2, length){
+  if(r1 === r2 && Math.abs(c1 - c2) === length - 1){
+    const step = c2 > c1 ? 1 : -1;
+    return Array.from({length}, (_, i) => [c1 + step * i, r1]);
+  }
+  if(c1 === c2 && Math.abs(r1 - r2) === length - 1){
+    const step = r2 > r1 ? 1 : -1;
+    return Array.from({length}, (_, i) => [c1, r1 + step * i]);
+  }
+  return null;
+}
+
+function olRandomFleet(){
+  const fleet = {};
+  const taken = new Set();
+  SHIP_DEFS.forEach(([id, , length]) => {
+    let placed = false;
+    while(!placed){
+      const horizontal = Math.random() < 0.5;
+      const c = Math.floor(Math.random() * (horizontal ? 11 - length : 10));
+      const r = Math.floor(Math.random() * (horizontal ? 10 : 11 - length));
+      const cells = [];
+      for(let i=0;i<length;i++) cells.push(horizontal ? [c + i, r] : [c, r + i]);
+      if(cells.every(([cc, rr]) => !taken.has(cc * 10 + rr))){
+        cells.forEach(([cc, rr]) => taken.add(cc * 10 + rr));
+        fleet[id] = cells;
+        placed = true;
+      }
+    }
+  });
+  return fleet;
+}
+
+function olPlacePrompt(){
+  const def = SHIP_DEFS[olShipIndex];
+  if(!def) return 'Submitting your fleet…';
+  return `Place your ${def[1]} (${def[2]} cells). Click one end, then the other.`;
+}
+
+function emptyView(){
+  return Array.from({length: 10}, () => Array(10).fill('empty'));
+}
+
+function localBoardView(){
+  const occ = olOccupied();
+  return Array.from({length: 10}, (_, r) => Array.from({length: 10}, (_, c) => occ.has(c * 10 + r) ? 'ship' : 'empty'));
+}
+
+function describeLast(last){
+  if(!last) return '';
+  if(last.mine){
+    if(last.result === 'sunk') return `Hit! You sank the enemy ${last.ship}!`;
+    return last.result === 'hit' ? 'Hit!' : 'Miss.';
+  }
+  if(last.result === 'sunk') return `The enemy fires at ${last.cell} — hit, and they sank your ${last.ship}!`;
+  return `The enemy fires at ${last.cell} — ${last.result === 'hit' ? 'hit!' : 'miss.'}`;
+}
+
+function onlineMessage(v){
+  if(v.phase === 'lobby') return 'Room created. Share the code and wait for your opponent.';
+  if(v.phase === 'placing'){
+    return v.opponent_ready
+      ? `${v.opponent_name} has placed their fleet. Waiting for you…`
+      : 'Your fleet is set. Waiting for your opponent to place theirs…';
+  }
+  const last = describeLast(v.last);
+  if(v.phase === 'battle'){
+    const next = v.my_turn ? 'Your turn — fire on the enemy waters.' : `Waiting for ${v.opponent_name} to fire…`;
+    return last ? `${last} ${next}` : next;
+  }
+  const end = v.winner === 'you' ? 'You sank the entire enemy fleet! You win!' : 'Your fleet has been destroyed. The enemy wins.';
+  return last ? `${last} ${end}` : end;
+}
+
+function renderOnline(){
+  const v = olView;
+  if(!v){
+    onlinePanel.style.display = 'flex';
+    olConnect.style.display = 'flex';
+    olLobby.style.display = 'none';
+    olBar.style.display = 'none';
+    boardsWrap.style.display = 'none';
+    placementPanel.style.display = 'none';
+    messageEl.textContent = "Create a room, or join a friend's room with its code.";
+    return;
+  }
+
+  const inLobby = v.phase === 'lobby';
+  onlinePanel.style.display = inLobby ? 'flex' : 'none';
+  olConnect.style.display = 'none';
+  olLobby.style.display = inLobby ? 'flex' : 'none';
+  olCodeLobby.textContent = v.code;
+  olCodeBar.textContent = v.code;
+  olBar.style.display = inLobby ? 'none' : 'flex';
+  rematchBtn.style.display = v.phase === 'over' ? 'inline-block' : 'none';
+  boardsWrap.style.display = inLobby ? 'none' : 'flex';
+
+  const placing = v.phase === 'placing' && !v.ready;
+  placementPanel.style.display = placing ? 'flex' : 'none';
+
+  if(inLobby){
+    messageEl.textContent = onlineMessage(v);
+    return;
+  }
+
+  myTitleEl.textContent = 'Your Fleet';
+  enemyTitleEl.textContent = v.opponent_name ? `${v.opponent_name}'s Waters` : 'Enemy Waters';
+
+  if(placing){
+    randomizeBtn.disabled = olSubmitting;
+    cancelBtn.disabled = !olFirst || olSubmitting;
+    renderChecklist(SHIP_DEFS.slice(0, olShipIndex).map(d => d[1]));
+    renderBoard('player', localBoardView());
+    renderBoard('bot', emptyView());
+    if(olFirst){
+      const el = document.getElementById(`player-${olFirst[0]}-${olFirst[1]}`);
+      if(el) el.classList.add('selected');
+    }
+    renderShipStatus(playerShipStatusEl, [], 'Placing fleet…');
+    renderShipStatus(botShipStatusEl, [], 'Unknown until battle starts');
+    messageEl.textContent = olLocalMsg || olPlacePrompt();
+  } else {
+    renderBoard('player', v.my_board);
+    renderBoard('bot', v.enemy_board);
+    const waiting = v.phase === 'placing';
+    renderShipStatus(playerShipStatusEl, v.my_ships_sunk, waiting ? 'Fleet set' : null);
+    renderShipStatus(botShipStatusEl, v.enemy_ships_sunk, waiting ? 'Unknown until battle starts' : null);
+    messageEl.textContent = onlineMessage(v);
+  }
+
+  playerGridEl.querySelectorAll('.cell').forEach(cell => {
+    cell.style.cursor = placing ? 'pointer' : 'default';
+  });
+  botGridEl.querySelectorAll('.cell').forEach(cell => {
+    cell.style.cursor = (v.phase === 'battle' && v.my_turn) ? 'pointer' : 'default';
+  });
+}
+
+function applyOnline(view){
+  if(!view || view.version < olVersion) return;
+  olVersion = view.version;
+  if(view.round !== olRound){
+    olRound = view.round;
+    olResetPlacement();
+  }
+  olView = view;
+  renderOnline();
+}
+
+function stopPolling(){
+  pollGen++;
+  if(pollTimer){
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+}
+
+function startPolling(){
+  stopPolling();
+  const gen = pollGen;
+  pollTimer = setTimeout(() => poll(gen), POLL_MS);
+}
+
+async function poll(gen){
+  pollTimer = null;
+  if(gen !== pollGen || !roomCode) return;
+  try {
+    const res = await post('/api/battleship/state', {code: roomCode, clientId: clientId, since: olVersion});
+    if(gen !== pollGen) return;
+    if(res.status === 404 || res.status === 403){
+      dropRoom('The room was closed.');
+      return;
+    }
+    if(res.ok && !res.data.unchanged && res.data.view){
+      applyOnline(res.data.view);
+    }
+  } catch(e) {}
+  if(gen === pollGen && roomCode) pollTimer = setTimeout(() => poll(gen), POLL_MS);
+}
+
+function resetOnlineState(){
+  stopPolling();
+  roomCode = null;
+  olView = null;
+  olVersion = 0;
+  olRound = -1;
+  olBusy = false;
+  olSubmitting = false;
+  olResetPlacement();
+}
+
+function dropRoom(message){
+  resetOnlineState();
+  renderOnline();
+  setOlStatus(message, !!message);
+}
+
+async function leaveOnlineRoom(){
+  const code = roomCode;
+  dropRoom('');
+  if(code){
+    try { await post('/api/battleship/action', {code: code, clientId: clientId, kind: 'leave'}); } catch(e) {}
+  }
+}
+
+async function enterRoom(path, payload){
+  setOlStatus('Connecting…', false);
+  olCreate.disabled = true;
+  olJoin.disabled = true;
+  try {
+    const res = await post(path, payload);
+    if(!res.ok){
+      setOlStatus(res.data.error || 'Could not connect.', true);
+      return;
+    }
+    roomCode = res.data.code;
+    olVersion = 0;
+    olRound = -1;
+    writeStore('bs_room', roomCode);
+    setOlStatus('', false);
+    applyOnline(res.data.view);
+    startPolling();
+  } catch(e) {
+    setOlStatus('Could not reach the server. Online play only works on the live site.', true);
+  } finally {
+    olCreate.disabled = false;
+    olJoin.disabled = false;
+  }
+}
+
+async function submitFleet(fleet){
+  olSubmitting = true;
+  renderOnline();
+  try {
+    const res = await post('/api/battleship/action', {code: roomCode, clientId: clientId, kind: 'place', fleet: fleet});
+    if(res.ok){
+      applyOnline(res.data.view);
+    } else {
+      setOlStatus(res.data.error || 'Could not set your fleet.', true);
+      olResetPlacement();
+    }
+  } catch(e) {
+    setOlStatus('Could not reach the server.', true);
+    olResetPlacement();
+  }
+  olSubmitting = false;
+  if(olView) renderOnline();
+}
+
+async function fireAt(c, r){
+  olBusy = true;
+  try {
+    const res = await post('/api/battleship/action', {code: roomCode, clientId: clientId, kind: 'fire', c: c, r: r});
+    if(res.ok){
+      setOlStatus('', false);
+      applyOnline(res.data.view);
+    } else {
+      setOlStatus(res.data.error || 'Could not fire.', true);
+    }
+  } catch(e) {
+    setOlStatus('Could not reach the server.', true);
+  }
+  olBusy = false;
+}
+
+async function requestRematch(){
+  try {
+    const res = await post('/api/battleship/action', {code: roomCode, clientId: clientId, kind: 'rematch'});
+    if(res.ok){
+      setOlStatus('', false);
+      applyOnline(res.data.view);
+    } else {
+      setOlStatus(res.data.error || 'Could not start a rematch.', true);
+    }
+  } catch(e) {
+    setOlStatus('Could not reach the server.', true);
+  }
+}
+
+function olPlaceClick(c, r){
+  const def = SHIP_DEFS[olShipIndex];
+  if(!def) return;
+  const [id, name, length] = def;
+  const occ = olOccupied();
+
+  if(!olFirst){
+    if(occ.has(c * 10 + r)){
+      olLocalMsg = 'That cell is already occupied. Choose another.';
+    } else {
+      olFirst = [c, r];
+      olLocalMsg = `First cell set for the ${name}. Now click the other end (${length} cells total, same row or column).`;
+    }
+    renderOnline();
+    return;
+  }
+
+  const cells = olLine(olFirst[0], olFirst[1], c, r, length);
+  if(!cells){
+    olLocalMsg = `That doesn't line up as a ${length}-cell ship. Pick two endpoints in the same row or column, exactly ${length - 1} apart.`;
+    renderOnline();
+    return;
+  }
+  if(cells.some(([cc, rr]) => occ.has(cc * 10 + rr))){
+    olLocalMsg = 'That placement overlaps another ship. Try again.';
+    olFirst = null;
+    renderOnline();
+    return;
+  }
+
+  olFleet[id] = cells;
+  olFirst = null;
+  olShipIndex++;
+  if(olShipIndex >= SHIP_DEFS.length){
+    olLocalMsg = 'All ships placed! Submitting your fleet…';
+    submitFleet(olFleet);
+    return;
+  }
+  olLocalMsg = `${name} placed! ` + olPlacePrompt();
+  renderOnline();
+}
+
+function olRandomize(){
+  if(!olView || olView.phase !== 'placing' || olView.ready || olSubmitting) return;
+  olFleet = olRandomFleet();
+  olShipIndex = SHIP_DEFS.length;
+  olFirst = null;
+  olLocalMsg = 'Your fleet has been placed randomly. Submitting…';
+  submitFleet(olFleet);
+}
+
+function onOnlineCellClick(prefix, c, r){
+  const v = olView;
+  if(!v) return;
+  if(prefix === 'player'){
+    if(v.phase === 'placing' && !v.ready && !olSubmitting) olPlaceClick(c, r);
+    return;
+  }
+  if(v.phase !== 'battle' || !v.my_turn || olBusy) return;
+  if(v.enemy_board[r][c] !== 'empty') return;
+  fireAt(c, r);
+}
+
+function enterOnlineMode(){
+  onlineMode = true;
+  modePanel.style.display = 'none';
+  passOverlay.classList.remove('show');
+  placementPanel.style.display = 'none';
+  boardsWrap.style.display = 'none';
+  renderOnline();
+}
+
+function exitOnlineMode(){
+  const code = roomCode;
+  resetOnlineState();
+  onlineMode = false;
+  onlinePanel.style.display = 'none';
+  olBar.style.display = 'none';
+  setOlStatus('', false);
+  if(code){
+    post('/api/battleship/action', {code: code, clientId: clientId, kind: 'leave'}).catch(() => {});
+  }
+  if(pyodide){
+    applyStatus(JSON.parse(pyodide.globals.get('reset_full_game')()));
+  }
+}
+
+function joinFromInput(){
+  const code = olCode.value.trim().toUpperCase();
+  if(code.length !== 5){
+    setOlStatus('Enter the 5-character room code.', true);
+    return;
+  }
+  const name = olName.value.trim();
+  writeStore('bs_name', name);
+  enterRoom('/api/battleship/join', {clientId: clientId, code: code, name: name});
+}
+
 modeGroup.querySelectorAll('.opt-btn').forEach(btn => {
   btn.addEventListener('click', () => {
+    if(btn.dataset.value === 'online'){
+      enterOnlineMode();
+      return;
+    }
     if(!pyodide) return;
     const resultJson = pyodide.globals.get('choose_mode')(btn.dataset.value);
     applyStatus(JSON.parse(resultJson));
@@ -788,18 +1299,32 @@ modeGroup.querySelectorAll('.opt-btn').forEach(btn => {
 });
 
 randomizeBtn.addEventListener('click', () => {
+  if(onlineMode){
+    olRandomize();
+    return;
+  }
   if(!pyodide) return;
   const resultJson = pyodide.globals.get('randomize_placement')();
   applyStatus(JSON.parse(resultJson));
 });
 
 cancelBtn.addEventListener('click', () => {
+  if(onlineMode){
+    olFirst = null;
+    olLocalMsg = '';
+    renderOnline();
+    return;
+  }
   if(!pyodide) return;
   const resultJson = pyodide.globals.get('cancel_first_click')();
   applyStatus(JSON.parse(resultJson));
 });
 
 newGameBtn.addEventListener('click', () => {
+  if(onlineMode){
+    exitOnlineMode();
+    return;
+  }
   if(!pyodide) return;
   const resultJson = pyodide.globals.get('reset_full_game')();
   applyStatus(JSON.parse(resultJson));
@@ -810,6 +1335,37 @@ passReadyBtn.addEventListener('click', () => {
   const resultJson = pyodide.globals.get('confirm_pass')();
   applyStatus(JSON.parse(resultJson));
 });
+
+olCode.addEventListener('input', () => {
+  olCode.value = olCode.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+});
+olCode.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') joinFromInput();
+});
+olCreate.addEventListener('click', () => {
+  const name = olName.value.trim();
+  writeStore('bs_name', name);
+  enterRoom('/api/battleship/create', {clientId: clientId, name: name});
+});
+olJoin.addEventListener('click', joinFromInput);
+olLeaveLobby.addEventListener('click', leaveOnlineRoom);
+olLeaveBar.addEventListener('click', leaveOnlineRoom);
+rematchBtn.addEventListener('click', requestRematch);
+
+clientId = readStore('bs_client');
+if(!clientId){
+  const bytes = crypto.getRandomValues(new Uint8Array(24));
+  clientId = Array.from(bytes, x => x.toString(16).padStart(2, '0')).join('');
+  writeStore('bs_client', clientId);
+}
+olName.value = readStore('bs_name') || '';
+olCode.value = readStore('bs_room') || '';
+fetch('/api/me', { credentials: 'same-origin' })
+  .then(r => r.ok ? r.json() : null)
+  .then(data => {
+    if(data && data.username && !olName.value) olName.value = data.username;
+  })
+  .catch(() => {});
 
 async function boot(){
   pyodide = await loadPyodide();
