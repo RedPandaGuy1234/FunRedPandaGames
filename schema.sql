@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS reaction (
 );
 
 CREATE INDEX IF NOT EXISTS idx_reaction_user ON reaction(user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_reaction_user_unique ON reaction(user_id);
 CREATE INDEX IF NOT EXISTS idx_reaction_time ON reaction(reaction_ms);
 CREATE INDEX IF NOT EXISTS idx_reaction_created ON reaction(created_at);
 
