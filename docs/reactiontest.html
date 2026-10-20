@@ -38,6 +38,7 @@
     display:flex; align-items:center; justify-content:center;
     text-align:center; padding:20px;
     font-family:inherit; font-weight:700; font-size:20px;
+    white-space:pre-line;
     cursor:pointer; user-select:none;
     background:rgba(255,255,255,.06);
     border:1px solid rgba(255,255,255,.15);
@@ -46,6 +47,35 @@
   .pad.waiting{background:rgba(180,85,42,.35);}
   .pad.go{background:var(--go);}
   .pad.idle:hover{background:rgba(255,255,255,.1);}
+
+  .board{width:min(420px,92vw); margin-top:34px; display:flex; flex-direction:column; gap:14px;}
+  .board h2{margin:0; font-size:20px; text-align:center;}
+  .note{font-size:13.5px; color:var(--cream-dim); text-align:center; line-height:1.5;}
+  .note a{color:var(--gold);}
+  .podium{display:flex; align-items:flex-end; justify-content:center; gap:10px;}
+  .spot{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0;}
+  .spot .name{font-weight:700; font-size:13.5px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .spot .time{font-size:12.5px; color:var(--cream-dim); min-height:16px;}
+  .spot .block{
+    width:100%; border-radius:10px 10px 0 0;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:24px; color:var(--felt-dark);
+  }
+  .spot.first .block{height:100px; background:linear-gradient(180deg,#E7C866,var(--gold));}
+  .spot.second .block{height:72px; background:linear-gradient(180deg,#E8EBF0,#A9B1BD);}
+  .spot.third .block{height:54px; background:linear-gradient(180deg,#E3AE7E,#B4703A);}
+  .spot.empty .name{opacity:.4;}
+  .spot.me .name{color:var(--gold);}
+  .rest{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}
+  .rest li{
+    display:flex; align-items:center; gap:10px; font-size:14px;
+    background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.08);
+    border-radius:9px; padding:8px 12px;
+  }
+  .rest li.me{border-color:var(--gold);}
+  .rest .rank{width:30px; color:var(--cream-dim);}
+  .rest .nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .rest .ms{font-variant-numeric:tabular-nums;}
 </style>
 </head>
 <body>
@@ -55,6 +85,20 @@
   <p class="sub">Click to start, wait for the box to turn green, then click as fast as you can.</p>
 
   <div class="pad idle" id="pad">Loading the game engine…</div>
+
+  <section class="board">
+    <h2>Leaderboard</h2>
+    <div class="note" id="boardStatus">Checking your account…</div>
+    <div class="note" id="loginPrompt" style="display:none">
+      Log in or create an account to save your best time and see the leaderboard.
+      <a href="account.html">Log in / Sign up</a>
+    </div>
+    <div id="boardBody" style="display:none">
+      <div class="podium" id="podium"></div>
+      <ul class="rest" id="rest"></ul>
+      <div class="note" id="yourBest"></div>
+    </div>
+  </section>
 
 <script>
 const PYTHON_SOURCE = `
@@ -68,14 +112,115 @@ def format_result(elapsed_seconds, delay_seconds):
 `;
 
 const pad = document.getElementById('pad');
+const boardStatus = document.getElementById('boardStatus');
+const loginPrompt = document.getElementById('loginPrompt');
+const boardBody = document.getElementById('boardBody');
+const podiumEl = document.getElementById('podium');
+const restEl = document.getElementById('rest');
+const yourBestEl = document.getElementById('yourBest');
+
 let pyodide;
 let stage = 'idle';
 let timeoutHandle = null;
 let goTimestamp = null;
+let username = null;
 
 function setPad(text, cls){
   pad.textContent = text;
   pad.className = 'pad ' + cls;
+}
+
+function el(tag, className, text){
+  const node = document.createElement(tag);
+  if(className) node.className = className;
+  if(text !== undefined) node.textContent = text;
+  return node;
+}
+
+function renderBoard(data){
+  const scores = data.scores || [];
+  boardStatus.style.display = 'none';
+  loginPrompt.style.display = 'none';
+  boardBody.style.display = 'block';
+
+  podiumEl.innerHTML = '';
+  [1, 0, 2].forEach(i => {
+    const entry = scores[i];
+    const cls = ['first', 'second', 'third'][i];
+    const spot = el('div', 'spot ' + cls + (entry ? '' : ' empty') + (entry && entry.username === username ? ' me' : ''));
+    spot.appendChild(el('div', 'name', entry ? entry.username : '—'));
+    spot.appendChild(el('div', 'time', entry ? entry.reaction_ms + ' ms' : ''));
+    spot.appendChild(el('div', 'block', String(i + 1)));
+    podiumEl.appendChild(spot);
+  });
+
+  restEl.innerHTML = '';
+  scores.slice(3).forEach((entry, idx) => {
+    const li = el('li', entry.username === username ? 'me' : '');
+    li.appendChild(el('span', 'rank', String(idx + 4)));
+    li.appendChild(el('span', 'nm', entry.username));
+    li.appendChild(el('span', 'ms', entry.reaction_ms + ' ms'));
+    restEl.appendChild(li);
+  });
+
+  yourBestEl.textContent = data.you
+    ? 'Your best: ' + data.you.reaction_ms + ' ms'
+    : 'Play a round to get on the leaderboard.';
+}
+
+function showLoggedOut(){
+  boardStatus.style.display = 'none';
+  boardBody.style.display = 'none';
+  loginPrompt.style.display = 'block';
+}
+
+async function loadBoard(){
+  if(!username) return;
+  try {
+    const res = await fetch('/api/reaction', { credentials: 'same-origin' });
+    if(res.status === 401){
+      username = null;
+      showLoggedOut();
+      return;
+    }
+    if(res.ok) renderBoard(await res.json());
+  } catch (err) {
+    boardStatus.style.display = 'block';
+    boardStatus.textContent = 'The leaderboard only works on the live site.';
+  }
+}
+
+async function submitScore(ms){
+  try {
+    const res = await fetch('/api/reaction', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ reaction_ms: ms })
+    });
+    if(!res.ok) return null;
+    const data = await res.json();
+    renderBoard(data);
+    return data;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function loadAccount(){
+  try {
+    const res = await fetch('/api/me', { credentials: 'same-origin' });
+    const data = res.ok ? await res.json() : {};
+    username = data.username || null;
+  } catch (err) {
+    username = null;
+  }
+  if(username){
+    boardStatus.textContent = 'Loading the leaderboard…';
+    await loadBoard();
+  } else {
+    showLoggedOut();
+  }
 }
 
 async function boot(){
@@ -115,10 +260,27 @@ pad.addEventListener('click', () => {
     const resultText = formatResult(elapsedSeconds, delaySeconds);
     stage = 'idle';
     setPad(resultText, 'idle');
+
+    if(username){
+      const ms = Math.round(elapsedSeconds * 1000);
+      submitScore(ms).then(data => {
+        if(data && pad.textContent === resultText){
+          const note = data.improved
+            ? 'New personal best!'
+            : 'Your best is still ' + data.best + ' ms.';
+          setPad(resultText + '\n' + note, 'idle');
+        }
+      });
+    }
     return;
   }
 });
 
+setInterval(() => {
+  if(username && !document.hidden) loadBoard();
+}, 20000);
+
+loadAccount();
 boot();
 </script>
 </body>
