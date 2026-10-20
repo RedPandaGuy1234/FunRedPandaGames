@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.7.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.7...v2.7.0) (2026-10-20)
+
+
+### Features
+
+* Add leaderboard and account management features ([ebd26a2](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ebd26a2595463a967580c674561e4051b19478b2))
+* Implement leaderboard for reaction scores ([dd86c91](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/dd86c91729c255c5286bdecb4e476cb78378222f))
+
+
+### Bug Fixes
+
+* add more grammar ([9855818](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/9855818975a71f9ed0fafa2a8df7535b16fe92fb))
+
+
+### Other
+
+* change colors for The Questions catagories ([88a7898](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/88a7898f13d474094d550dbbc4a1b02fa11b9892))
+* Update schema.sql ([bfc1775](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/bfc1775cfad36d227fc12005c5fd8396588b43d2))
+
 ## [2.6.7](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.6...v2.6.7) (2026-10-19)
 
 
