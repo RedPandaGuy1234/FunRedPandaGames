@@ -106,7 +106,7 @@ const PYTHON_SOURCE = `
 import random
 
 def get_delay_seconds():
-    return random.randint(1, 15)
+    return random.randint(1, 8)
 
 def format_result(elapsed_seconds, delay_seconds):
     return f"It took you {elapsed_seconds:.3f} seconds to react, after waiting for {delay_seconds} seconds! Click to try again."
