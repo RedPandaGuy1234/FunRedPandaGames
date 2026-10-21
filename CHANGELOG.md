@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.8.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.8.0...v2.8.1) (2026-10-21)
+
+
+### Other
+
+* Add GitHub Actions workflow for Python package release ([366eba6](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/366eba6da943fa2887eb80582de16205aaaf7f94))
+* Revise README for feature updates and clarity ([ecdd5f6](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ecdd5f62af2054f51fa41998fce5a65e26971d98))
+
 ## [2.8.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.7.0...v2.8.0) (2026-10-21)
 
 
