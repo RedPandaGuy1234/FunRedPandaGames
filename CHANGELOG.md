@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.8.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.7.0...v2.8.0) (2026-10-21)
+
+
+### Features
+
+* Add battleship game logic and room management ([3087bdb](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/3087bdb4c9b9a0da798f49df3df712d8e86573a0))
+* Add text toxicity check function ([8ef8a04](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/8ef8a04e0eb43fb63f00f32ece34635afad5763a))
+
+
+### Continuations
+
+* Enhance online play functionality and UI ([0814df7](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/0814df713e1cb57d4256e957f3528dec47863ca5))
+* Implement battleship game actions in action.js ([e06a919](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/e06a9197b9fbd58147dc679db5a771bb9cb95abc))
+* Implement create room API for battleship game ([a905516](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/a905516c00e7d7965731447f0a8402a108679b79))
+* Implement join functionality for battleship game ([ab58245](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ab582459f9fbc9498840a1bf523b06439a874e93))
+* Implement onRequestPost for battleship state ([449be13](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/449be13183d6a0c368f0456f4349a7c0e3d2b07c))
+
+
+### Other
+
+* Add GitHub Actions workflow for profanity filtering ([cb42ebc](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/cb42ebccd5a885421fcaeda61ad3385ae43a6660))
+* Add script entries for Battleship and Chess ([2aabe42](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/2aabe42e0aba3aa1218b4fe70323262efec11d1f))
+* Clean up comments in python-publish.yml ([f93b95c](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/f93b95cdaad047b45b17b4f52087901796551138))
+* Create pyproject.toml for project setup ([0a9b7ff](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/0a9b7ff70ce70f73be6db0ea7890bc7318c563df))
+* Modify reaction indexes and add battleship_rooms table ([4f3d18d](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4f3d18d97b86a013fae7401d7bd03bd9a7cf90b7))
+* Refactor main execution to use main function ([98fdda4](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/98fdda402158815ba435058cd797c951382587e9))
+* Update MANIFEST.in to exclude and prune files ([9437996](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/94379962624bbf362529defc588e0e4cf23726d3))
+
 ## [2.7.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.6.7...v2.7.0) (2026-10-20)
 
 
