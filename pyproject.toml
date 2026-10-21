@@ -26,3 +26,7 @@ packages = ["mainfile", "mainfile.Battleship", "mainfile.Chess", "mainfile.Numbe
 
 [tool.setuptools.package-data]
 "*" = ["*"] 
+
+[project.scripts]
+play-battleship = "mainfile.Battleship.Battleship:main"
+play-chess = "mainfile.Chess.board:main"
