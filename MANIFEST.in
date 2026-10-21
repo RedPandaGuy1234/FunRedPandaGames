@@ -1,0 +1,5 @@
+prune docs
+prune functions
+exclude schema.sql
+exclude release-please-config.json
+exclude .release-please-manifest.json
