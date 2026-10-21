@@ -210,7 +210,7 @@ sudo pacman -S stockfish
 Download a prebuilt binary from [stockfishchess.org/download](https://stockfishchess.org/download/), unzip it, and either add it to your PATH or set `STOCKFISH_PATH` in `mainfile/Chess/board.py` to its full path.
 
 ### Reaction Test
-A quick game that measures how fast your reflexes are, in your terminal or your browser. It waits a random amount of time (1-15 seconds), tells you to go, then reports how long it took you to react.
+A quick game that measures how fast your reflexes are, in your terminal or your browser. It waits a random amount of time (0-8 seconds), tells you to go, then reports how long it took you to react.
 
 **Features**
 - Random wait time before the "go" signal
