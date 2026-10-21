@@ -64,6 +64,8 @@
   }
   input:focus{outline:none; border-color:var(--gold);}
   .hint{font-size:11.5px; color:var(--cream-dim); opacity:.8;}
+  .join-note{font-size:14px; color:var(--cream-dim); text-align:center; line-height:1.5;}
+  .join-note b{color:var(--gold);}
   .captcha{display:flex; justify-content:center; min-height:65px;}
   button.action{
     font-family:inherit;
@@ -124,6 +126,7 @@
     </form>
 
     <form id="signupForm" class="panel hidden" style="padding:0; background:none; border:none;">
+      <div class="join-note hidden" id="joinNote"></div>
       <div class="field">
         <label for="signupUsername">Username</label>
         <input type="text" id="signupUsername" autocomplete="username" maxlength="20">
@@ -168,6 +171,7 @@ const signupForm = document.getElementById('signupForm');
 const loginSubmit = document.getElementById('loginSubmit');
 const signupSubmit = document.getElementById('signupSubmit');
 const logoutBtn = document.getElementById('logoutBtn');
+const joinNote = document.getElementById('joinNote');
 
 let turnstileLoaded = false;
 let currentTab = 'login';
@@ -216,6 +220,7 @@ function showLoggedOut(){
   authPanel.classList.remove('hidden');
   authVisible = true;
   ensureCaptcha(currentTab);
+  loadJoinNote();
 }
 
 function showTab(which){
@@ -243,6 +248,30 @@ async function post(path, payload){
     credentials: 'same-origin',
     body: JSON.stringify(payload || {})
   });
+}
+
+async function loadJoinNote(){
+  try {
+    const { ok, data } = await api('/api/user-count', { credentials: 'same-origin' });
+    if(!ok || !Number.isInteger(data.total)){
+      joinNote.classList.add('hidden');
+      return;
+    }
+    joinNote.textContent = '';
+    if(data.total === 0){
+      joinNote.appendChild(document.createTextNode('Be the first to create an account!'));
+    } else {
+      const people = data.total === 1 ? 'person' : 'people';
+      const count = document.createElement('b');
+      count.textContent = data.total;
+      joinNote.appendChild(document.createTextNode('Join '));
+      joinNote.appendChild(count);
+      joinNote.appendChild(document.createTextNode(' other ' + people + ' and create an account!'));
+    }
+    joinNote.classList.remove('hidden');
+  } catch (err) {
+    joinNote.classList.add('hidden');
+  }
 }
 
 loginTab.addEventListener('click', () => showTab('login'));
