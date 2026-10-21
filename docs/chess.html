@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="description" content="FunRedPandaGames: the best website to play games on and have fun.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chess</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -19,6 +18,7 @@
     --sq-dark:#7C9473;
     --sq-select:#D4A72C;
     --sq-target:#4FD1C5;
+    --error:#F2789A;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -73,6 +73,29 @@
   }
   button.secondary:active{transform:translateY(2px);}
   button.secondary:disabled{opacity:.4; cursor:default;}
+  .ol-input{
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.24);
+    color:var(--cream); font-family:inherit; font-size:15px;
+    padding:10px 12px; border-radius:9px; width:100%; text-align:center;
+  }
+  .ol-input:focus{outline:none; border-color:var(--gold);}
+  .ol-input.code{text-transform:uppercase; letter-spacing:.2em; font-weight:600;}
+  .ol-row{display:flex; gap:8px; width:100%;}
+  .ol-or{font-size:12px; color:var(--cream-dim); opacity:.8;}
+  .ol-card{
+    width:min(420px,92vw); background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.08);
+    border-radius:14px; padding:18px 20px; display:flex; flex-direction:column;
+    align-items:center; gap:12px; margin-bottom:20px;
+  }
+  .ol-label{font-size:12.5px; color:var(--cream-dim);}
+  .ol-code{font-weight:700; font-size:34px; letter-spacing:.22em; color:var(--gold); padding-left:.22em;}
+  .ol-bar{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center;
+    margin-bottom:18px; font-size:13px; color:var(--cream-dim);
+  }
+  .ol-bar b{color:var(--gold); letter-spacing:.15em;}
+  .ol-status{font-size:12.5px; color:var(--cream-dim); min-height:16px; text-align:center; margin:-8px 0 12px;}
+  .ol-status.error{color:var(--error);}
   .board{
     display:grid; grid-template-columns:repeat(8,44px); grid-template-rows:repeat(8,44px);
     border:2px solid rgba(0,0,0,.35); border-radius:6px; overflow:hidden;
@@ -86,6 +109,8 @@
   .square.dark{background:var(--sq-dark);}
   .square.piece-white{color:#fdfdfd; text-shadow:0 0 1px #000, 0 0 2px #000, 0 0 3px rgba(0,0,0,.6);}
   .square.piece-black{color:#161616; text-shadow:0 0 1px #fff, 0 0 2px #fff;}
+  .square.last{box-shadow:inset 0 0 0 100px rgba(212,167,44,.28);}
+  .square.check{background-image:radial-gradient(circle, rgba(242,120,154,.9), transparent 72%);}
   .square.selected::after{
     content:''; position:absolute; inset:2px; border-radius:4px;
     box-shadow:inset 0 0 0 3px var(--sq-select);
@@ -104,9 +129,10 @@
 
   <a class="back-link" href="index.html">← Back to game menu</a>
   <h1>Chess</h1>
-  <p class="sub">Full chess rules, no external engine. Pawns always promote to a queen.</p>
+  <p class="sub">Full chess rules, no external engine. Pawns always promote to a queen. Play a bot, a friend on this device, or a friend online.</p>
 
   <div class="message" id="message">Loading the game engine…</div>
+  <div class="ol-status" id="olStatus"></div>
 
   <div class="setup-panel" id="setupPanel">
     <div class="setup-row">
@@ -114,6 +140,7 @@
       <div class="btn-group" id="modeGroup">
         <button class="opt-btn active" data-value="bot">Vs Bot</button>
         <button class="opt-btn" data-value="human">Two Players</button>
+        <button class="opt-btn" data-value="online">Online</button>
       </div>
     </div>
     <div class="setup-row" id="botColorRow">
@@ -132,7 +159,37 @@
         <button class="opt-btn" data-value="hard">Hard</button>
       </div>
     </div>
+    <div class="setup-row" id="onlineRow" style="display:none; width:100%">
+      <div class="label">Your name</div>
+      <input class="ol-input" id="olName" maxlength="16" placeholder="Player">
+      <button class="action" id="olCreate">Create Room</button>
+      <div class="ol-or">or join a friend's room</div>
+      <div class="ol-row">
+        <input class="ol-input code" id="olCode" maxlength="5" placeholder="CODE">
+        <button class="secondary" id="olJoin">Join</button>
+      </div>
+    </div>
     <button class="action" id="startBtn" disabled>Start Game</button>
+  </div>
+
+  <div class="ol-card" id="olLobby" style="display:none">
+    <div class="ol-label">Room code — share it with your opponent</div>
+    <div class="ol-code" id="olCodeLobby"></div>
+    <button class="secondary" id="olLeaveLobby">Leave Room</button>
+  </div>
+
+  <div class="ol-bar" id="olBar" style="display:none">
+    <span>Room <b id="olCodeBar"></b></span>
+    <button class="secondary" id="olDrawBtn">Offer Draw</button>
+    <button class="secondary" id="olResignBtn">Resign</button>
+    <button class="action" id="olRematchBtn" style="display:none">Rematch</button>
+    <button class="secondary" id="olLeaveBar">Leave Room</button>
+  </div>
+
+  <div class="ol-bar" id="olDrawRow" style="display:none">
+    <span id="olDrawText"></span>
+    <button class="action" id="olAcceptBtn">Accept Draw</button>
+    <button class="secondary" id="olDeclineBtn">Decline</button>
   </div>
 
   <div class="controls" id="gameControls" style="display:none">
@@ -395,18 +452,61 @@ def get_status():
 `;
 
 const FILES = "abcdefgh";
+const POLL_MS = 1200;
+const SYMBOLS = {
+  wK:'\u2654', wQ:'\u2655', wR:'\u2656', wB:'\u2657', wN:'\u2658', wP:'\u2659',
+  bK:'\u265A', bQ:'\u265B', bR:'\u265C', bB:'\u265D', bN:'\u265E', bP:'\u265F'
+};
+
 const messageEl = document.getElementById('message');
+const olStatusEl = document.getElementById('olStatus');
 const setupPanel = document.getElementById('setupPanel');
 const gameControls = document.getElementById('gameControls');
 const boardEl = document.getElementById('board');
 const startBtn = document.getElementById('startBtn');
 const botColorRow = document.getElementById('botColorRow');
 const difficultyRow = document.getElementById('difficultyRow');
+const onlineRow = document.getElementById('onlineRow');
+const olName = document.getElementById('olName');
+const olCode = document.getElementById('olCode');
+const olCreate = document.getElementById('olCreate');
+const olJoin = document.getElementById('olJoin');
+const olLobby = document.getElementById('olLobby');
+const olCodeLobby = document.getElementById('olCodeLobby');
+const olLeaveLobby = document.getElementById('olLeaveLobby');
+const olBar = document.getElementById('olBar');
+const olCodeBar = document.getElementById('olCodeBar');
+const olDrawBtn = document.getElementById('olDrawBtn');
+const olResignBtn = document.getElementById('olResignBtn');
+const olRematchBtn = document.getElementById('olRematchBtn');
+const olLeaveBar = document.getElementById('olLeaveBar');
+const olDrawRow = document.getElementById('olDrawRow');
+const olDrawText = document.getElementById('olDrawText');
+const olAcceptBtn = document.getElementById('olAcceptBtn');
+const olDeclineBtn = document.getElementById('olDeclineBtn');
 
 let pyodide;
 let mode = 'bot';
 let botColor = 'random';
 let difficulty = 'easy';
+
+let roomCode = null;
+let olView = null;
+let olVersion = 0;
+let olRound = -1;
+let olSelected = null;
+let olBusy = false;
+let pollTimer = null;
+let pollGen = 0;
+let clientId = null;
+let flipped = false;
+
+function readStore(key){
+  try { return localStorage.getItem(key); } catch(e) { return null; }
+}
+function writeStore(key, value){
+  try { localStorage.setItem(key, value); } catch(e) {}
+}
 
 function wireButtonGroup(groupId, onSelect){
   const group = document.getElementById(groupId);
@@ -421,17 +521,22 @@ function wireButtonGroup(groupId, onSelect){
 
 wireButtonGroup('modeGroup', (value) => {
   mode = value;
-  const showBotOptions = mode === 'bot';
-  botColorRow.style.display = showBotOptions ? 'flex' : 'none';
-  difficultyRow.style.display = showBotOptions ? 'flex' : 'none';
+  const isBot = mode === 'bot';
+  const isOnline = mode === 'online';
+  botColorRow.style.display = isBot ? 'flex' : 'none';
+  difficultyRow.style.display = isBot ? 'flex' : 'none';
+  onlineRow.style.display = isOnline ? 'flex' : 'none';
+  startBtn.style.display = isOnline ? 'none' : '';
 });
 wireButtonGroup('botColorGroup', (value) => { botColor = value; });
 wireButtonGroup('difficultyGroup', (value) => { difficulty = value; });
 
-function buildBoard(){
+function buildBoard(isFlipped){
   boardEl.innerHTML = '';
-  for(let rank=8; rank>=1; rank--){
-    for(let fileIdx=0; fileIdx<8; fileIdx++){
+  const ranks = isFlipped ? [1,2,3,4,5,6,7,8] : [8,7,6,5,4,3,2,1];
+  const fileOrder = isFlipped ? [7,6,5,4,3,2,1,0] : [0,1,2,3,4,5,6,7];
+  for(const rank of ranks){
+    for(const fileIdx of fileOrder){
       const file = FILES[fileIdx];
       const squareName = `${file}${rank}`;
       const isLight = (fileIdx + rank) % 2 === 1;
@@ -444,9 +549,13 @@ function buildBoard(){
     }
   }
 }
-buildBoard();
+buildBoard(false);
 
 function onSquareClick(squareName){
+  if(roomCode){
+    onOnlineSquareClick(squareName);
+    return;
+  }
   if(!pyodide) return;
   const resultJson = pyodide.globals.get('square_click')(squareName);
   applyStatus(JSON.parse(resultJson));
@@ -469,7 +578,7 @@ function applyStatus(status){
     if(!el) continue;
     const info = status.squares[squareName];
     el.textContent = info ? info.symbol : '';
-    el.classList.remove('selected', 'target', 'has-piece', 'piece-white', 'piece-black');
+    el.classList.remove('selected', 'target', 'has-piece', 'piece-white', 'piece-black', 'last', 'check');
     if(info){
       el.classList.add(info.color === 'white' ? 'piece-white' : 'piece-black');
     }
@@ -484,6 +593,283 @@ function applyStatus(status){
     }
   }
 }
+
+function setOlStatus(text, isError){
+  olStatusEl.textContent = text || '';
+  olStatusEl.className = 'ol-status' + (isError ? ' error' : '');
+}
+
+async function post(path, payload){
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify(payload || {})
+  });
+  let data = {};
+  try { data = await response.json(); } catch(e) { data = {}; }
+  return { ok: response.ok, status: response.status, data: data };
+}
+
+function onlineMessage(v){
+  if(v.phase === 'lobby') return 'Room created. Share the code and wait for your opponent.';
+  const colorName = v.color === 'white' ? 'White' : 'Black';
+  if(v.phase === 'over'){
+    const r = v.result;
+    if(!r.winner) return `The game is a draw by ${r.reason}.`;
+    if(r.reason === 'resignation'){
+      return r.winner === 'you' ? `${v.opponent_name} resigned. You win!` : 'You resigned. You lose.';
+    }
+    return r.winner === 'you' ? `You win by ${r.reason}!` : `${v.opponent_name} wins by ${r.reason}.`;
+  }
+  const check = v.in_check ? ' Check!' : '';
+  let offer = '';
+  if(v.draw_offer === 'mine') offer = ' You offered a draw.';
+  else if(v.draw_offer === 'theirs') offer = ` ${v.opponent_name} offers a draw.`;
+  const turn = v.my_turn ? `Your move (${colorName}).` : `Waiting for ${v.opponent_name} (you are ${colorName}).`;
+  return turn + check + offer;
+}
+
+function renderOnline(){
+  const v = olView;
+  if(!v) return;
+  const inLobby = v.phase === 'lobby';
+  setupPanel.style.display = 'none';
+  gameControls.style.display = 'none';
+  olLobby.style.display = inLobby ? 'flex' : 'none';
+  olBar.style.display = inLobby ? 'none' : 'flex';
+  boardEl.style.display = inLobby ? 'none' : 'grid';
+  olCodeLobby.textContent = v.code;
+  olCodeBar.textContent = v.code;
+  messageEl.textContent = onlineMessage(v);
+
+  if(inLobby){
+    olDrawRow.style.display = 'none';
+    return;
+  }
+
+  const wantFlip = v.color === 'black';
+  if(wantFlip !== flipped){
+    flipped = wantFlip;
+    buildBoard(flipped);
+  }
+
+  const playing = v.phase === 'playing';
+  olDrawBtn.style.display = playing ? '' : 'none';
+  olResignBtn.style.display = playing ? '' : 'none';
+  olDrawBtn.disabled = v.draw_offer !== null;
+  olRematchBtn.style.display = v.phase === 'over' ? 'inline-block' : 'none';
+  olDrawRow.style.display = (playing && v.draw_offer === 'theirs') ? 'flex' : 'none';
+  olDrawText.textContent = `${v.opponent_name} offers a draw.`;
+
+  if(!v.my_turn) olSelected = null;
+  const targets = olSelected !== null ? (v.targets[olSelected] || []) : [];
+  const turnLetter = v.turn === 'white' ? 'w' : 'b';
+
+  for(let i = 0; i < 64; i++){
+    const name = FILES[i % 8] + (Math.floor(i / 8) + 1);
+    const el = document.getElementById(`sq-${name}`);
+    if(!el) continue;
+    const piece = v.board[i];
+    el.textContent = piece ? SYMBOLS[piece] : '';
+    el.classList.remove('selected', 'target', 'has-piece', 'piece-white', 'piece-black', 'last', 'check');
+    if(piece) el.classList.add(piece[0] === 'w' ? 'piece-white' : 'piece-black');
+    if(olSelected === i) el.classList.add('selected');
+    if(targets.includes(i)){
+      el.classList.add('target');
+      if(piece) el.classList.add('has-piece');
+    }
+    if(v.last && (v.last.from === i || v.last.to === i)) el.classList.add('last');
+    if(v.in_check && piece === turnLetter + 'K') el.classList.add('check');
+  }
+}
+
+function applyOnline(view){
+  if(!view || view.version < olVersion) return;
+  olVersion = view.version;
+  if(view.round !== olRound){
+    olRound = view.round;
+    olSelected = null;
+  }
+  olView = view;
+  renderOnline();
+}
+
+function onOnlineSquareClick(name){
+  const v = olView;
+  if(!v || v.phase !== 'playing' || !v.my_turn || olBusy) return;
+  const idx = FILES.indexOf(name[0]) + (parseInt(name[1], 10) - 1) * 8;
+  const piece = v.board[idx];
+  const mine = v.color === 'white' ? 'w' : 'b';
+  if(olSelected !== null){
+    const targets = v.targets[olSelected] || [];
+    if(targets.includes(idx)){
+      const from = olSelected;
+      olSelected = null;
+      olBusy = true;
+      sendAction('move', { from: from, to: idx }).then(() => { olBusy = false; });
+      return;
+    }
+  }
+  if(piece && piece[0] === mine && v.targets[idx]){
+    olSelected = olSelected === idx ? null : idx;
+  } else {
+    olSelected = null;
+  }
+  renderOnline();
+}
+
+async function sendAction(kind, extra){
+  try {
+    const res = await post('/api/chess/action', Object.assign({ code: roomCode, clientId: clientId, kind: kind }, extra || {}));
+    if(res.ok){
+      setOlStatus('', false);
+      applyOnline(res.data.view);
+    } else if(res.status === 404 || res.status === 403){
+      dropRoom('The room was closed.');
+    } else {
+      setOlStatus(res.data.error || 'Could not do that.', true);
+      renderOnline();
+    }
+  } catch(e) {
+    setOlStatus('Could not reach the server.', true);
+  }
+}
+
+function stopPolling(){
+  pollGen++;
+  if(pollTimer){
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+}
+
+function startPolling(){
+  stopPolling();
+  const gen = pollGen;
+  pollTimer = setTimeout(() => poll(gen), POLL_MS);
+}
+
+async function poll(gen){
+  pollTimer = null;
+  if(gen !== pollGen || !roomCode) return;
+  try {
+    const res = await post('/api/chess/state', {code: roomCode, clientId: clientId, since: olVersion});
+    if(gen !== pollGen) return;
+    if(res.status === 404 || res.status === 403){
+      dropRoom('The room was closed.');
+      return;
+    }
+    if(res.ok && !res.data.unchanged && res.data.view && !olBusy){
+      applyOnline(res.data.view);
+    }
+  } catch(e) {}
+  if(gen === pollGen && roomCode) pollTimer = setTimeout(() => poll(gen), POLL_MS);
+}
+
+function resetOnlineState(){
+  stopPolling();
+  roomCode = null;
+  olView = null;
+  olVersion = 0;
+  olRound = -1;
+  olSelected = null;
+  olBusy = false;
+}
+
+function dropRoom(message){
+  resetOnlineState();
+  olLobby.style.display = 'none';
+  olBar.style.display = 'none';
+  olDrawRow.style.display = 'none';
+  boardEl.style.display = 'none';
+  if(flipped){
+    flipped = false;
+    buildBoard(false);
+  }
+  setupPanel.style.display = 'flex';
+  messageEl.textContent = pyodide ? 'Choose your settings and start the game.' : 'Loading the game engine…';
+  setOlStatus(message, !!message);
+}
+
+async function leaveRoom(){
+  const code = roomCode;
+  dropRoom('');
+  if(code){
+    try { await post('/api/chess/action', {code: code, clientId: clientId, kind: 'leave'}); } catch(e) {}
+  }
+}
+
+async function enterRoom(path, payload){
+  setOlStatus('Connecting…', false);
+  olCreate.disabled = true;
+  olJoin.disabled = true;
+  try {
+    const res = await post(path, payload);
+    if(!res.ok){
+      setOlStatus(res.data.error || 'Could not connect.', true);
+      return;
+    }
+    roomCode = res.data.code;
+    olVersion = 0;
+    olRound = -1;
+    writeStore('ch_room', roomCode);
+    setOlStatus('', false);
+    applyOnline(res.data.view);
+    startPolling();
+  } catch(e) {
+    setOlStatus('Could not reach the server. Online play only works on the live site.', true);
+  } finally {
+    olCreate.disabled = false;
+    olJoin.disabled = false;
+  }
+}
+
+function joinFromInput(){
+  const code = olCode.value.trim().toUpperCase();
+  if(code.length !== 5){
+    setOlStatus('Enter the 5-character room code.', true);
+    return;
+  }
+  const name = olName.value.trim();
+  writeStore('ch_name', name);
+  enterRoom('/api/chess/join', {clientId: clientId, code: code, name: name});
+}
+
+olCode.addEventListener('input', () => {
+  olCode.value = olCode.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+});
+olCode.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') joinFromInput();
+});
+olCreate.addEventListener('click', () => {
+  const name = olName.value.trim();
+  writeStore('ch_name', name);
+  enterRoom('/api/chess/create', {clientId: clientId, name: name});
+});
+olJoin.addEventListener('click', joinFromInput);
+olLeaveLobby.addEventListener('click', leaveRoom);
+olLeaveBar.addEventListener('click', leaveRoom);
+olDrawBtn.addEventListener('click', () => sendAction('offer_draw'));
+olResignBtn.addEventListener('click', () => sendAction('resign'));
+olRematchBtn.addEventListener('click', () => sendAction('rematch'));
+olAcceptBtn.addEventListener('click', () => sendAction('accept_draw'));
+olDeclineBtn.addEventListener('click', () => sendAction('decline_draw'));
+
+clientId = readStore('ch_client');
+if(!clientId){
+  const bytes = crypto.getRandomValues(new Uint8Array(24));
+  clientId = Array.from(bytes, x => x.toString(16).padStart(2, '0')).join('');
+  writeStore('ch_client', clientId);
+}
+olName.value = readStore('ch_name') || '';
+olCode.value = readStore('ch_room') || '';
+fetch('/api/me', { credentials: 'same-origin' })
+  .then(r => r.ok ? r.json() : null)
+  .then(data => {
+    if(data && data.username && !olName.value) olName.value = data.username;
+  })
+  .catch(() => {});
 
 document.getElementById('startBtn').addEventListener('click', () => {
   if(!pyodide) return;
@@ -516,7 +902,7 @@ async function boot(){
   const micropip = pyodide.pyimport('micropip');
   await micropip.install('chess');
   pyodide.runPython(PYTHON_SOURCE);
-  messageEl.textContent = 'Choose your settings and start the game.';
+  if(!roomCode) messageEl.textContent = 'Choose your settings and start the game.';
   startBtn.disabled = false;
 }
 
