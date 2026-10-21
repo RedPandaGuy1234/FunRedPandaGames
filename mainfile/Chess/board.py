@@ -276,5 +276,9 @@ def play_game():
             engine.quit()
 
 
-if __name__ == "__main__":
+def main():
     play_game()
+
+
+if __name__ == "__main__":
+    main()
