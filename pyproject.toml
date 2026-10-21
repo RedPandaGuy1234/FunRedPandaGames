@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "funredpandagames"
+version = "1.0.0"
+description = "A collection of retro games playable directly in your terminal"
+readme = "README.md"
+authors = [
+    { name = "RedPandaGuy1234" }
+]
+license = { text = "GPL-3.0" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "python-chess>=1.0.0", # This matches your chess dependency
+]
+
+[tool.setuptools]
+packages = ["mainfile", "mainfile.Battleship", "mainfile.Chess", "mainfile.NumberGuesser", "mainfile.Reactiontest"]
+
+[tool.setuptools.package-data]
+"*" = ["*"] 
