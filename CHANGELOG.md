@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.8.1...v2.8.2) (2026-10-21)
+
+
+### Other
+
+* Add meta description for Fun Red Panda Games ([8b20bbc](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/8b20bbcfc97cebcfa78bb66e74c36863ff1c3d67))
+
 ## [2.8.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.8.0...v2.8.1) (2026-10-21)
 
 
