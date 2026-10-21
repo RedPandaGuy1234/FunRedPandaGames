@@ -1,5 +1,44 @@
 # Changelog
 
+## [2.9.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.8.2...v2.9.0) (2026-10-21)
+
+
+### Features
+
+* Add chess game logic and state management ([c2930a0](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/c2930a093ce7602f35baa586a3869dd292ddeb73))
+
+
+### Bug Fixes
+
+* Adjust reaction test delay from 0-8 to 1-8 seconds ([a42a895](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/a42a895398b71c351c1873ce3f1ae8b76633bd33))
+* Change random delay range from 1-15 to 1-8 seconds ([f4f0b51](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/f4f0b5182bf9eb0c90326c14625ac7f4932b27fe))
+* Change random wait time to be between 1 and 8 seconds ([3fb97f2](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/3fb97f271b1812c622677d0a94966193c5d67543))
+* Change reaction delay range from 1-8 to 0-8 seconds ([269d202](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/269d2025f15e2e627761203e12d90ce9f14afa12))
+* Fix indentation in python-publish.yml ([d610d20](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/d610d20166e02f131d197a39234e0cb1fb3150c0))
+* Fix reaction test wait time range in README ([a38ae83](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/a38ae831a2ba1c45a78d230858ed60ad471d8216))
+* Modify Python publish workflow for manual triggers ([03e726a](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/03e726a0bb080205245b49e8e20a73ca667c6a5b))
+* Update GitHub link for FunRedPandaGames ([8b32f38](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/8b32f384042cdedbd1a279d9535683a04822c4c3))
+
+
+### Continuations
+
+* Add chess_rooms table and index for updated_at ([63cf30c](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/63cf30ceb1185280c73fac98f6c6d2473d21625b))
+* Adjust reaction test wait time range ([3151996](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/3151996fee02aeed694b79d4f604c9984d9b0391))
+* Change random time range from 1-8 to 0-8 seconds ([95f8a49](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/95f8a4944706c5d8ce949c2c1906f0a961832cff))
+* Decrease maximum wait time for reaction test ([c1141dc](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/c1141dc78690808e6f11a47342176bcad597e143))
+* Enhance chess game with online play features ([273948c](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/273948c953495896be5ad5a28946f59a22f8a2f4))
+* Implement chess game actions in action.js ([68d7910](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/68d7910df833e67f1eb0d023f82b5a0df55b2e35))
+* Implement create chess room API endpoint ([ea92b2f](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ea92b2f75352a87b3f671707d1cb9341458035a5))
+* Implement join API for chess game ([7a753aa](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/7a753aae3595a53d54355bef45ec26f49a247cd9))
+* Implement join note feature in account page ([dfe3993](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/dfe399311c0ad9cbd8970807cd89010948bc6bda))
+* Implement POST request handler for chess room state ([ee0b3b8](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ee0b3b8bc792de4d7e2efc3b83b24480115bdfeb))
+* Update instructions for reaction test game ([cf0a3b1](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/cf0a3b1637c726b200e69aa8777f4783f71f1d2f))
+
+
+### Other
+
+* Add user count API endpoint ([d39f29f](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/d39f29fd742b31ab46f8e8317a091fdc26e948e5))
+
 ## [2.8.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.8.1...v2.8.2) (2026-10-21)
 
 
