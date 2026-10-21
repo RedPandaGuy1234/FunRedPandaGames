@@ -1,0 +1,24 @@
+name: Profanity Filter
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  pull_request:
+    types: [opened, edited, reopened]
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  apply-filter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan for profanity
+        if: github.actor != 'dependabot[bot]'
+        uses: IEvangelist/profanity-filter@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          replacement-strategy: emoji
