@@ -46,3 +46,12 @@ CREATE TABLE IF NOT EXISTS battleship_rooms (
 );
 
 CREATE INDEX IF NOT EXISTS idx_battleship_rooms_updated ON battleship_rooms(updated_at);
+
+CREATE TABLE IF NOT EXISTS chess_rooms (
+  code TEXT PRIMARY KEY,
+  version INTEGER NOT NULL,
+  state TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_chess_rooms_updated ON chess_rooms(updated_at);
