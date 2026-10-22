@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.9.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.9.1...v2.9.2) (2026-10-22)
+
+
+### Bug Fixes
+
+* Fix HTML meta description tag formatting ([914b974](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/914b97474945060758fd4569875d74412fb44c40))
+* Increase MIN_MS value from 80 to 110 ([1737647](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/1737647ed5d177fdf8eb7dfe0161a78aa41913d9))
+
+
+### Continuations
+
+* Refactor set_bound for better input handling ([5130af9](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/5130af9128fb34d0195cbbcbbcbdc65b50ccd3aa))
+* Update reactiontest.html ([6a89b0a](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/6a89b0a7454140e557246de5c20d2693f581ca68))
+
+
+### Other
+
+* Add meta description for account page ([629768e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/629768e8d09c5d76dd6d7d560d3ae8a12f8d34d1))
+* Add meta description for Battleship page ([fa1eba1](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/fa1eba1dfdc93a7353c8710b7e7e5838c1a52ac8))
+* Add meta description for Chess page ([5291dff](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/5291dff8b3bbe1994c7c17b7eea5cb212a02359d))
+* Add meta description for SEO in numberguesser.html ([90c2dde](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/90c2dde2d872311aea2f2fcc864e140b54101afd))
+* Add meta description for SEO optimization ([6d7b42a](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/6d7b42a2808a8a9ddae6ee0e521a366d9aa3c1df))
+* Change the color of the pad when you need to click it ([27babaf](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/27babaf6a18711e9a643a8695fbda74308fb3683))
+* Make "go" color darker ([f6d5fbc](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/f6d5fbc486e88e94f1961467e1a09a2474ded57d))
+
 ## [2.9.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.9.0...v2.9.1) (2026-10-22)
 
 
