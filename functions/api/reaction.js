@@ -1,6 +1,6 @@
 import { json, sameOrigin, readBody, getUser } from "../_lib/auth.js";
 
-const MIN_MS = 80;
+const MIN_MS = 110;
 const MAX_MS = 10000;
 const LIMIT = 50;
 
