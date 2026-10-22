@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.9.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.9.0...v2.9.1) (2026-10-22)
+
+
+### Bug Fixes
+
+* Revise README for clarity and accuracy ([25dd0ce](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/25dd0ce0b808d5565b6e0f38500d3983f336281f))
+* Update game badges to include online mode ([4f5d745](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4f5d745c220969c9fef4f41cefb6c84c18d10454))
+
+
+### Other
+
+* Add leaderboards to project description in README ([22f7492](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/22f7492f8e1650e7ba3c8f29e215e3f43f7d9aeb))
+* Revise sub paragraph text in index.html ([02b264d](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/02b264d6bef2c2b10c2b8d393d00d10144ea1948))
+
 ## [2.9.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.8.2...v2.9.0) (2026-10-21)
 
 
