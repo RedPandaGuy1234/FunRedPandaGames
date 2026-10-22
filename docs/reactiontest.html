@@ -236,7 +236,7 @@ pad.addEventListener('click', () => {
 
   if(stage === 'idle'){
     stage = 'waiting';
-    setPad('Wait for green…', 'waiting');
+    setPad('Wait for reddish-orange…', 'waiting');
     const delaySeconds = pyodide.globals.get('get_delay_seconds')();
     timeoutHandle = setTimeout(() => {
       stage = 'go';
