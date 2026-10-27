@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="FunRedPandaGames: the best website to play games on and have fun.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Change Username</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root{
+    --felt:#16302A;
+    --felt-dark:#0E211B;
+    --felt-light:#1E3E35;
+    --cream:#F3EAD7;
+    --cream-dim:#E4D8BF;
+    --gold:#D4A72C;
+    --error:#F2789A;
+    --success:#7FD6A0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(1200px 800px at 50% -10%, var(--felt-light), var(--felt) 55%, var(--felt-dark) 100%);
+    color:var(--cream);
+    font-family:'Inter',Arial,sans-serif;
+    min-height:100vh;
+    padding:26px 16px 56px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .back-link{align-self:flex-start; color:var(--cream-dim); font-size:13px; text-decoration:none; margin-bottom:18px;}
+  .back-link:hover{color:var(--gold);}
+  h1{font-weight:700; font-size:clamp(26px,5vw,38px); margin:0 0 6px;}
+  .sub{color:var(--cream-dim); font-size:13.5px; margin:0 0 26px; text-align:center; max-width:420px;}
+  .panel{
+    width:min(420px,92vw);
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:24px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  label{font-size:12.5px; color:var(--cream-dim); letter-spacing:.03em; text-transform:uppercase;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  input[type=text]{
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.24);
+    color:var(--cream);
+    font-size:16px;
+    padding:11px 13px;
+    border-radius:9px;
+    width:100%;
+  }
+  input:focus{outline:none; border-color:var(--gold);}
+  .hint{font-size:11.5px; color:var(--cream-dim); opacity:.8;}
+  .current{font-size:15px; text-align:center; line-height:1.5;}
+  .current b{color:var(--gold);}
+  button.action{
+    font-family:inherit;
+    font-weight:700;
+    font-size:15px;
+    color:var(--felt-dark);
+    background:linear-gradient(180deg,#E7C866,var(--gold));
+    border:none;
+    padding:12px 18px;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow:0 4px 0 #9a7620, 0 8px 16px rgba(0,0,0,.35);
+  }
+  button.action:active{transform:translateY(2px); box-shadow:0 1px 0 #9a7620, 0 4px 8px rgba(0,0,0,.3);}
+  button.action:disabled{opacity:.5; cursor:default;}
+  .login-link{
+    display:inline-block; text-align:center; text-decoration:none;
+    font-weight:700; font-size:15px; color:var(--felt-dark);
+    background:linear-gradient(180deg,#E7C866,var(--gold));
+    padding:12px 18px; border-radius:999px;
+    box-shadow:0 4px 0 #9a7620, 0 8px 16px rgba(0,0,0,.35);
+  }
+  .request-box{
+    font-size:14px; line-height:1.5; text-align:center;
+    background:rgba(255,255,255,.05); border-radius:9px; padding:12px 14px;
+  }
+  .request-box b{color:var(--gold);}
+  .request-box .state{font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:12px;}
+  .state.pending{color:var(--gold);}
+  .state.approved{color:var(--success);}
+  .state.denied{color:var(--error);}
+  .status{font-size:14px; line-height:1.5; min-height:20px; text-align:center;}
+  .status.error{color:var(--error);}
+  .status.ok{color:var(--success);}
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+  <a class="back-link" href="account.html">← Back to account</a>
+  <h1>Change Username</h1>
+  <p class="sub">Request a new username. Requests are reviewed by hand, so it may take a little while.</p>
+
+  <div class="panel" id="loadingPanel">
+    <div class="status" id="loadingText">Loading…</div>
+  </div>
+
+  <div class="panel hidden" id="loggedOutPanel">
+    <div class="current">You need to be logged in to request a username change.</div>
+    <a class="login-link" href="account.html">Log in / Sign up</a>
+  </div>
+
+  <div class="panel hidden" id="formPanel">
+    <div class="current">Current username: <b id="currentName"></b></div>
+    <div class="request-box hidden" id="requestBox"></div>
+    <form id="requestForm" style="display:flex; flex-direction:column; gap:14px;">
+      <div class="field">
+        <label for="newUsername">New username</label>
+        <input type="text" id="newUsername" autocomplete="off" maxlength="20">
+        <span class="hint">3-20 characters: letters, numbers, and underscores.</span>
+      </div>
+      <button class="action" id="submitBtn" type="submit">Request Change</button>
+    </form>
+    <div class="status" id="formStatus"></div>
+  </div>
+
+<script>
+const loadingPanel = document.getElementById('loadingPanel');
+const loadingText = document.getElementById('loadingText');
+const loggedOutPanel = document.getElementById('loggedOutPanel');
+const formPanel = document.getElementById('formPanel');
+const currentName = document.getElementById('currentName');
+const requestBox = document.getElementById('requestBox');
+const requestForm = document.getElementById('requestForm');
+const newUsername = document.getElementById('newUsername');
+const submitBtn = document.getElementById('submitBtn');
+const formStatus = document.getElementById('formStatus');
+
+function setStatus(text, kind){
+  formStatus.textContent = text;
+  formStatus.className = 'status' + (kind ? ' ' + kind : '');
+}
+
+function renderRequest(req){
+  requestBox.textContent = '';
+  if(!req){
+    requestBox.classList.add('hidden');
+    return;
+  }
+  const status = ['pending', 'approved', 'denied'].includes(req.status) ? req.status : 'pending';
+  const name = document.createElement('b');
+  name.textContent = req.requested_username;
+  const state = document.createElement('span');
+  state.className = 'state ' + status;
+  state.textContent = status;
+  requestBox.appendChild(document.createTextNode('Latest request: '));
+  requestBox.appendChild(name);
+  requestBox.appendChild(document.createElement('br'));
+  requestBox.appendChild(document.createTextNode('Status: '));
+  requestBox.appendChild(state);
+  requestBox.classList.remove('hidden');
+}
+
+function showForm(data){
+  loadingPanel.classList.add('hidden');
+  loggedOutPanel.classList.add('hidden');
+  formPanel.classList.remove('hidden');
+  currentName.textContent = data.username;
+  renderRequest(data.request);
+}
+
+function showLoggedOut(){
+  loadingPanel.classList.add('hidden');
+  formPanel.classList.add('hidden');
+  loggedOutPanel.classList.remove('hidden');
+}
+
+async function boot(){
+  try {
+    const response = await fetch('/api/username-request', { credentials: 'same-origin' });
+    if(response.status === 401){
+      showLoggedOut();
+      return;
+    }
+    if(!response.ok) throw new Error('bad response');
+    showForm(await response.json());
+  } catch (err) {
+    loadingText.textContent = 'Could not reach the server. This page only works on the live site.';
+  }
+}
+
+requestForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = newUsername.value.trim();
+  if(!username){
+    setStatus('Enter the username you want.', 'error');
+    return;
+  }
+  submitBtn.disabled = true;
+  setStatus('Sending request…', '');
+  try {
+    const response = await fetch('/api/username-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ username })
+    });
+    let data = {};
+    try { data = await response.json(); } catch (err) { data = {}; }
+    if(response.ok){
+      newUsername.value = '';
+      renderRequest(data.request);
+      setStatus('Request sent! It will show as approved or denied once it has been reviewed.', 'ok');
+    } else if(response.status === 401){
+      showLoggedOut();
+    } else {
+      setStatus(data.error || 'Could not send your request.', 'error');
+    }
+  } catch (err) {
+    setStatus('Could not reach the server. This page only works on the live site.', 'error');
+  }
+  submitBtn.disabled = false;
+});
+
+boot();
+</script>
+</body>
+</html>
