@@ -29,20 +29,6 @@ CREATE INDEX IF NOT EXISTS idx_reaction_created ON reaction(created_at);
 
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
 
-CREATE TABLE IF NOT EXISTS username_requests (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  current_username TEXT NOT NULL,
-  requested_username TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending',
-  created_at INTEGER NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_username_requests_user ON username_requests(user_id);
-CREATE INDEX IF NOT EXISTS idx_username_requests_status ON username_requests(status);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_username_requests_one_pending ON username_requests(user_id) WHERE status = 'pending';
-
 CREATE TABLE IF NOT EXISTS rooms (
   code TEXT PRIMARY KEY,
   version INTEGER NOT NULL,
@@ -69,3 +55,16 @@ CREATE TABLE IF NOT EXISTS chess_rooms (
 );
 
 CREATE INDEX IF NOT EXISTS idx_chess_rooms_updated ON chess_rooms(updated_at);
+
+CREATE TABLE IF NOT EXISTS bamboobonk (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  device TEXT NOT NULL CHECK (device IN ('mobile', 'desktop')),
+  username TEXT NOT NULL,
+  score INTEGER NOT NULL,
+  created_at INTEGER NOT NULL,
+  UNIQUE (user_id, device),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_bamboobonk_device_score ON bamboobonk(device, score);
