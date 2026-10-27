@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.10.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.9.2...v2.10.0) (2026-10-27)
+
+
+### Features
+
+* Create username_requests table and indexes ([03810e7](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/03810e7c2db4bee9560d114d44bab514c52a9ddb))
+
+
+### Continuations
+
+* Add link button to change username ([e2b6e14](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/e2b6e144937678f8137c56494b98882009602289))
+* Add username change request HTML page ([b5aa9f3](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/b5aa9f355917df560f8f728e454f5f81cf1ee8f5))
+* Implement username request API with GET and POST ([e373dbc](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/e373dbc1bee4f50e5eab4ee02d08267eb27313c0))
+
+
+### Other
+
+* Decrease MIN_MS constant from 110 to 101 ([e39b629](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/e39b62921c056f2aee32627f5da819de4de5de39))
+
 ## [2.9.2](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.9.1...v2.9.2) (2026-10-22)
 
 
