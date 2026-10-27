@@ -99,6 +99,21 @@
     to{opacity:0; transform:translate(-50%,-36px);}
   }
 
+  .device-badge{
+    display:inline-block; margin:0 0 16px; padding:6px 16px; border-radius:999px;
+    font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--felt-dark); background:linear-gradient(180deg,#E7C866,var(--gold));
+    box-shadow:0 3px 0 #9a7620, 0 6px 12px rgba(0,0,0,.3);
+  }
+  .tabs{display:flex; gap:8px; justify-content:center; margin-bottom:12px;}
+  .tab-btn{
+    font-family:'Fraunces',serif; font-weight:600; font-size:13px;
+    color:var(--cream); background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.24); padding:8px 18px;
+    border-radius:999px; cursor:pointer;
+  }
+  .tab-btn.active{background:var(--gold); border-color:var(--gold); color:var(--felt-dark);}
+
   .start-btn{
     margin:18px 0 6px;
     font-family:'Fraunces',serif; font-weight:600; font-size:16px;
@@ -147,6 +162,8 @@
   <h1>Bamboo Bonk</h1>
   <p class="sub">Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can in 30 seconds. The speedy tiger is worth the most.</p>
 
+  <div class="device-badge" id="deviceBadge"></div>
+
   <div class="hud">
     <div class="stat"><div class="label">Score</div><div class="value" id="score">0</div></div>
     <div class="stat"><div class="label">Time</div><div class="value" id="time">30</div></div>
@@ -160,7 +177,7 @@
   <button class="start-btn" id="startBtn">Start</button>
 
   <section class="board">
-    <h2 id="boardTitle">Leaderboard</h2>
+    <h2>Leaderboards</h2>
     <div class="note">Mobile and desktop have separate leaderboards, so you can rank on both by playing on both.</div>
     <div class="note" id="boardStatus">Checking your account…</div>
     <div class="note" id="loginPrompt" style="display:none">
@@ -168,6 +185,11 @@
       <a href="account.html">Log in / Sign up</a>
     </div>
     <div id="boardBody" style="display:none">
+      <div class="tabs">
+        <button class="tab-btn" id="tabMobile" type="button">Mobile</button>
+        <button class="tab-btn" id="tabDesktop" type="button">Desktop</button>
+      </div>
+      <div class="note" id="viewNote" style="margin-bottom:14px"></div>
       <div class="podium" id="podium"></div>
       <ul class="rest" id="rest"></ul>
       <div class="note" id="yourBest"></div>
@@ -199,6 +221,11 @@
   const podiumEl = document.getElementById('podium');
   const restEl = document.getElementById('rest');
   const yourBestEl = document.getElementById('yourBest');
+  const deviceBadge = document.getElementById('deviceBadge');
+  const tabMobile = document.getElementById('tabMobile');
+  const tabDesktop = document.getElementById('tabDesktop');
+  const viewNote = document.getElementById('viewNote');
+  const LABELS = {mobile: 'Mobile', desktop: 'Desktop'};
 
   const holes = [];
   let playing = false;
@@ -207,6 +234,8 @@
   let nextSpawn = 0;
   let tickHandle = null;
   let username = null;
+  let boards = null;
+  let viewing = DEVICE;
 
   function el(tag, className, text){
     const node = document.createElement(tag);
@@ -357,11 +386,23 @@
     }
   }
 
-  function renderBoard(data){
-    const scores = data.scores || [];
-    boardStatus.style.display = 'none';
-    loginPrompt.style.display = 'none';
-    boardBody.style.display = 'block';
+  function bestText(device){
+    const you = boards && boards[device] ? boards[device].you : null;
+    return LABELS[device] + ': ' + (you ? you.score + ' pts' : '—');
+  }
+
+  function renderView(){
+    if(!boards) return;
+    const view = boards[viewing] || {scores: [], you: null};
+    const scores = view.scores || [];
+
+    tabMobile.classList.toggle('active', viewing === 'mobile');
+    tabDesktop.classList.toggle('active', viewing === 'desktop');
+    tabMobile.textContent = 'Mobile' + (DEVICE === 'mobile' ? ' (this device)' : '');
+    tabDesktop.textContent = 'Desktop' + (DEVICE === 'desktop' ? ' (this device)' : '');
+    viewNote.textContent = viewing === DEVICE
+      ? 'You are playing on the ' + LABELS[DEVICE] + ' leaderboard.'
+      : 'You are playing on the ' + LABELS[DEVICE] + ' leaderboard. This is the ' + LABELS[viewing] + ' one.';
 
     podiumEl.innerHTML = '';
     [1, 0, 2].forEach(i => {
@@ -383,13 +424,17 @@
       restEl.appendChild(li);
     });
 
-    if(data.you){
-      bestEl.textContent = data.you.score;
-      yourBestEl.textContent = 'Your best: ' + data.you.score + ' pts';
-    } else {
-      bestEl.textContent = '—';
-      yourBestEl.textContent = 'Play a round to get on the leaderboard.';
-    }
+    const mine = boards[DEVICE] ? boards[DEVICE].you : null;
+    bestEl.textContent = mine ? mine.score : '—';
+    yourBestEl.textContent = 'Your bests — ' + bestText('mobile') + ' · ' + bestText('desktop');
+  }
+
+  function renderBoard(data){
+    boards = data.boards;
+    boardStatus.style.display = 'none';
+    loginPrompt.style.display = 'none';
+    boardBody.style.display = 'block';
+    renderView();
   }
 
   function showLoggedOut(){
@@ -402,7 +447,7 @@
   async function loadBoard(){
     if(!username) return;
     try {
-      const res = await fetch('/api/bamboobonk?device=' + DEVICE, { credentials: 'same-origin' });
+      const res = await fetch('/api/bamboobonk', { credentials: 'same-origin' });
       if(res.status === 401){
         username = null;
         showLoggedOut();
@@ -454,7 +499,9 @@
     if(username && !playing && !document.hidden) loadBoard();
   }, 20000);
 
-  document.getElementById('boardTitle').textContent = (DEVICE === 'mobile' ? 'Mobile' : 'Desktop') + ' Leaderboard';
+  deviceBadge.textContent = 'Playing on the ' + LABELS[DEVICE] + ' leaderboard';
+  tabMobile.addEventListener('click', () => { viewing = 'mobile'; renderView(); });
+  tabDesktop.addEventListener('click', () => { viewing = 'desktop'; renderView(); });
   buildHoles();
   loadAccount();
 })();
