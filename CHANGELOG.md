@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.11.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.11.0...v2.11.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* Fix HTML meta description quotes ([2c82847](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/2c828471be730e44141ec7d4054367ecbded6221))
+* Refactor leaderboard retrieval to use loadBoards ([6f952cd](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/6f952cd422d5cb4d0cdf2262abea698599be89a8))
+
+
+### Continuations
+
+* Fix HTML meta description tag syntax ([9ca75d2](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/9ca75d2ab745843e684e37bb447edec41c642688))
+
+
+### Other
+
+* Add device badge and leaderboard tabs ([a110be8](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/a110be8408764c5e81f48a5c12a6da1d8f80808b))
+
 ## [2.11.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.10.0...v2.11.0) (2026-10-27)
 
 
