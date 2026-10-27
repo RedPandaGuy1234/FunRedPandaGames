@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="FunRedPandaGames: the best website to play games on and have fun.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bamboo Bonk</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --felt:#16302A;
+    --felt-dark:#0E211B;
+    --felt-light:#1E3E35;
+    --cream:#F3EAD7;
+    --cream-dim:#E4D8BF;
+    --gold:#D4A72C;
+    --bamboo:#2F5D3A;
+    --bamboo-light:#3D7347;
+    --soil:#6B3E27;
+    --soil-light:#8C5A3C;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(1200px 800px at 50% -10%, var(--felt-light), var(--felt) 55%, var(--felt-dark) 100%);
+    color:var(--cream);
+    font-family:'Inter',Arial,sans-serif;
+    min-height:100vh;
+    padding:26px 16px 56px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .back-link{align-self:flex-start; color:var(--cream-dim); font-size:13px; text-decoration:none; margin-bottom:18px;}
+  .back-link:hover{color:var(--gold);}
+  h1{font-family:'Fraunces',serif; font-weight:700; font-size:clamp(28px,5vw,40px); margin:0 0 6px;}
+  .sub{color:var(--cream-dim); font-size:13.5px; margin:0 0 22px; text-align:center; max-width:440px; line-height:1.5;}
+
+  .hud{
+    width:min(420px,92vw);
+    display:flex; justify-content:space-between; gap:10px; margin-bottom:14px;
+  }
+  .stat{
+    flex:1; text-align:center; padding:9px 6px;
+    background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.08); border-radius:12px;
+  }
+  .stat .label{font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--cream-dim);}
+  .stat .value{font-family:'Fraunces',serif; font-weight:700; font-size:24px; color:var(--gold); font-variant-numeric:tabular-nums;}
+
+  .message{
+    width:min(420px,92vw); min-height:44px; margin-bottom:14px;
+    font-size:14px; line-height:1.5; text-align:center; color:var(--cream-dim);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .grove{
+    width:min(420px,92vw);
+    padding:16px;
+    border-radius:18px;
+    border:1px solid rgba(0,0,0,.35);
+    background:repeating-linear-gradient(90deg, var(--bamboo) 0 16px, var(--bamboo-light) 16px 20px, var(--bamboo) 20px 44px, #264d30 44px 46px);
+    box-shadow:0 10px 26px rgba(0,0,0,.4), inset 0 0 0 2px rgba(255,255,255,.05);
+    display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+    user-select:none; -webkit-user-select:none; touch-action:manipulation;
+  }
+  .hole{position:relative; aspect-ratio:1; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .window{
+    position:absolute; inset:0 0 14% 0; overflow:hidden;
+    border-radius:50% 50% 12px 12px / 55% 55% 12px 12px;
+    background:radial-gradient(circle at 50% 70%, #3a2416, #170d07);
+    box-shadow:inset 0 6px 14px rgba(0,0,0,.6);
+  }
+  .critter{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:clamp(34px,11vw,58px); line-height:1;
+    transform:translateY(105%);
+    transition:transform .09s ease-out;
+  }
+  .critter.up{transform:translateY(10%);}
+  .critter.bonked{transform:translateY(38%) scale(.8) rotate(-14deg); filter:brightness(.6);}
+  .rim{
+    position:absolute; left:-3%; right:-3%; bottom:0; height:26%; z-index:2;
+    border-radius:50% 50% 40% 40% / 70% 70% 40% 40%;
+    background:linear-gradient(180deg, var(--soil-light), var(--soil));
+    box-shadow:0 3px 6px rgba(0,0,0,.45);
+  }
+  .pop{
+    position:absolute; left:50%; top:10%; z-index:3; pointer-events:none;
+    font-family:'Fraunces',serif; font-weight:700; font-size:22px; color:#fff;
+    text-shadow:0 2px 4px rgba(0,0,0,.7);
+    transform:translateX(-50%);
+    animation:floatUp .6s ease-out forwards;
+  }
+  @keyframes floatUp{
+    from{opacity:1; transform:translate(-50%,0);}
+    to{opacity:0; transform:translate(-50%,-36px);}
+  }
+
+  .start-btn{
+    margin:18px 0 6px;
+    font-family:'Fraunces',serif; font-weight:600; font-size:16px;
+    color:var(--felt-dark);
+    background:linear-gradient(180deg,#E7C866,var(--gold));
+    border:none; padding:13px 34px; border-radius:999px; cursor:pointer;
+    box-shadow:0 4px 0 #9a7620, 0 8px 16px rgba(0,0,0,.35);
+    letter-spacing:.02em;
+  }
+  .start-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #9a7620, 0 4px 8px rgba(0,0,0,.3);}
+  .start-btn:disabled{opacity:.45; cursor:default; transform:none;}
+
+  .board{width:min(420px,92vw); margin-top:34px; display:flex; flex-direction:column; gap:14px;}
+  .board h2{margin:0; font-family:'Fraunces',serif; font-size:20px; text-align:center;}
+  .note{font-size:13.5px; color:var(--cream-dim); text-align:center; line-height:1.5;}
+  .note a{color:var(--gold);}
+  .podium{display:flex; align-items:flex-end; justify-content:center; gap:10px;}
+  .spot{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0;}
+  .spot .name{font-weight:700; font-size:13.5px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .spot .pts{font-size:12.5px; color:var(--cream-dim); min-height:16px;}
+  .spot .block{
+    width:100%; border-radius:10px 10px 0 0;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:24px; color:var(--felt-dark);
+  }
+  .spot.first .block{height:100px; background:linear-gradient(180deg,#E7C866,var(--gold));}
+  .spot.second .block{height:72px; background:linear-gradient(180deg,#E8EBF0,#A9B1BD);}
+  .spot.third .block{height:54px; background:linear-gradient(180deg,#E3AE7E,#B4703A);}
+  .spot.empty .name{opacity:.4;}
+  .spot.me .name{color:var(--gold);}
+  .rest{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}
+  .rest li{
+    display:flex; align-items:center; gap:10px; font-size:14px;
+    background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.08);
+    border-radius:9px; padding:8px 12px;
+  }
+  .rest li.me{border-color:var(--gold);}
+  .rest .rank{width:30px; color:var(--cream-dim);}
+  .rest .nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .rest .sc{font-variant-numeric:tabular-nums;}
+</style>
+</head>
+<body>
+
+  <a class="back-link" href="index.html">← Back to game menu</a>
+  <h1>Bamboo Bonk</h1>
+  <p class="sub">Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can in 30 seconds. The speedy tiger is worth the most.</p>
+
+  <div class="hud">
+    <div class="stat"><div class="label">Score</div><div class="value" id="score">0</div></div>
+    <div class="stat"><div class="label">Time</div><div class="value" id="time">30</div></div>
+    <div class="stat"><div class="label">Best</div><div class="value" id="best">—</div></div>
+  </div>
+
+  <div class="message" id="message">Press Start, then tap or click the critters before they hide.</div>
+
+  <div class="grove" id="grove"></div>
+
+  <button class="start-btn" id="startBtn">Start</button>
+
+  <section class="board">
+    <h2 id="boardTitle">Leaderboard</h2>
+    <div class="note">Mobile and desktop have separate leaderboards, so you can rank on both by playing on both.</div>
+    <div class="note" id="boardStatus">Checking your account…</div>
+    <div class="note" id="loginPrompt" style="display:none">
+      Log in or create an account to save your best score and see the leaderboard.
+      <a href="account.html">Log in / Sign up</a>
+    </div>
+    <div id="boardBody" style="display:none">
+      <div class="podium" id="podium"></div>
+      <ul class="rest" id="rest"></ul>
+      <div class="note" id="yourBest"></div>
+    </div>
+  </section>
+
+<script>
+(function(){
+  const DURATION_MS = 30000;
+  const HOLE_COUNT = 9;
+  const TICK_MS = 40;
+  const DEVICE = detectDevice();
+  const CRITTERS = [
+    {emoji:'🐼', points:1, weight:5, stay:1},
+    {emoji:'🐒', points:1, weight:4, stay:1},
+    {emoji:'🐯', points:3, weight:1, stay:0.6}
+  ];
+  const TOTAL_WEIGHT = CRITTERS.reduce((sum, c) => sum + c.weight, 0);
+
+  const groveEl = document.getElementById('grove');
+  const scoreEl = document.getElementById('score');
+  const timeEl = document.getElementById('time');
+  const bestEl = document.getElementById('best');
+  const messageEl = document.getElementById('message');
+  const startBtn = document.getElementById('startBtn');
+  const boardStatus = document.getElementById('boardStatus');
+  const loginPrompt = document.getElementById('loginPrompt');
+  const boardBody = document.getElementById('boardBody');
+  const podiumEl = document.getElementById('podium');
+  const restEl = document.getElementById('rest');
+  const yourBestEl = document.getElementById('yourBest');
+
+  const holes = [];
+  let playing = false;
+  let score = 0;
+  let startTime = 0;
+  let nextSpawn = 0;
+  let tickHandle = null;
+  let username = null;
+
+  function el(tag, className, text){
+    const node = document.createElement(tag);
+    if(className) node.className = className;
+    if(text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function detectDevice(){
+    const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    const noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
+    return (coarse || noHover) ? 'mobile' : 'desktop';
+  }
+
+  function lerp(a, b, t){
+    return a + (b - a) * t;
+  }
+
+  function pickCritter(){
+    let roll = Math.random() * TOTAL_WEIGHT;
+    for(const critter of CRITTERS){
+      roll -= critter.weight;
+      if(roll < 0) return critter;
+    }
+    return CRITTERS[0];
+  }
+
+  function buildHoles(){
+    for(let i = 0; i < HOLE_COUNT; i++){
+      const hole = el('div', 'hole');
+      const windowEl = el('div', 'window');
+      const critterEl = el('div', 'critter');
+      windowEl.appendChild(critterEl);
+      hole.appendChild(windowEl);
+      hole.appendChild(el('div', 'rim'));
+      groveEl.appendChild(hole);
+      const state = {el: hole, critterEl: critterEl, up: false, type: null, downAt: 0, freeAt: 0};
+      hole.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        bonk(state);
+      });
+      holes.push(state);
+    }
+  }
+
+  function raise(hole, type, now, stayMs){
+    hole.type = type;
+    hole.up = true;
+    hole.downAt = now + stayMs;
+    hole.critterEl.textContent = type.emoji;
+    hole.critterEl.classList.remove('bonked');
+    hole.critterEl.classList.add('up');
+  }
+
+  function lower(hole, now){
+    hole.up = false;
+    hole.freeAt = now + 250;
+    hole.critterEl.classList.remove('up', 'bonked');
+  }
+
+  function showPop(hole, text){
+    const pop = el('div', 'pop', text);
+    pop.addEventListener('animationend', () => pop.remove());
+    hole.el.appendChild(pop);
+  }
+
+  function bonk(hole){
+    if(!playing || !hole.up) return;
+    hole.up = false;
+    hole.freeAt = performance.now() + 250;
+    score += hole.type.points;
+    scoreEl.textContent = score;
+    showPop(hole, '+' + hole.type.points);
+    hole.critterEl.classList.add('bonked');
+    setTimeout(() => {
+      if(!hole.up) hole.critterEl.classList.remove('up', 'bonked');
+    }, 160);
+  }
+
+  function tick(){
+    const now = performance.now();
+    const elapsed = now - startTime;
+    if(elapsed >= DURATION_MS){
+      endGame();
+      return;
+    }
+    const progress = elapsed / DURATION_MS;
+    timeEl.textContent = Math.ceil((DURATION_MS - elapsed) / 1000);
+
+    holes.forEach(hole => {
+      if(hole.up && now >= hole.downAt) lower(hole, now);
+    });
+
+    if(now >= nextSpawn){
+      const free = holes.filter(hole => !hole.up && now >= hole.freeAt);
+      if(free.length > 0){
+        const hole = free[Math.floor(Math.random() * free.length)];
+        const type = pickCritter();
+        raise(hole, type, now, lerp(1100, 600, progress) * type.stay);
+      }
+      nextSpawn = now + lerp(850, 420, progress) * (0.7 + Math.random() * 0.6);
+    }
+  }
+
+  function startGame(){
+    if(playing) return;
+    score = 0;
+    scoreEl.textContent = '0';
+    timeEl.textContent = Math.ceil(DURATION_MS / 1000);
+    holes.forEach(hole => {
+      hole.up = false;
+      hole.freeAt = 0;
+      hole.critterEl.classList.remove('up', 'bonked');
+    });
+    playing = true;
+    startTime = performance.now();
+    nextSpawn = startTime + 500;
+    startBtn.disabled = true;
+    startBtn.textContent = 'Bonk!';
+    messageEl.textContent = 'Go go go!';
+    tickHandle = setInterval(tick, TICK_MS);
+  }
+
+  async function endGame(){
+    clearInterval(tickHandle);
+    tickHandle = null;
+    playing = false;
+    const now = performance.now();
+    holes.forEach(hole => lower(hole, now));
+    timeEl.textContent = '0';
+    startBtn.disabled = false;
+    startBtn.textContent = 'Play Again';
+    const finalScore = score;
+    const plural = finalScore === 1 ? 'point' : 'points';
+    const base = 'Time\'s up! You scored ' + finalScore + ' ' + plural + '.';
+    messageEl.textContent = base;
+
+    if(!username){
+      messageEl.textContent = base + ' Log in to save your score.';
+      return;
+    }
+    if(finalScore < 1) return;
+
+    const data = await submitScore(finalScore);
+    if(!data) return;
+    if(!playing){
+      messageEl.textContent = base + ' ' + (data.improved ? 'New personal best!' : 'Your best is still ' + data.best + '.');
+    }
+  }
+
+  function renderBoard(data){
+    const scores = data.scores || [];
+    boardStatus.style.display = 'none';
+    loginPrompt.style.display = 'none';
+    boardBody.style.display = 'block';
+
+    podiumEl.innerHTML = '';
+    [1, 0, 2].forEach(i => {
+      const entry = scores[i];
+      const cls = ['first', 'second', 'third'][i];
+      const spot = el('div', 'spot ' + cls + (entry ? '' : ' empty') + (entry && entry.username === username ? ' me' : ''));
+      spot.appendChild(el('div', 'name', entry ? entry.username : '—'));
+      spot.appendChild(el('div', 'pts', entry ? entry.score + ' pts' : ''));
+      spot.appendChild(el('div', 'block', String(i + 1)));
+      podiumEl.appendChild(spot);
+    });
+
+    restEl.innerHTML = '';
+    scores.slice(3).forEach((entry, idx) => {
+      const li = el('li', entry.username === username ? 'me' : '');
+      li.appendChild(el('span', 'rank', String(idx + 4)));
+      li.appendChild(el('span', 'nm', entry.username));
+      li.appendChild(el('span', 'sc', entry.score + ' pts'));
+      restEl.appendChild(li);
+    });
+
+    if(data.you){
+      bestEl.textContent = data.you.score;
+      yourBestEl.textContent = 'Your best: ' + data.you.score + ' pts';
+    } else {
+      bestEl.textContent = '—';
+      yourBestEl.textContent = 'Play a round to get on the leaderboard.';
+    }
+  }
+
+  function showLoggedOut(){
+    boardStatus.style.display = 'none';
+    boardBody.style.display = 'none';
+    loginPrompt.style.display = 'block';
+    bestEl.textContent = '—';
+  }
+
+  async function loadBoard(){
+    if(!username) return;
+    try {
+      const res = await fetch('/api/bamboobonk?device=' + DEVICE, { credentials: 'same-origin' });
+      if(res.status === 401){
+        username = null;
+        showLoggedOut();
+        return;
+      }
+      if(res.ok) renderBoard(await res.json());
+    } catch (err) {
+      boardStatus.style.display = 'block';
+      boardStatus.textContent = 'The leaderboard only works on the live site.';
+    }
+  }
+
+  async function submitScore(value){
+    try {
+      const res = await fetch('/api/bamboobonk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ score: value, device: DEVICE })
+      });
+      if(!res.ok) return null;
+      const data = await res.json();
+      renderBoard(data);
+      return data;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async function loadAccount(){
+    try {
+      const res = await fetch('/api/me', { credentials: 'same-origin' });
+      const data = res.ok ? await res.json() : {};
+      username = data.username || null;
+    } catch (err) {
+      username = null;
+    }
+    if(username){
+      boardStatus.textContent = 'Loading the leaderboard…';
+      await loadBoard();
+    } else {
+      showLoggedOut();
+    }
+  }
+
+  startBtn.addEventListener('click', startGame);
+
+  setInterval(() => {
+    if(username && !playing && !document.hidden) loadBoard();
+  }, 20000);
+
+  document.getElementById('boardTitle').textContent = (DEVICE === 'mobile' ? 'Mobile' : 'Desktop') + ' Leaderboard';
+  buildHoles();
+  loadAccount();
+})();
+</script>
+</body>
+</html>
