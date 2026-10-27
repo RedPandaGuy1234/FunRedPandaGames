@@ -17,7 +17,7 @@ A small collection of games, built by me, and hopefully you too. This repo start
   - [Number Guesser](#number-guesser)
   - [Chess](#chess)
   - [Reaction Test](#reaction-test)
-  - [Bamboo Bonk (Coming Soon)](#bamboo-bonk-coming-soon)
+  - [Bamboo Bonk](#bamboo-bonk)
 - [Project Structure](#project-structure)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -31,11 +31,11 @@ A small collection of games, built by me, and hopefully you too. This repo start
 
 ## Playing in Your Browser
 
-Battleship, Number Guesser, Chess, and Reaction Test all have browser versions in the `docs/` folder, alongside the original terminal versions in `mainfile/`. The Questions has only ever lived in the browser.
+Battleship, Number Guesser, Chess, and Reaction Test all have browser versions in the `docs/` folder, alongside the original terminal versions in `mainfile/`. The Questions and Bamboo Bonk have only ever lived in the browser.
 
-The browser versions of the Python games run entirely client-side using [Pyodide](https://pyodide.org) (Python compiled to WebAssembly), so the game logic runs as real Python inside the page. The Questions is written in JavaScript.
+The browser versions of the Python games run entirely client-side using [Pyodide](https://pyodide.org) (Python compiled to WebAssembly), so the game logic runs as real Python inside the page. The Questions and Bamboo Bonk are written in JavaScript.
 
-The live site at [funredpandagames.com](https://funredpandagames.com) is the full experience. Accounts and online rooms need the site's backend, so they only work there. Every game except online rooms and accounts also works when you open the files locally.
+The live site at [funredpandagames.com](https://funredpandagames.com) is the full experience. Accounts, leaderboards, and online rooms need the site's backend, so they only work there. Every game except those features also works when you open the files locally.
 
 **To test the browser versions locally**, run:
 
@@ -44,17 +44,23 @@ cd docs
 open index.html
 ```
 
-This lets you pick any game and play it locally in your browser. If you can't open a browser, you can still play the terminal versions (except The Questions).
+This lets you pick any game and play it locally in your browser. If you can't open a browser, you can still play the terminal versions (except The Questions and Bamboo Bonk).
 
 ## Accounts and Online Play
 
-The live site has two features that need its backend, a set of Cloudflare Pages Functions in `functions/` backed by a Cloudflare D1 database.
+The live site has features that need its backend, a set of Cloudflare Pages Functions in `functions/` backed by a Cloudflare D1 database.
 
 **Accounts**
 - Create an account or log in from the button in the top right of the game menu, which opens `account.html`. Once you're logged in, the button shows your username.
 - Usernames are 3-20 characters (letters, numbers, and underscores). Passwords are 8-128 characters.
 - Passwords are salted and hashed with PBKDF2 (SHA-256) and never stored in plain text. Sessions use an HttpOnly cookie and last 30 days.
 - Your username is used to pre-fill your name when you create or join an online room.
+
+**Leaderboards (Reaction Test and Bamboo Bonk)**
+- You need to be logged in to save a score and to see the leaderboard, so nobody can post a score under someone else's name.
+- Each account keeps one best score. A new score only replaces it if it's better.
+- Bamboo Bonk has separate mobile and desktop leaderboards, because tapping a screen is faster than clicking with a mouse. The game picks the right one from your device, and you can have a score on both by logging in on both.
+- The top three are shown on a podium, with everyone else listed below.
 
 **Online rooms (The Questions)**
 - Create a room to get a 5-character code, then share it with up to four friends.
@@ -216,8 +222,24 @@ cd mainfile/Reactiontest
 python3 Reaction_test.py
 ```
 
-### Bamboo Bonk (Coming Soon)
-A solo browser game that is still in the works and isn't playable yet. Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can before time runs out, then try to beat your best score.
+### Bamboo Bonk
+A solo browser game with a leaderboard. Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can in 30 seconds, then try to beat your best score. Bamboo Bonk is written in JavaScript and only lives in the browser, so there is no terminal version.
+
+**Features**
+- A 3x3 grove of holes and a 30-second round
+- Three kinds of critters: pandas and monkeys are worth 1 point, and the fast tiger is worth 3
+- Critters pop up faster and hide sooner as the round goes on
+- Works with a mouse or a touchscreen
+- Separate mobile and desktop leaderboards, chosen automatically from your device, each with a top-three podium and one best score per account (see [Accounts and Online Play](#accounts-and-online-play))
+
+**Play it**
+
+```bash
+cd docs
+open bamboobonk.html
+```
+
+The game works offline. Saving scores and seeing the leaderboard need the live site and an account.
 
 ## Project Structure
 
@@ -226,6 +248,7 @@ A solo browser game that is still in the works and isn't playable yet. Critters 
 ├── docs/                 Browser games and the site (served as the website)
 │   ├── index.html        Game menu
 │   ├── account.html      Log in / create account
+│   ├── bamboobonk.html
 │   ├── battleship.html
 │   ├── chess.html
 │   ├── numberguesser.html
@@ -239,15 +262,15 @@ A solo browser game that is still in the works and isn't playable yet. Critters 
 │   └── Reactiontest/
 ├── functions/            Cloudflare Pages Functions (backend)
 │   ├── _lib/             Shared auth, room, and chess rules helpers
-│   └── api/              Account endpoints and room endpoints
+│   └── api/              Account, leaderboard, and room endpoints
 ├── schema.sql            D1 database schema
 ├── requirements.txt      Python dependencies (terminal Ch)ck)
 └── .github/              Workflows, issue and PR templates, Dependabot
 ```
 
 ## Requirements
-- **Browser versions (Battleship, The Questions, Number Guesser, Chess, Reaction Test):** any modern web browser. No installs required. The first load fetches the Pyodide runtime (and, for Chess, the `chess` package), so it needs an internet connection.
-- **Accounts and online rooms (including online Chess):** the live site at [funredpandagames.com](https://funredpandagames.com) and a secure (https) connection.
+- **Browser versions (Battleship, The Questions, Number Guesser, Chess, Reaction Test, Bamboo Bonk):** any modern web browser. No installs required. The first load of the Python games fetches the Pyodide runtime (and, for Chess, the `chess` package), so they need an internet connection.
+- **Accounts, leaderboards, and online rooms (including online Chess):** the live site at [funredpandagames.com](https://funredpandagames.com) and a secure (https) connection.
 - **Terminal Battleship:** Python 3 or newer, and a terminal
 - **Terminal Number Guesser:** Python 3 or newer, and a terminal
 - **Terminal Chess:** Python 3 or newer, and the `chess` package (see [Installation](#installation)). The [Stockfish](https://stockfishchess.org/download/) engine is only needed for Normal/Hard bot difficulty.
@@ -298,8 +321,8 @@ git pull
 The site is hosted on Cloudflare Pages at [funredpandagames.com](https://funredpandagames.com) and deployed from GitHub with a Wrangler-based workflow.
 
 - The static site is the `docs/` folder.
-- The backend is the `functions/` folder (Pages Functions), which serves the `/api/...` routes for accounts and online rooms.
-- Data (users, sessions, and online rooms) lives in a Cloudflare D1 database bound to the functions as `DB`. Its tables are defined in `schema.sql`.
+- The backend is the `functions/` folder (Pages Functions), which serves the `/api/...` routes for accounts, leaderboards, and online rooms.
+- Data (users, sessions, leaderboard scores, and online rooms) lives in a Cloudflare D1 database bound to the functions as `DB`. Its tables are defined in `schema.sql`.
 
 ## Repository Automation
 
