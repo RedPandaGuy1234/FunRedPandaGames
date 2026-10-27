@@ -24,16 +24,23 @@ async function loadBest(db, userId, device) {
     .first();
 }
 
+async function loadBoards(db, userId) {
+  const boards = {};
+  for (const device of DEVICES) {
+    boards[device] = {
+      scores: await loadScores(db, device),
+      you: await loadBest(db, userId, device),
+    };
+  }
+  return boards;
+}
+
 export async function onRequestGet({ request, env }) {
   const user = await getUser(request, env.DB);
   if (!user) return json({ error: "Log in to see the leaderboard." }, 401);
 
-  const device = new URL(request.url).searchParams.get("device");
-  if (!DEVICES.includes(device)) return json({ error: "Invalid device." }, 400);
-
-  const scores = await loadScores(env.DB, device);
-  const you = await loadBest(env.DB, user.id, device);
-  return json({ device, scores, you });
+  const boards = await loadBoards(env.DB, user.id);
+  return json({ boards });
 }
 
 export async function onRequestPost({ request, env }) {
@@ -61,8 +68,7 @@ export async function onRequestPost({ request, env }) {
     .bind(user.id, device, user.username, score, now)
     .run();
 
-  const you = await loadBest(env.DB, user.id, device);
-  const scores = await loadScores(env.DB, device);
+  const boards = await loadBoards(env.DB, user.id);
   const improved = !before || score > before.score;
-  return json({ device, improved, best: you.score, you, scores });
+  return json({ device, improved, best: boards[device].you.score, boards });
 }
