@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.11.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.10.0...v2.11.0) (2026-10-27)
+
+
+### Features
+
+* Add HTML file for Bamboo Bonk game ([c13f91d](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/c13f91ddfe02bcc471eaf4c123d2c46ee30ef670))
+
+
+### Continuations
+
+* Implement bamboobonk leaderboard API functions ([f2e4d51](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/f2e4d51f9d942a008e8ec3e36be900110178024b))
+* Refactor schema: remove username_requests, add bamboobonk ([29a1ede](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/29a1ede3e6285564cf57ebfbabd3b80e7426424b))
+* Revise README to add Bamboo Bonk and leaderboard info ([4afa3dd](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4afa3dd08d3c7546c21678767e33d15752b25e11))
+* Update Bamboo Bonk card with link and badge ([8a6b513](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/8a6b513c73644b8abe940c4ba982b966b6be45ee))
+
 ## [2.10.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.9.2...v2.10.0) (2026-10-27)
 
 
