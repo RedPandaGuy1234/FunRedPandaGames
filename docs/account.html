@@ -89,6 +89,15 @@
     box-shadow:0 3px 0 rgba(0,0,0,.3), 0 6px 12px rgba(0,0,0,.25);
   }
   button.secondary:disabled{opacity:.5; cursor:default;}
+  .link-btn{
+    display:block; text-align:center; text-decoration:none;
+    font-family:inherit; font-weight:700; font-size:14px;
+    color:var(--felt-dark);
+    background:linear-gradient(180deg,#E7C866,var(--gold));
+    padding:11px 18px; border-radius:999px;
+    box-shadow:0 3px 0 #9a7620, 0 6px 12px rgba(0,0,0,.3);
+  }
+  .link-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #9a7620, 0 3px 6px rgba(0,0,0,.3);}
   .status{font-size:14px; line-height:1.5; min-height:20px; text-align:center;}
   .status.error{color:var(--error);}
   .status.ok{color:var(--success);}
@@ -151,6 +160,7 @@
 
   <div class="panel hidden" id="accountPanel">
     <div class="welcome">Logged in as <b id="accountName"></b></div>
+    <a class="link-btn" href="usernamechange.html">Change username</a>
     <button class="secondary" id="logoutBtn" type="button">Log Out</button>
     <div class="status" id="accountStatus"></div>
   </div>
