@@ -9,6 +9,7 @@ import {
   createSession,
   sessionCookie,
 } from "../_lib/auth.js";
+import { isAllowed } from "../_lib/moderation.js";
 
 export async function onRequestPost({ request, env }) {
   if (!sameOrigin(request)) return json({ error: "Forbidden." }, 403);
@@ -24,6 +25,13 @@ export async function onRequestPost({ request, env }) {
 
   const passwordError = validatePassword(password);
   if (passwordError) return json({ error: passwordError }, 400);
+
+  if (!(await isAllowed(env, username))) {
+    return json(
+      { error: "That username is not allowed. Please choose another." },
+      400
+    );
+  }
 
   const existing = await env.DB.prepare(
     "SELECT id FROM users WHERE username_lower = ?"
