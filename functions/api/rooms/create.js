@@ -6,6 +6,7 @@ import {
   cleanName,
   publicId,
 } from "../../_lib/rooms.js";
+import { isAllowed } from "../../_lib/moderation.js";
 
 export async function onRequestPost({ request, env }) {
   if (!sameOrigin(request)) return json({ error: "Forbidden." }, 403);
@@ -15,6 +16,11 @@ export async function onRequestPost({ request, env }) {
 
   const clientId = cleanClientId(body.clientId);
   if (!clientId) return json({ error: "Invalid request." }, 400);
+
+  const typedName = cleanName(body.name, "");
+  if (typedName && !(await isAllowed(env, typedName))) {
+    return json({ error: "That name is not allowed. Please choose another." }, 400);
+  }
 
   const pid = await publicId(clientId);
   const now = Math.floor(Date.now() / 1000);
