@@ -6,6 +6,7 @@ import {
   publicId,
 } from "../../_lib/rooms.js";
 import { mutateRoom, buildView, beginGame } from "../../_lib/chess.js";
+import { isAllowed } from "../../_lib/moderation.js";
 
 export async function onRequestPost({ request, env }) {
   if (!sameOrigin(request)) return json({ error: "Forbidden." }, 403);
@@ -16,6 +17,11 @@ export async function onRequestPost({ request, env }) {
   const code = cleanCode(body.code);
   const clientId = cleanClientId(body.clientId);
   if (!code || !clientId) return json({ error: "Invalid request." }, 400);
+
+  const typedName = cleanName(body.name, "");
+  if (typedName && !(await isAllowed(env, typedName))) {
+    return json({ error: "That name is not allowed. Please choose another." }, 400);
+  }
 
   const pid = await publicId(clientId);
 
@@ -33,7 +39,9 @@ export async function onRequestPost({ request, env }) {
     return json(
       {
         error:
-          result.status === 404 ? "No room with that code." : result.error,
+          result.status === 404
+            ? "No room with that code."
+            : result.error,
       },
       result.status
     );
