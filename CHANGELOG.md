@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.12.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.11.1...v2.12.0) (2026-10-29)
+
+
+### Features
+
+* Add isAllowed function for toxic text detection ([878bba5](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/878bba5fff4d7a105d0b281bce907b69f0b22480))
+
+
+### Continuations
+
+* Add username moderation check during registration ([9286b39](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/9286b391356fc9a52fb41f12f66400384fd2d8d6))
+* Implement name moderation in join request ([bae65a5](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/bae65a5142ee1b0aded4d9227ac40c0237e90a97))
+* Implement name moderation in join.js ([ea33299](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ea332992f1381d10bc8f98de7b575eb6a5215ad0))
+* Implement name moderation in room creation ([cb51e01](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/cb51e016b067706d76d2cf1ea176917957f99a6f))
+* Implement name validation in room creation ([87c625d](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/87c625d7d99b524e24235c75964ddf0cf50b0d9b))
+* Implement name validation in room join handler ([a4fe74e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/a4fe74e948dba7c6743be080dcf9689896cb505f))
+* Implement name validation using isAllowed function ([e83a96f](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/e83a96f17a84fff213d7bd25a197203af71226af))
+
 ## [2.11.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.11.0...v2.11.1) (2026-10-27)
 
 
