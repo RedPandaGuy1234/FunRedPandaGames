@@ -32,6 +32,7 @@
     display:flex;
     flex-direction:column;
     align-items:center;
+    user-select:none; -webkit-user-select:none;
   }
   .back-link{align-self:flex-start; color:var(--cream-dim); font-size:13px; text-decoration:none; margin-bottom:18px;}
   .back-link:hover{color:var(--gold);}
@@ -63,7 +64,7 @@
     background:repeating-linear-gradient(90deg, var(--bamboo) 0 16px, var(--bamboo-light) 16px 20px, var(--bamboo) 20px 44px, #264d30 44px 46px);
     box-shadow:0 10px 26px rgba(0,0,0,.4), inset 0 0 0 2px rgba(255,255,255,.05);
     display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
-    user-select:none; -webkit-user-select:none; touch-action:manipulation;
+    touch-action:manipulation;
   }
   .hole{position:relative; aspect-ratio:1; cursor:pointer; -webkit-tap-highlight-color:transparent;}
   .window{
@@ -78,9 +79,13 @@
     font-size:clamp(34px,11vw,58px); line-height:1;
     transform:translateY(105%);
     transition:transform .09s ease-out;
+    filter:grayscale(1) brightness(1.35) contrast(.85) drop-shadow(0 0 3px rgba(205,228,255,.75));
   }
   .critter.up{transform:translateY(10%);}
-  .critter.bonked{transform:translateY(38%) scale(.8) rotate(-14deg); filter:brightness(.6);}
+  .critter.bonked{
+    transform:translateY(38%) scale(.8) rotate(-14deg);
+    filter:grayscale(1) brightness(.75) contrast(.85);
+  }
   .rim{
     position:absolute; left:-3%; right:-3%; bottom:0; height:26%; z-index:2;
     border-radius:50% 50% 40% 40% / 70% 70% 40% 40%;
@@ -97,6 +102,46 @@
   @keyframes floatUp{
     from{opacity:1; transform:translate(-50%,0);}
     to{opacity:0; transform:translate(-50%,-36px);}
+  }
+
+  .whacker{
+    position:fixed;
+    top:42vh;
+    left:min(calc(50% + 235px), calc(100vw - 150px));
+    width:150px; height:190px;
+    pointer-events:none;
+    z-index:10;
+  }
+  .whacker svg{display:block; width:150px; height:190px;}
+  .paw{position:absolute; left:28px; top:108px; width:0; height:0;}
+  .bamboo-stick{
+    position:absolute; left:-14px; top:-5px;
+    width:150px; height:10px;
+    transform-origin:14px 5px;
+    transform:rotate(-125deg);
+    border-radius:5px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0) 45%, rgba(0,0,0,.25)),
+      repeating-linear-gradient(90deg, #5E9B4B 0 34px, #2F5D3A 34px 38px);
+    box-shadow:0 2px 4px rgba(0,0,0,.4);
+  }
+  @media (max-width:700px){
+    .whacker{
+      top:auto; bottom:6px; left:auto; right:2px;
+      transform:scale(.6); transform-origin:bottom right;
+    }
+  }
+
+  .impact{
+    position:fixed; width:34px; height:34px; margin:-17px 0 0 -17px;
+    border-radius:50%; border:3px solid var(--gold);
+    pointer-events:none; z-index:20;
+    animation:impact .4s ease-out .12s both;
+  }
+  @keyframes impact{
+    0%{opacity:0; transform:scale(.3);}
+    10%{opacity:.9; transform:scale(.4);}
+    100%{opacity:0; transform:scale(1.6);}
   }
 
   .device-badge{
@@ -160,7 +205,7 @@
 
   <a class="back-link" href="index.html">← Back to game menu</a>
   <h1>Bamboo Bonk</h1>
-  <p class="sub">Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can in 30 seconds. The speedy tiger is worth the most.</p>
+  <p class="sub">Snow leopards pop out of the bamboo grove and duck back down fast. The red panda swings its bamboo wherever you click, so bonk as many as you can in 30 seconds.</p>
 
   <div class="device-badge" id="deviceBadge"></div>
 
@@ -170,7 +215,7 @@
     <div class="stat"><div class="label">Best</div><div class="value" id="best">—</div></div>
   </div>
 
-  <div class="message" id="message">Press Start, then tap or click the critters before they hide.</div>
+  <div class="message" id="message">Press Start, then tap or click the snow leopards before they hide.</div>
 
   <div class="grove" id="grove"></div>
 
@@ -196,18 +241,55 @@
     </div>
   </section>
 
+  <div class="whacker" id="whacker">
+    <svg viewBox="0 0 150 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="128" cy="140" rx="15" ry="40" transform="rotate(12 128 140)" fill="#B5551F"/>
+      <path d="M115 118 Q128 114 141 121" stroke="#F3EAD7" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M114 138 Q128 134 143 141" stroke="#F3EAD7" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M114 158 Q128 154 141 161" stroke="#F3EAD7" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="80" cy="140" rx="38" ry="42" fill="#C1440E"/>
+      <ellipse cx="68" cy="148" rx="19" ry="27" fill="#F3EAD7"/>
+      <ellipse cx="62" cy="182" rx="12" ry="6" fill="#3A2318"/>
+      <ellipse cx="98" cy="182" rx="12" ry="6" fill="#3A2318"/>
+      <path d="M58 120 L30 108" stroke="#8B4A2B" stroke-width="15" stroke-linecap="round"/>
+      <circle cx="28" cy="108" r="8.5" fill="#3A2318"/>
+      <circle cx="47" cy="36" r="11" fill="#8B4A2B"/>
+      <circle cx="97" cy="36" r="11" fill="#8B4A2B"/>
+      <circle cx="47" cy="37" r="5.5" fill="#3A2318"/>
+      <circle cx="97" cy="37" r="5.5" fill="#3A2318"/>
+      <ellipse cx="72" cy="66" rx="35" ry="30" fill="#C1440E"/>
+      <ellipse cx="72" cy="46" rx="9" ry="5" fill="#F3EAD7" opacity="0.85"/>
+      <ellipse cx="54" cy="74" rx="13" ry="14" fill="#F3EAD7"/>
+      <ellipse cx="90" cy="74" rx="13" ry="14" fill="#F3EAD7"/>
+      <path d="M57 70 Q55 78 52 83" stroke="#8B4A2B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M87 70 Q89 78 92 83" stroke="#8B4A2B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="57" cy="64" rx="4.5" ry="5" fill="#3A2318"/>
+      <ellipse cx="87" cy="64" rx="4.5" ry="5" fill="#3A2318"/>
+      <circle cx="58.3" cy="62.4" r="1.5" fill="#F3EAD7"/>
+      <circle cx="88.3" cy="62.4" r="1.5" fill="#F3EAD7"/>
+      <ellipse cx="72" cy="82" rx="10" ry="8" fill="#F3EAD7"/>
+      <ellipse cx="72" cy="78" rx="4" ry="3" fill="#1B2420"/>
+      <path d="M72 80 Q72 84 68 85" stroke="#1B2420" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <path d="M72 80 Q72 84 76 85" stroke="#1B2420" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="paw" id="paw">
+      <div class="bamboo-stick" id="bambooStick"></div>
+    </div>
+  </div>
+
 <script>
 (function(){
   const DURATION_MS = 30000;
   const HOLE_COUNT = 9;
   const TICK_MS = 40;
   const DEVICE = detectDevice();
-  const CRITTERS = [
-    {emoji:'🐼', points:1, weight:5, stay:1},
-    {emoji:'🐒', points:1, weight:4, stay:1},
-    {emoji:'🐯', points:3, weight:1, stay:0.6}
-  ];
-  const TOTAL_WEIGHT = CRITTERS.reduce((sum, c) => sum + c.weight, 0);
+  const FAST_CHANCE = 0.1;
+  const NORMAL_LEOPARD = {emoji:'🐆', points:1, stay:1};
+  const FAST_LEOPARD = {emoji:'🐆', points:3, stay:0.6};
+  const REST_ANGLE = -125;
+  const REST_WIDTH = 150;
+  const WHACKER_WIDTH = 150;
+  const SWING_MS = 380;
 
   const groveEl = document.getElementById('grove');
   const scoreEl = document.getElementById('score');
@@ -225,9 +307,13 @@
   const tabMobile = document.getElementById('tabMobile');
   const tabDesktop = document.getElementById('tabDesktop');
   const viewNote = document.getElementById('viewNote');
+  const whackerEl = document.getElementById('whacker');
+  const pawEl = document.getElementById('paw');
+  const stickEl = document.getElementById('bambooStick');
   const LABELS = {mobile: 'Mobile', desktop: 'Desktop'};
 
   const holes = [];
+  const holeByEl = new Map();
   let playing = false;
   let score = 0;
   let startTime = 0;
@@ -236,6 +322,7 @@
   let username = null;
   let boards = null;
   let viewing = DEVICE;
+  let swing = null;
 
   function el(tag, className, text){
     const node = document.createElement(tag);
@@ -254,13 +341,8 @@
     return a + (b - a) * t;
   }
 
-  function pickCritter(){
-    let roll = Math.random() * TOTAL_WEIGHT;
-    for(const critter of CRITTERS){
-      roll -= critter.weight;
-      if(roll < 0) return critter;
-    }
-    return CRITTERS[0];
+  function pickLeopard(){
+    return Math.random() < FAST_CHANCE ? FAST_LEOPARD : NORMAL_LEOPARD;
   }
 
   function buildHoles(){
@@ -273,10 +355,7 @@
       hole.appendChild(el('div', 'rim'));
       groveEl.appendChild(hole);
       const state = {el: hole, critterEl: critterEl, up: false, type: null, downAt: 0, freeAt: 0};
-      hole.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        bonk(state);
-      });
+      holeByEl.set(hole, state);
       holes.push(state);
     }
   }
@@ -315,6 +394,45 @@
     }, 160);
   }
 
+  function showImpact(x, y){
+    const ring = el('div', 'impact');
+    ring.style.left = x + 'px';
+    ring.style.top = y + 'px';
+    ring.addEventListener('animationend', () => ring.remove());
+    document.body.appendChild(ring);
+  }
+
+  function swingAt(x, y){
+    const pawRect = pawEl.getBoundingClientRect();
+    const scale = whackerEl.getBoundingClientRect().width / WHACKER_WIDTH || 1;
+    const dx = x - pawRect.left;
+    const dy = y - pawRect.top;
+    const dist = Math.hypot(dx, dy);
+    let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    if(angle > 90) angle -= 360;
+    const reach = Math.max(dist / scale + 14, REST_WIDTH);
+    if(swing) swing.cancel();
+    swing = stickEl.animate([
+      {transform: 'rotate(' + REST_ANGLE + 'deg)', width: REST_WIDTH + 'px'},
+      {transform: 'rotate(' + angle + 'deg)', width: reach + 'px', offset: 0.4},
+      {transform: 'rotate(' + angle + 'deg)', width: reach + 'px', offset: 0.55},
+      {transform: 'rotate(' + REST_ANGLE + 'deg)', width: REST_WIDTH + 'px'}
+    ], {duration: SWING_MS, easing: 'ease-out'});
+    showImpact(x, y);
+  }
+
+  function onPagePointer(e){
+    if(e.pointerType === 'mouse' && e.button !== 0) return;
+    const target = e.target;
+    if(target && target.closest && target.closest('button, a, input, textarea, select, label')) return;
+    swingAt(e.clientX, e.clientY);
+    const holeEl = target && target.closest ? target.closest('.hole') : null;
+    if(holeEl){
+      const hole = holeByEl.get(holeEl);
+      if(hole) bonk(hole);
+    }
+  }
+
   function tick(){
     const now = performance.now();
     const elapsed = now - startTime;
@@ -333,7 +451,7 @@
       const free = holes.filter(hole => !hole.up && now >= hole.freeAt);
       if(free.length > 0){
         const hole = free[Math.floor(Math.random() * free.length)];
-        const type = pickCritter();
+        const type = pickLeopard();
         raise(hole, type, now, lerp(1100, 600, progress) * type.stay);
       }
       nextSpawn = now + lerp(850, 420, progress) * (0.7 + Math.random() * 0.6);
@@ -494,6 +612,7 @@
   }
 
   startBtn.addEventListener('click', startGame);
+  document.addEventListener('pointerdown', onPagePointer);
 
   setInterval(() => {
     if(username && !playing && !document.hidden) loadBoard();
