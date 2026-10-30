@@ -5,6 +5,7 @@ import {
   getUser,
   validateUsername,
 } from "../_lib/auth.js";
+import { isAllowed } from "../_lib/moderation.js";
 
 async function latestRequest(db, userId) {
   return await db
@@ -39,6 +40,13 @@ export async function onRequestPost({ request, env }) {
 
   if (requested === user.username) {
     return json({ error: "That is already your username." }, 400);
+  }
+
+  if (!(await isAllowed(env, requested))) {
+    return json(
+      { error: "That username is not allowed. Please choose another." },
+      400
+    );
   }
 
   const taken = await env.DB.prepare(
