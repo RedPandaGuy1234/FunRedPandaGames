@@ -223,12 +223,13 @@ python3 Reaction_test.py
 ```
 
 ### Bamboo Bonk
-A solo browser game with a leaderboard. Critters pop out of the bamboo grove and duck back down fast. Bonk as many as you can in 30 seconds, then try to beat your best score. Bamboo Bonk is written in JavaScript and only lives in the browser, so there is no terminal version.
+A solo browser game with a leaderboard. Snow leopards pop out of the bamboo grove and duck back down fast. A red panda on the right side of the page swings its bamboo wherever you click or tap, so bonk as many as you can in 30 seconds, then try to beat your best score. Bamboo Bonk is written in JavaScript and only lives in the browser, so there is no terminal version.
 
 **Features**
 - A 3x3 grove of holes and a 30-second round
-- Three kinds of critters: pandas and monkeys are worth 1 point, and the fast tiger is worth 3
-- Critters pop up faster and hide sooner as the round goes on
+- Every critter is a snow leopard, and they all look the same. Most are worth 1 point, but a random few are secretly faster, hide sooner, and are worth 3 points
+- A red panda holding bamboo that whacks wherever you click or tap on the page, and lands a bonk when it hits a snow leopard
+- Snow leopards pop up faster and hide sooner as the round goes on
 - Works with a mouse or a touchscreen
 - Separate mobile and desktop leaderboards, chosen automatically from your device, each with a top-three podium and one best score per account (see [Accounts and Online Play](#accounts-and-online-play))
 
