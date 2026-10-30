@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.13.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.12.0...v2.13.0) (2026-10-30)
+
+
+### Features
+
+* Modify critters and gameplay instructions in Bamboo Bonk ([8fb671e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/8fb671e9691902d9a2f17f1be989b452472ee276))
+* Modify critters and gameplay instructions in Bamboo Bonk ([7dd8a42](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/7dd8a42ea3c2812115936b005c7a86c0299a6479))
+
+
+### Bug Fixes
+
+* Enhance moderation function with blocklist and normalization ([570944d](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/570944d62f956136003ee1bdcb325cfe64fb91bc))
+* Refactor moderation.js to use new toxic detector model ([d0aa086](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/d0aa086581116530580b012304acbfb0ac6da309))
+
+
+### Continuations
+
+* Implement username allowance check ([63a5ebb](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/63a5ebbb3a3aa73ead358eb1f2a5a61659e3dfba))
+* Revise Bamboo Bonk game details in README ([fc61a62](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/fc61a620fb6adcd757c95a9bf9ee394889af768f))
+* Update game description in index.html ([4ddc7ea](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4ddc7eaad504f87449a846a3d68d13f2c6a8db51))
+
 ## [2.12.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.11.1...v2.12.0) (2026-10-29)
 
 
