@@ -23,7 +23,6 @@ workflow will fail and it won't be picked up by the changelog. See
 
 ## Checklist
 
-- [ ] I've run `black .` on any Python files I touched, then `git push`
 - [ ] Each game's files stay self-contained within its own folder
       (`mainfile/<Game>/` and/or `docs/<game>.html`)
 - [ ] I followed the existing code style for the game I'm touching
