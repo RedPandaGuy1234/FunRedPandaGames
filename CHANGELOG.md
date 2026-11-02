@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.14.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.13.0...v2.14.0) (2026-11-02)
+
+
+### Features
+
+* Implement password change functionality ([afcfb98](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/afcfb988b7243374cece88a01a72ab6af757cc2f))
+
+
+### Continuations
+
+* Add password change HTML page ([3a2f937](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/3a2f93778aeedb5f990f951dcc5f153097849e71))
+* Add password change link to account panel ([ed64a3e](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ed64a3e151404ed27de3d582596e10eec57c0a83))
+
 ## [2.13.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.12.0...v2.13.0) (2026-10-30)
 
 
