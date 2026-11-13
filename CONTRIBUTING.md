@@ -61,7 +61,6 @@ Use `feat!:` sparingly. It marks a breaking change and bumps the major version.
 
 ## Code Style
 
-- **Python:** format everything with [Black](https://black.readthedocs.io). Install the repo's dependencies with `pip install -r requirements.txt`, then run `black .` in your terminal before you commit.
 - **JavaScript (functions and browser games):** match the style of the file you're editing, including the two-space indentation and double quotes already used in `functions/`.
 - **HTML games:** keep each browser game in a single self-contained file, and reuse the existing look (the felt-green background, cream text, and gold buttons) so the games feel like one collection.
 - Follow the existing code style for whichever game you're touching.
@@ -119,17 +118,17 @@ Guidelines:
 
 ## Proposing a New Game
 
-1. Open a discussion in the discussions tab describing the game, whether it's solo or multiplayer, and whether it will have a terminal version, a browser version, or both.
+1. Open an issue in the issues tab describing the game, whether it's solo or multiplayer, and whether it will have a terminal version, a browser version, or both.
 2. Wait for approval before you start building.
-3. Once approved, keep the game self-contained in its own folder and add a browser version in `docs/` if it fits.
-4. Add a card to `docs/index.html` and a section to the README.
-5. Use `feat:` for the first pull request, `cont:` for follow-ups, and `feat!:` for the one that finalizes the game.
+3. Again, feel free to @mention me if I haven't responded.
+4. Once approved, keep the game self-contained in its own folder and add a browser version in `docs/` if it fits.
+5. Add a card to `docs/index.html` and a section to the README.
+6. Use `feat:` for the first pull request, `cont:` for follow-ups, and `feat!:` for the one that finalizes the game.
 
 ## Testing Your Changes
 
 Before you open a pull request, please check that:
 
-- You ran `black .` on any Python files you touched.
 - Terminal games run start to finish without errors.
 - Browser games load and play through in a browser. For the Pyodide games, open the page's console and make sure there are no errors.
 - If you changed the menu or navigation, every link on `docs/index.html` still works.
@@ -149,7 +148,7 @@ These run on pull requests, and some on a schedule:
 
 ## Reporting Bugs and Suggesting Features
 
-Use the issue templates on GitHub: Bug, Feature, or Enhancement. For questions and ideas, use the [discussions tab](https://github.com/RedPandaGuy1234/FunRedPandaGames/discussions).
+Use the issue templates on GitHub: Bug, Feature, or Enhancement. For questions, use the [discussions tab](https://github.com/RedPandaGuy1234/FunRedPandaGames/discussions).
 
 ## Reporting Security Issues
 
