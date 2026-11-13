@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.14.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.14.0...v2.14.1) (2026-11-13)
+
+
+### Bug Fixes
+
+* Revise contributing guidelines for game proposals ([5201d5c](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/5201d5c366713da0518d9b11a0d07d6c3b45e42e))
+
+
+### Other
+
+* Update username change request details ([4a76e40](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/4a76e40fe459ec4618f944ebbfbdc5ca3ed6d74a))
+
 ## [2.14.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.13.0...v2.14.0) (2026-11-02)
 
 
