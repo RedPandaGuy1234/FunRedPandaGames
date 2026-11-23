@@ -8,6 +8,7 @@ import {
   sessionCookie,
   DUMMY_SALT,
 } from "../_lib/auth.js";
+import { beginTwoFactor } from "../_lib/webauthn.js";
 
 export async function onRequestPost({ request, env }) {
   if (!sameOrigin(request)) return json({ error: "Forbidden." }, 403);
@@ -37,6 +38,9 @@ export async function onRequestPost({ request, env }) {
   if (!safeEqual(attempt, user.password_hash)) {
     return json({ error: "Incorrect username or password." }, 401);
   }
+
+  const second = await beginTwoFactor(env.DB, request, user.id);
+  if (second) return json(second);
 
   const token = await createSession(env.DB, user.id);
   return json({ username: user.username }, 200, {
