@@ -68,3 +68,41 @@ CREATE TABLE IF NOT EXISTS bamboobonk (
 );
 
 CREATE INDEX IF NOT EXISTS idx_bamboobonk_device_score ON bamboobonk(device, score);
+
+CREATE TABLE IF NOT EXISTS passkeys (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  credential_id TEXT NOT NULL UNIQUE,
+  public_key TEXT NOT NULL,
+  alg INTEGER NOT NULL,
+  counter INTEGER NOT NULL DEFAULT 0,
+  name TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_passkeys_user ON passkeys(user_id);
+
+CREATE TABLE IF NOT EXISTS security_settings (
+  user_id INTEGER PRIMARY KEY,
+  passkey_2fa INTEGER NOT NULL DEFAULT 0,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS google_accounts (
+  user_id INTEGER NOT NULL UNIQUE,
+  google_sub TEXT NOT NULL UNIQUE,
+  email TEXT,
+  created_at INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS webauthn_challenges (
+  ticket_hash TEXT PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  purpose TEXT NOT NULL,
+  challenge TEXT NOT NULL,
+  expires_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_webauthn_challenges_expires ON webauthn_challenges(expires_at);
