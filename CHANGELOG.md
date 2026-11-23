@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.15.0](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.14.1...v2.15.0) (2026-11-23)
+
+
+### Features
+
+* Add tables for passkeys, security settings, and Google accounts ([19f0952](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/19f095218e66e49fa02da691701c622fb99eca33))
+
+
+### Continuations
+
+* Add assert-options.js for handling passkey requests ([dd6c763](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/dd6c76352337d3a89cda46a1fd0bd7cd4fda86fa))
+* Add two-factor authentication to login process ([617106c](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/617106cc69b1672171d3acb3a26f2f51fdfe58e7))
+* Add WebAuthn authentication functions ([2b39645](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/2b39645905eb36527a4faecab6f6fa1dde1de831))
+* Implement Google authentication and account linking ([ca8c506](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/ca8c50652164880fb063737ea3df6bd86234538d))
+* Implement Google token verification function ([bfee606](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/bfee606a897719a806831f213a071aaa9027a7ad))
+* Implement login verification with passkeys ([d808f27](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/d808f278ef1de5f89d5ae8c75346f78057a99224))
+* Implement passkey management API functions ([d4db36a](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/d4db36a9f128f9b620c0b8b31acb7d1a8ad32af9))
+* Implement passkey registration options endpoint ([d4af5dc](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/d4af5dc0ac6c93573e7667d243278891924624f6))
+* Implement passkey registration verification endpoint ([6e3da1b](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/6e3da1b80d2e47b657499cd15e1eaf6dc4f1b46b))
+* Integrate Google Sign-In and update passkey UI ([de0eb48](https://github.com/RedPandaGuy1234/FunRedPandaGames/commit/de0eb48a2363fdde7209344848567f61d12e04ed))
+
 ## [2.14.1](https://github.com/RedPandaGuy1234/FunRedPandaGames/compare/v2.14.0...v2.14.1) (2026-11-13)
 
 
