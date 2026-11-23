@@ -7,6 +7,7 @@
 <title>Account</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
+<script src="https://accounts.google.com/gsi/client?hl=en" async defer onload="onGoogleLoad()"></script>
 <style>
   :root{
     --felt:#16302A;
@@ -68,6 +69,12 @@
   .join-note{font-size:14px; color:var(--cream-dim); text-align:center; line-height:1.5;}
   .join-note b{color:var(--gold);}
   .captcha{display:flex; justify-content:center; min-height:65px;}
+  .divider{
+    display:flex; align-items:center; gap:10px;
+    font-size:12px; color:var(--cream-dim); opacity:.8; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .divider::before, .divider::after{content:''; flex:1; height:1px; background:rgba(255,255,255,.16);}
+  .google-wrap{display:flex; justify-content:center; min-height:44px;}
   button.action{
     font-family:inherit;
     font-weight:700;
@@ -89,6 +96,7 @@
     box-shadow:0 3px 0 rgba(0,0,0,.3), 0 6px 12px rgba(0,0,0,.25);
   }
   button.secondary:disabled{opacity:.5; cursor:default;}
+  button.small{font-size:12px; padding:7px 12px;}
   .link-btn{
     display:block; text-align:center; text-decoration:none;
     font-family:inherit; font-weight:700; font-size:14px;
@@ -103,6 +111,20 @@
   .status.ok{color:var(--success);}
   .welcome{font-size:16px; text-align:center; line-height:1.5;}
   .welcome b{color:var(--gold);}
+  .section-title{
+    font-size:12.5px; color:var(--gold); letter-spacing:.08em; text-transform:uppercase;
+    margin-top:6px; padding-top:14px; border-top:1px solid rgba(255,255,255,.12);
+  }
+  .sec-row{display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:14px;}
+  .sec-row .value{color:var(--cream-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .pk-list{display:flex; flex-direction:column; gap:8px;}
+  .pk-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:rgba(255,255,255,.05); border-radius:9px; padding:8px 12px; font-size:14px;
+  }
+  .pk-row span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .pk-add{display:flex; gap:8px;}
+  .pk-add input{flex:1; min-width:0; font-size:14px; padding:9px 11px;}
   .hidden{display:none !important;}
 </style>
 </head>
@@ -155,24 +177,76 @@
       <button class="action" id="signupSubmit" type="submit">Create Account</button>
     </form>
 
+    <div class="divider">or</div>
+    <div class="google-wrap" id="googleSignIn"></div>
+
     <div class="status" id="authStatus"></div>
+  </div>
+
+  <div class="panel hidden" id="twofaPanel">
+    <div class="welcome">Two-step verification</div>
+    <div class="join-note">Use your passkey to finish signing in.</div>
+    <button class="action" id="twofaUse" type="button">Use passkey</button>
+    <button class="secondary" id="twofaCancel" type="button">Cancel</button>
+    <div class="status" id="twofaStatus"></div>
+  </div>
+
+  <div class="panel hidden" id="googleNamePanel">
+    <div class="welcome">Welcome! Choose a username</div>
+    <form id="googleNameForm" style="display:flex; flex-direction:column; gap:14px;">
+      <div class="field">
+        <label for="googleUsername">Username</label>
+        <input type="text" id="googleUsername" autocomplete="username" maxlength="20">
+        <span class="hint">3-20 characters: letters, numbers, and underscores.</span>
+      </div>
+      <button class="action" id="googleNameSubmit" type="submit">Create Account</button>
+    </form>
+    <button class="secondary" id="googleNameCancel" type="button">Cancel</button>
+    <div class="status" id="googleNameStatus"></div>
   </div>
 
   <div class="panel hidden" id="accountPanel">
     <div class="welcome">Logged in as <b id="accountName"></b></div>
     <a class="link-btn" href="usernamechange.html">Change username</a>
     <a class="link-btn" href="passwordchange.html">Change password</a>
+
+    <div class="section-title">Sign in with Google</div>
+    <div class="sec-row">
+      <span>Status</span>
+      <span class="value" id="googleState">Not linked</span>
+    </div>
+    <div class="google-wrap" id="googleLink"></div>
+
+    <div class="section-title">Passkeys</div>
+    <div class="pk-list" id="passkeyList"></div>
+    <div class="pk-add">
+      <input type="text" id="passkeyName" maxlength="30" placeholder="Name (optional)">
+      <button class="secondary small" id="addPasskeyBtn" type="button">Add passkey</button>
+    </div>
+
+    <div class="section-title">Two-step verification</div>
+    <div class="sec-row">
+      <span>Passkey 2FA</span>
+      <span class="value" id="twofaState">Off</span>
+    </div>
+    <button class="secondary" id="twofaToggle" type="button">Turn on 2FA</button>
+    <div class="hint" id="twofaHint">Add a passkey first to turn on 2FA.</div>
+
     <button class="secondary" id="logoutBtn" type="button">Log Out</button>
     <div class="status" id="accountStatus"></div>
   </div>
 
 <script>
 const TURNSTILE_SITE_KEY = '0x4AAAAAAFbkOrDkvnwUU1iK';
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
 
-const loadingPanel = document.getElementById('loadingPanel');
-const loadingText = document.getElementById('loadingText');
-const authPanel = document.getElementById('authPanel');
-const accountPanel = document.getElementById('accountPanel');
+const panels = {
+  loading: document.getElementById('loadingPanel'),
+  auth: document.getElementById('authPanel'),
+  twofa: document.getElementById('twofaPanel'),
+  googleName: document.getElementById('googleNamePanel'),
+  account: document.getElementById('accountPanel')
+};
 const accountName = document.getElementById('accountName');
 const accountStatus = document.getElementById('accountStatus');
 const authStatus = document.getElementById('authStatus');
@@ -184,12 +258,34 @@ const loginSubmit = document.getElementById('loginSubmit');
 const signupSubmit = document.getElementById('signupSubmit');
 const logoutBtn = document.getElementById('logoutBtn');
 const joinNote = document.getElementById('joinNote');
+const twofaUse = document.getElementById('twofaUse');
+const twofaCancel = document.getElementById('twofaCancel');
+const twofaStatus = document.getElementById('twofaStatus');
+const googleNameForm = document.getElementById('googleNameForm');
+const googleUsername = document.getElementById('googleUsername');
+const googleNameSubmit = document.getElementById('googleNameSubmit');
+const googleNameCancel = document.getElementById('googleNameCancel');
+const googleNameStatus = document.getElementById('googleNameStatus');
+const googleState = document.getElementById('googleState');
+const googleSignInEl = document.getElementById('googleSignIn');
+const googleLinkEl = document.getElementById('googleLink');
+const passkeyList = document.getElementById('passkeyList');
+const passkeyName = document.getElementById('passkeyName');
+const addPasskeyBtn = document.getElementById('addPasskeyBtn');
+const twofaState = document.getElementById('twofaState');
+const twofaToggle = document.getElementById('twofaToggle');
+const twofaHint = document.getElementById('twofaHint');
 
 let turnstileLoaded = false;
 let currentTab = 'login';
 let authVisible = false;
+let googleReady = false;
+let pendingTwoFactor = null;
+let pendingGoogleCredential = null;
+let security = null;
 const widgetIds = { login: null, signup: null };
 const captchaTokens = { login: '', signup: '' };
+const googleRendered = { signin: false, link: false };
 
 function ensureCaptcha(which){
   if(!turnstileLoaded || !authVisible || widgetIds[which] !== null) return;
@@ -212,26 +308,63 @@ window.onTurnstileLoad = () => {
   ensureCaptcha(currentTab);
 };
 
+function fromB64u(value){
+  const padded = value + '='.repeat((4 - value.length % 4) % 4);
+  const binary = atob(padded.replace(/-/g, '+').replace(/_/g, '/'));
+  const out = new Uint8Array(binary.length);
+  for(let i = 0; i < binary.length; i++) out[i] = binary.charCodeAt(i);
+  return out.buffer;
+}
+
+function toB64u(buffer){
+  const bytes = new Uint8Array(buffer);
+  let text = '';
+  for(let i = 0; i < bytes.length; i++) text += String.fromCharCode(bytes[i]);
+  return btoa(text).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function passkeyError(err){
+  if(err && err.name === 'NotAllowedError') return 'The passkey request was cancelled or timed out.';
+  if(err && err.name === 'InvalidStateError') return 'You already have a passkey for this account on this device.';
+  return err && err.message ? err.message : 'The passkey request failed.';
+}
+
 function setStatus(el, text, kind){
   el.textContent = text;
   el.className = 'status' + (kind ? ' ' + kind : '');
 }
 
+function renderGoogleButtons(){
+  if(!googleReady) return;
+  const options = { theme: 'filled_black', size: 'large', text: 'continue_with', shape: 'pill', width: 260 };
+  if(authVisible && !googleRendered.signin){
+    google.accounts.id.renderButton(googleSignInEl, options);
+    googleRendered.signin = true;
+  }
+  if(!panels.account.classList.contains('hidden') && security && !security.google && !googleRendered.link){
+    google.accounts.id.renderButton(googleLinkEl, options);
+    googleRendered.link = true;
+  }
+}
+
+function showOnly(name){
+  Object.keys(panels).forEach((key) => {
+    panels[key].classList.toggle('hidden', key !== name);
+  });
+  authVisible = name === 'auth';
+  if(authVisible) ensureCaptcha(currentTab);
+  renderGoogleButtons();
+}
+
 function showLoggedIn(username){
-  authVisible = false;
-  loadingPanel.classList.add('hidden');
-  authPanel.classList.add('hidden');
-  accountPanel.classList.remove('hidden');
+  showOnly('account');
   accountName.textContent = username;
   setStatus(accountStatus, '', '');
+  loadSecurity();
 }
 
 function showLoggedOut(){
-  loadingPanel.classList.add('hidden');
-  accountPanel.classList.add('hidden');
-  authPanel.classList.remove('hidden');
-  authVisible = true;
-  ensureCaptcha(currentTab);
+  showOnly('auth');
   loadJoinNote();
 }
 
@@ -250,7 +383,7 @@ async function api(path, options){
   const response = await fetch(path, options);
   let data = {};
   try { data = await response.json(); } catch (e) { data = {}; }
-  return { ok: response.ok, data };
+  return { ok: response.ok, status: response.status, data };
 }
 
 async function post(path, payload){
@@ -260,6 +393,63 @@ async function post(path, payload){
     credentials: 'same-origin',
     body: JSON.stringify(payload || {})
   });
+}
+
+async function getAssertion(options){
+  const publicKey = {
+    challenge: fromB64u(options.challenge),
+    rpId: options.rpId,
+    timeout: options.timeout,
+    userVerification: options.userVerification,
+    allowCredentials: options.allowCredentials.map((c) => ({ type: c.type, id: fromB64u(c.id) }))
+  };
+  const cred = await navigator.credentials.get({ publicKey });
+  return {
+    id: cred.id,
+    response: {
+      clientDataJSON: toB64u(cred.response.clientDataJSON),
+      authenticatorData: toB64u(cred.response.authenticatorData),
+      signature: toB64u(cred.response.signature)
+    }
+  };
+}
+
+async function createPasskey(options){
+  const publicKey = {
+    challenge: fromB64u(options.challenge),
+    rp: options.rp,
+    user: {
+      id: fromB64u(options.user.id),
+      name: options.user.name,
+      displayName: options.user.displayName
+    },
+    pubKeyCredParams: options.pubKeyCredParams,
+    timeout: options.timeout,
+    attestation: options.attestation,
+    authenticatorSelection: options.authenticatorSelection,
+    excludeCredentials: options.excludeCredentials.map((c) => ({ type: c.type, id: fromB64u(c.id) }))
+  };
+  const cred = await navigator.credentials.create({ publicKey });
+  return {
+    id: cred.id,
+    response: {
+      clientDataJSON: toB64u(cred.response.clientDataJSON),
+      attestationObject: toB64u(cred.response.attestationObject)
+    }
+  };
+}
+
+async function stepUp(){
+  const { ok, data } = await post('/api/passkey/assert-options', {});
+  if(!ok) throw new Error(data.error || 'Could not start the passkey check.');
+  const credential = await getAssertion(data.options);
+  return { ticket: data.ticket, credential };
+}
+
+function startTwoFactor(data){
+  pendingTwoFactor = data;
+  setStatus(twofaStatus, '', '');
+  showOnly('twofa');
 }
 
 async function loadJoinNote(){
@@ -286,6 +476,162 @@ async function loadJoinNote(){
   }
 }
 
+function renderSecurity(state){
+  security = state;
+  passkeyList.textContent = '';
+  state.passkeys.forEach((pk) => {
+    const row = document.createElement('div');
+    row.className = 'pk-row';
+    const name = document.createElement('span');
+    name.textContent = pk.name;
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'secondary small';
+    remove.textContent = 'Remove';
+    remove.addEventListener('click', () => removePasskey(pk.id));
+    row.appendChild(name);
+    row.appendChild(remove);
+    passkeyList.appendChild(row);
+  });
+
+  twofaState.textContent = state.twofa ? 'On' : 'Off';
+  twofaToggle.textContent = state.twofa ? 'Turn off 2FA' : 'Turn on 2FA';
+  twofaToggle.disabled = !state.twofa && state.passkeys.length === 0;
+  twofaHint.classList.toggle('hidden', state.twofa || state.passkeys.length > 0);
+
+  googleState.textContent = state.google ? 'Linked' + (state.google.email ? ': ' + state.google.email : '') : 'Not linked';
+  googleLinkEl.classList.toggle('hidden', !!state.google);
+
+  addPasskeyBtn.disabled = !window.PublicKeyCredential;
+  renderGoogleButtons();
+}
+
+async function loadSecurity(){
+  try {
+    const { ok, data } = await api('/api/passkey/manage', { credentials: 'same-origin' });
+    if(ok) renderSecurity(data);
+  } catch (err) {
+    setStatus(accountStatus, 'Could not load your security settings.', 'error');
+  }
+}
+
+async function addPasskey(){
+  if(!window.PublicKeyCredential){
+    setStatus(accountStatus, 'This browser does not support passkeys.', 'error');
+    return;
+  }
+  addPasskeyBtn.disabled = true;
+  setStatus(accountStatus, 'Waiting for your passkey…', '');
+  try {
+    const start = await post('/api/passkey/register-options', {});
+    if(!start.ok) throw new Error(start.data.error || 'Could not start passkey setup.');
+    const credential = await createPasskey(start.data.options);
+    const finish = await post('/api/passkey/register-verify', {
+      ticket: start.data.ticket,
+      credential,
+      name: passkeyName.value.trim()
+    });
+    if(!finish.ok) throw new Error(finish.data.error || 'Could not save that passkey.');
+    passkeyName.value = '';
+    renderSecurity(finish.data.security);
+    setStatus(accountStatus, 'Passkey added!', 'ok');
+  } catch (err) {
+    setStatus(accountStatus, passkeyError(err), 'error');
+  }
+  addPasskeyBtn.disabled = !window.PublicKeyCredential;
+}
+
+async function removePasskey(id){
+  setStatus(accountStatus, 'Confirm with your passkey…', '');
+  try {
+    const proof = await stepUp();
+    const { ok, data } = await post('/api/passkey/manage', { action: 'delete', id, ticket: proof.ticket, credential: proof.credential });
+    if(!ok) throw new Error(data.error || 'Could not remove that passkey.');
+    renderSecurity(data.security);
+    setStatus(accountStatus, 'Passkey removed.', 'ok');
+  } catch (err) {
+    setStatus(accountStatus, passkeyError(err), 'error');
+  }
+}
+
+async function toggleTwoFactor(){
+  if(!security) return;
+  twofaToggle.disabled = true;
+  try {
+    if(security.twofa){
+      setStatus(accountStatus, 'Confirm with your passkey…', '');
+      const proof = await stepUp();
+      const { ok, data } = await post('/api/passkey/manage', { action: 'disable', ticket: proof.ticket, credential: proof.credential });
+      if(!ok) throw new Error(data.error || 'Could not turn off 2FA.');
+      renderSecurity(data.security);
+      setStatus(accountStatus, 'Two-step verification is off.', 'ok');
+    } else {
+      const { ok, data } = await post('/api/passkey/manage', { action: 'enable' });
+      if(!ok) throw new Error(data.error || 'Could not turn on 2FA.');
+      renderSecurity(data.security);
+      setStatus(accountStatus, 'Two-step verification is on.', 'ok');
+    }
+  } catch (err) {
+    setStatus(accountStatus, passkeyError(err), 'error');
+  }
+  if(security) twofaToggle.disabled = !security.twofa && security.passkeys.length === 0;
+}
+
+async function onGoogleCredential(response){
+  const credential = response.credential;
+  if(authVisible){
+    setStatus(authStatus, 'Signing in with Google…', '');
+    try {
+      const { ok, data } = await post('/api/google', { credential });
+      if(!ok){
+        setStatus(authStatus, data.error || 'Google sign-in failed.', 'error');
+        return;
+      }
+      if(data.twofa){
+        startTwoFactor(data);
+        return;
+      }
+      if(data.needsUsername){
+        pendingGoogleCredential = credential;
+        googleUsername.value = data.suggestion || '';
+        setStatus(googleNameStatus, '', '');
+        showOnly('googleName');
+        return;
+      }
+      setStatus(authStatus, '', '');
+      showLoggedIn(data.username);
+    } catch (err) {
+      setStatus(authStatus, 'Could not reach the server. Accounts only work on the live site.', 'error');
+    }
+    return;
+  }
+
+  if(!panels.account.classList.contains('hidden')){
+    try {
+      const { ok, data } = await post('/api/google', { credential, mode: 'link' });
+      if(!ok){
+        setStatus(accountStatus, data.error || 'Could not link that Google account.', 'error');
+        return;
+      }
+      setStatus(accountStatus, 'Google account linked!', 'ok');
+      await loadSecurity();
+    } catch (err) {
+      setStatus(accountStatus, 'Could not reach the server.', 'error');
+    }
+  }
+}
+
+window.onGoogleLoad = () => {
+  googleReady = true;
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: onGoogleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+  renderGoogleButtons();
+};
+
 loginTab.addEventListener('click', () => showTab('login'));
 signupTab.addEventListener('click', () => showTab('signup'));
 
@@ -307,7 +653,9 @@ loginForm.addEventListener('submit', async (e) => {
     const { ok, data } = await post('/api/login', { username, password, captchaToken: captchaTokens.login });
     if(ok){
       document.getElementById('loginPassword').value = '';
-      showLoggedIn(data.username);
+      setStatus(authStatus, '', '');
+      if(data.twofa) startTwoFactor(data);
+      else showLoggedIn(data.username);
     } else {
       setStatus(authStatus, data.error || 'Could not log in.', 'error');
     }
@@ -353,10 +701,75 @@ signupForm.addEventListener('submit', async (e) => {
   signupSubmit.disabled = false;
 });
 
+twofaUse.addEventListener('click', async () => {
+  if(!pendingTwoFactor){
+    setStatus(twofaStatus, 'Please cancel and log in again.', 'error');
+    return;
+  }
+  if(!window.PublicKeyCredential){
+    setStatus(twofaStatus, 'This browser does not support passkeys.', 'error');
+    return;
+  }
+  twofaUse.disabled = true;
+  setStatus(twofaStatus, 'Waiting for your passkey…', '');
+  try {
+    const credential = await getAssertion(pendingTwoFactor.options);
+    const { ok, data } = await post('/api/passkey/login-verify', { ticket: pendingTwoFactor.ticket, credential });
+    if(ok){
+      pendingTwoFactor = null;
+      showLoggedIn(data.username);
+    } else {
+      pendingTwoFactor = null;
+      setStatus(twofaStatus, (data.error || 'Passkey check failed.') + ' Please cancel and log in again.', 'error');
+    }
+  } catch (err) {
+    setStatus(twofaStatus, passkeyError(err), 'error');
+  }
+  twofaUse.disabled = false;
+});
+
+twofaCancel.addEventListener('click', () => {
+  pendingTwoFactor = null;
+  showLoggedOut();
+});
+
+googleNameForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = googleUsername.value.trim();
+  if(!username){
+    setStatus(googleNameStatus, 'Choose a username.', 'error');
+    return;
+  }
+  googleNameSubmit.disabled = true;
+  setStatus(googleNameStatus, 'Creating account…', '');
+  try {
+    const { ok, data } = await post('/api/google', { credential: pendingGoogleCredential, username });
+    if(ok){
+      pendingGoogleCredential = null;
+      showLoggedIn(data.username);
+    } else {
+      setStatus(googleNameStatus, data.error || 'Could not create account.', 'error');
+    }
+  } catch (err) {
+    setStatus(googleNameStatus, 'Could not reach the server.', 'error');
+  }
+  googleNameSubmit.disabled = false;
+});
+
+googleNameCancel.addEventListener('click', () => {
+  pendingGoogleCredential = null;
+  showLoggedOut();
+});
+
+addPasskeyBtn.addEventListener('click', addPasskey);
+twofaToggle.addEventListener('click', toggleTwoFactor);
+
 logoutBtn.addEventListener('click', async () => {
   logoutBtn.disabled = true;
   try {
     await post('/api/logout', {});
+    security = null;
+    googleRendered.link = false;
     showLoggedOut();
     showTab('login');
   } catch (err) {
